@@ -342,10 +342,8 @@ if (!$conn->connect_error)
                         "SELECT l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
                         JOIN login l ON l.AccountId=p.AccountId
                         JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
-                        WHERE
-                        p.WorldId='$WorldId'
-                        AND
-                        p.AllianceId='$AllianceId'
+                        WHERE p.WorldId='$WorldId'
+                        AND p.AllianceId='$AllianceId'
                         AND
                         pl.Zeit=
                         (
@@ -392,10 +390,8 @@ if (!$conn->connect_error)
                     $strQuery .=
                         "SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
                         JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-                        WHERE
-                        p.WorldId='$WorldId'
-                        AND
-                        p.AllianceId='$AllianceId'
+                        WHERE p.WorldId='$WorldId'
+                        AND p.AllianceId='$AllianceId'
                         ORDER BY a.Zeit ASC;";
 
                 }
@@ -458,16 +454,82 @@ if (!$conn->connect_error)
                     $strQuery .=
                         "SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
                         JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
-                        WHERE
-                        b.WorldId='$WorldId'
-                        AND
-                        b.AccountId='$AccountId'
+                        WHERE b.WorldId='$WorldId'
+                        AND b.AccountId='$AccountId'
                         AND
                         ba.Zeit=
                         (
                             SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
                         )
                         ORDER BY b.BaseId;";
+                }
+                $result = $conn->query($strQuery);
+                while ($zeile = $result->fetch_assoc())
+                {
+                    array_push($UserAnswer, $zeile);
+                }
+            }
+            echo json_encode($UserAnswer);
+            break;
+        }
+        case 'getPlayerData':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $WorldId = $_post['WorldId'];
+                $AccountId = $_post['AccountId'];
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                $strQuery = '';
+                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $strQuery .=
+                        "SELECT pl.Zeit, pl.ScorePoints, a.AverageScore, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+                        JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+                        JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId
+                        WHERE
+                        pl.Zeit=a.Zeit
+                        AND
+                        pl.WorldId='$WorldId'
+                        AND
+                        p.AllianceId IN
+                        (
+                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=264 AND p.AccountId=2906176
+                        )
+                        AND
+                        pl.AccountId='$AccountId'
+                        AND
+                        '$AccountId' IN
+                        (
+                            SELECT DISTINCT p.AccountId FROM relation_player p
+                            JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+                            WHERE
+                            p.WorldId='$WorldId'
+                            AND
+                            a.AllianceId =
+                            (
+                                SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
+                            )
+                            AND
+                            IF
+                            (
+                                p.MemberRole<=a.MemberRole,
+                                true,
+                                p.AccountId='$OwnAccountId'
+                            )
+                        )
+                        ORDER BY pl.Zeit ASC;";
+                }
+                else
+                {
+                    $strQuery .=
+                        "SELECT pl.Zeit, pl.ScorePoints, a.AverageScore, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+                        JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+                        JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId
+                        WHERE pl.WorldId='$WorldId'
+                        AND pl.Zeit=a.Zeit
+                        AND pl.AccountId='$AccountId'
+                        ORDER BY pl.Zeit ASC;";
                 }
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
