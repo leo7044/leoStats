@@ -432,10 +432,7 @@ if (!$conn->connect_error)
                             SELECT DISTINCT p.AccountId FROM relation_player p
                             JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
                             WHERE
-                            p.WorldId IN
-                            (
-                                SELECT p.WorldId FROM relation_player p WHERE p.AccountId='$OwnAccountId'
-                            )
+                            p.WorldId='$WorldId'
                             AND
                             a.AllianceId =
                             (
