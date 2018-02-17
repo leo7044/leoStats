@@ -483,7 +483,7 @@ function manageContentPlayerBase()
     {
         $('#TablePlayerBaseTheadTr')[0].innerHTML = strHtml;
     }
-    var ArrayPlayerBaseCurIds = [];
+    ArrayPlayerBaseCurIds = [[], []];
     strHtml = '';
     for (var keyPlayer in ObjectPlayerBaseCur)
     {
@@ -504,7 +504,8 @@ function manageContentPlayerBase()
                 }
                 else if (keyField == 'BaseId')
                 {
-                    ArrayPlayerBaseCurIds.push(ObjectPlayerBaseCur[keyPlayer][keyField]);
+                    ArrayPlayerBaseCurIds[0].push(ObjectPlayerBaseCur[keyPlayer][keyField]);
+                    ArrayPlayerBaseCurIds[1].push(ObjectPlayerBaseCur[keyPlayer]['Name']);
                     delete ObjectPlayerBaseCur[keyPlayer][keyField];
                 }
                 else
@@ -518,7 +519,7 @@ function manageContentPlayerBase()
     resetDataTable('TablePlayerBase', ArrayRows, ArrayPlayerBaseCurIds);
     for (var keyPlayer in ObjectPlayerBaseCur)
     {
-        ObjectPlayerBaseCur[keyPlayer]['BaseId'] = ArrayPlayerBaseCurIds[keyPlayer];
+        ObjectPlayerBaseCur[keyPlayer]['BaseId'] = ArrayPlayerBaseCurIds[0][keyPlayer];
     }
 }
 
@@ -605,6 +606,7 @@ function resetDataTable(_Id, _ArrayRows, _ArrayPlayerBaseCurIds)
         $('#' + _Id).DataTable({paging: false, order: [[1]]});
         $('.dataTables_info').parents()[1].remove();
         $('#' + _Id + '_wrapper').children()[1].style['overflow-x'] = 'auto';
+        $('#TablePlayerBase_filter')[0].children[0].children[0].onkeyup = function(){prepareTabPlayerBase();}
     }
     $('#' + _Id).DataTable().clear();
     $('#' + _Id).DataTable().rows.add(_ArrayRows);
@@ -617,7 +619,9 @@ function resetDataTable(_Id, _ArrayRows, _ArrayPlayerBaseCurIds)
             {
                 $($('#' + _Id + 'Tbody')[0].children[i].children[j]).addClass('text-right');
             }
-            $('#TablePlayerBaseTbody')[0].children[i].id = _ArrayPlayerBaseCurIds[i];
+            var BaseName = $('#TablePlayerBaseTbody')[0].children[i].children[0].innerHTML;
+            var BaseNameIndex = _ArrayPlayerBaseCurIds[1].indexOf(BaseName);
+            $('#TablePlayerBaseTbody')[0].children[i].id = _ArrayPlayerBaseCurIds[0][BaseNameIndex];
             $('#TablePlayerBaseTbody')[0].children[i].onclick = function(data){changeBaseWithTableRowOnclick(data.path[1].id);};
             $('#TablePlayerBaseTbody')[0].children[i].style.cursor = 'pointer';
         }
