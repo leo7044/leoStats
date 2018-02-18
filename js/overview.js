@@ -20,6 +20,10 @@ var ArrayAllianceCurBonusResIndexes = null;
 var ArrayAllianceCurBonusFight = null;
 var ArrayAllianceCurBonusFightIndexes = null;
 // PlayerTab
+var ObjectPlayerData = {};
+var ArrayPlayerCurScorePoints = null;
+var ArrayPlayerCurScorePointsIndexes = null;
+// PlayerBaseTab
 var ObjectPlayerBaseData = {};
 // BaseTab
 var ObjectBaseData = {};
@@ -64,6 +68,7 @@ function getSessionVariables()
 // reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
 function prepairOnClickEvents()
 {
+    $('#TabPlayer').click(prepareTabPlayer);
     $('#TabPlayerBase').click(prepareTabPlayerBase);
     $('#TabAllianceMembers').click(prepareTabAllianceMembers);
     $('#TabAlliance').click(prepareTabAlliance);
@@ -247,6 +252,10 @@ function prepareandFillDropDownListDataBase(_activeChanged)
         }
         HelpFunctionForChangedBase();
     }
+    if($('#TabPlayer.active')[0])
+    {
+        manageContentPlayer();
+    }
     if($('#TabPlayerBase.active')[0])
     {
         manageContentPlayerBase();
@@ -273,6 +282,15 @@ function changeBaseWithTableRowOnclick(_BaseId)
 //==================================================
 // Navigation with Tabs
 //==================================================
+function prepareTabPlayer()
+{
+    $('#DivDropDownListAlliance').removeClass('d-none');
+    $('#DivDropDownListPlayer').removeClass('d-none');
+    $('#DivDropDownListBase').addClass('d-none');
+    manageContentPlayer();
+    setCookie('TabId', 'TabPlayer');
+}
+
 function prepareTabPlayerBase()
 {
     $('#DivDropDownListAlliance').removeClass('d-none');
@@ -445,6 +463,44 @@ function manageContentAlliance()
     setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurRankIndexes, ArrayAllianceCurRank);}, 1);
     setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurBonusResIndexes, ArrayAllianceCurBonusRes);}, 1);
     setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurBonusFightIndexes, ArrayAllianceCurBonusFight);}, 1);
+}
+
+//==================================================
+// manage ContentPlayer
+//==================================================
+function manageContentPlayer()
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    var AccountId = $('#DropDownListPlayer')[0].value;
+    if (!ObjectPlayerData[WorldId + '_' + AccountId])
+    {
+        var data =
+        {
+            action: "getPlayerData",
+            WorldId: WorldId,
+            AccountId: AccountId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            ObjectPlayerData[WorldId + '_' + AccountId] = data;
+        });
+        $.ajaxSetup({async: true});
+    }
+    var ObjectPlayerCur = ObjectPlayerData[WorldId + '_' + AccountId];
+    ArrayPlayerCurScorePoints = [];
+    ArrayPlayerCurScorePointsIndexes = ['Zeit', 'ScorePoints', 'AverageScore', 'Player - ScorePoints'];
+    for (var key in ObjectPlayerCur)
+    {
+        ArrayPlayerCurScorePoints[key] = [];
+        ArrayPlayerCurScorePoints[key].push(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurScorePointsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurScorePoints[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[i]] * 100) / 100);
+        }
+    }
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurScorePointsIndexes, ArrayPlayerCurScorePoints);}, 1);
 }
 
 //==================================================
