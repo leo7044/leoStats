@@ -23,6 +23,24 @@ var ArrayAllianceCurBonusFightIndexes = null;
 var ObjectPlayerData = {};
 var ArrayPlayerCurScorePoints = null;
 var ArrayPlayerCurScorePointsIndexes = null;
+var ArrayPlayerCurRank = null;
+var ArrayPlayerCurRankIndexes = null;
+var ArrayPlayerCurProduction = null;
+var ArrayPlayerCurProductionIndexes = null;
+var ArrayPlayerCurRpsCred = null;
+var ArrayPlayerCurRpsCredIndexes = null;
+var ArrayPlayerCurShoots = null;
+var ArrayPlayerCurShootsIndexes = null;
+var ArrayPlayerCurValues = null;
+var ArrayPlayerCurValuesIndexes = null;
+var ArrayPlayerCurVps = null;
+var ArrayPlayerCurVpsIndexes = null;
+var ArrayPlayerCurLps = null;
+var ArrayPlayerCurLpsIndexes = null;
+var ArrayPlayerCurCps = null;
+var ArrayPlayerCurCpsIndexes = null;
+var ArrayPlayerCurFunds = null;
+var ArrayPlayerCurFundsIndexes = null;
 // PlayerBaseTab
 var ObjectPlayerBaseData = {};
 // BaseTab
@@ -490,17 +508,98 @@ function manageContentPlayer()
     }
     var ObjectPlayerCur = ObjectPlayerData[WorldId + '_' + AccountId];
     ArrayPlayerCurScorePoints = [];
+    ArrayPlayerCurRank = [];
+    ArrayPlayerCurProduction = [];
+    ArrayPlayerCurRpsCred = [];
+    ArrayPlayerCurShoots = [];
+    ArrayPlayerCurValues = [];
+    ArrayPlayerCurVps = [];
+    ArrayPlayerCurLps = [];
+    ArrayPlayerCurCps = [];
+    ArrayPlayerCurFunds = [];
     ArrayPlayerCurScorePointsIndexes = ['Zeit', 'ScorePoints', 'AverageScore', 'Player - ScorePoints'];
+    ArrayPlayerCurRankIndexes = ['Zeit', 'OverallRank', 'EventRank', 'Player - Ranking'];
+    ArrayPlayerCurProductionIndexes = ['Zeit', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'Player - Production'];
+    ArrayPlayerCurRpsCredIndexes = ['Zeit', 'ResearchPoints', 'Credits', 'Player - RPs / Credits'];
+    ArrayPlayerCurShootsIndexes = ['Zeit', 'Shoot', 'PvP', 'PvE', 'Player - Shoots'];
+    ArrayPlayerCurValuesIndexes = ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values'];
+    ArrayPlayerCurVpsIndexes = ['Zeit', 'VP', 'Player - VPs'];
+    ArrayPlayerCurLpsIndexes = ['Zeit', 'LP', 'Player - LPs'];
+    ArrayPlayerCurCpsIndexes = ['Zeit', 'CPMax', 'CPCur', 'Player - CPs'];
+    ArrayPlayerCurFundsIndexes = ['Zeit', 'Funds', 'Player - Funds'];
     for (var key in ObjectPlayerCur)
     {
         ArrayPlayerCurScorePoints[key] = [];
+        ArrayPlayerCurRank[key] = [];
+        ArrayPlayerCurProduction[key] = [];
+        ArrayPlayerCurRpsCred[key] = [];
+        ArrayPlayerCurShoots[key] = [];
+        ArrayPlayerCurValues[key] = [];
+        ArrayPlayerCurVps[key] = [];
+        ArrayPlayerCurLps[key] = [];
+        ArrayPlayerCurCps[key] = [];
+        ArrayPlayerCurFunds[key] = [];
         ArrayPlayerCurScorePoints[key].push(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[0]]);
         for (var i = 1; i < ArrayPlayerCurScorePointsIndexes.length - 1 ; i++)
         {
             ArrayPlayerCurScorePoints[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[i]] * 100) / 100);
         }
+        ArrayPlayerCurRank[key].push(ObjectPlayerCur[key][ArrayPlayerCurRankIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurRankIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurRank[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurRankIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurProduction[key].push(ObjectPlayerCur[key][ArrayPlayerCurProductionIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurProductionIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurProduction[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurProductionIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurRpsCred[key].push(ObjectPlayerCur[key][ArrayPlayerCurRpsCredIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurRpsCredIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurRpsCred[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurRpsCredIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurShoots[key].push(ObjectPlayerCur[key][ArrayPlayerCurShootsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurShootsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurShoots[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurShootsIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurValues[key].push(ObjectPlayerCur[key][ArrayPlayerCurValuesIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurValuesIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurValues[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurValuesIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurVps[key].push(ObjectPlayerCur[key][ArrayPlayerCurVpsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurVpsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurVps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurVpsIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurLps[key].push(ObjectPlayerCur[key][ArrayPlayerCurLpsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurLpsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurLps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurLpsIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurCps[key].push(ObjectPlayerCur[key][ArrayPlayerCurCpsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurCpsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurCps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurCpsIndexes[i]] * 100) / 100);
+        }
+        ArrayPlayerCurFunds[key].push(ObjectPlayerCur[key][ArrayPlayerCurFundsIndexes[0]]);
+        for (var i = 1; i < ArrayPlayerCurFundsIndexes.length - 1 ; i++)
+        {
+            ArrayPlayerCurFunds[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurFundsIndexes[i]] * 100) / 100);
+        }
     }
     setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurScorePointsIndexes, ArrayPlayerCurScorePoints);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurRankIndexes, ArrayPlayerCurRank);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurProductionIndexes, ArrayPlayerCurProduction);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurRpsCredIndexes, ArrayPlayerCurRpsCred);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurShootsIndexes, ArrayPlayerCurShoots);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurValuesIndexes, ArrayPlayerCurValues);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurVpsIndexes, ArrayPlayerCurVps);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurLpsIndexes, ArrayPlayerCurLps);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurCpsIndexes, ArrayPlayerCurCps);}, 1);
+    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurFundsIndexes, ArrayPlayerCurFunds);}, 1);
 }
 
 //==================================================
@@ -539,7 +638,7 @@ function manageContentPlayerBase()
     {
         $('#TablePlayerBaseTheadTr')[0].innerHTML = strHtml;
     }
-    ArrayPlayerBaseCurIds = [[], []];
+    var ArrayPlayerBaseCurIdsAndNames = [[], []];
     strHtml = '';
     for (var keyPlayer in ObjectPlayerBaseCur)
     {
@@ -560,8 +659,8 @@ function manageContentPlayerBase()
                 }
                 else if (keyField == 'BaseId')
                 {
-                    ArrayPlayerBaseCurIds[0].push(ObjectPlayerBaseCur[keyPlayer][keyField]);
-                    ArrayPlayerBaseCurIds[1].push(ObjectPlayerBaseCur[keyPlayer]['Name']);
+                    ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyPlayer][keyField]);
+                    ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyPlayer]['Name']);
                     delete ObjectPlayerBaseCur[keyPlayer][keyField];
                 }
                 else
@@ -572,10 +671,10 @@ function manageContentPlayerBase()
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TablePlayerBase', ObjectPlayerBaseCur, strHtml);
-    resetDataTable('TablePlayerBase', ArrayRows, ArrayPlayerBaseCurIds);
+    resetDataTable('TablePlayerBase', ArrayRows, ArrayPlayerBaseCurIdsAndNames);
     for (var keyPlayer in ObjectPlayerBaseCur)
     {
-        ObjectPlayerBaseCur[keyPlayer]['BaseId'] = ArrayPlayerBaseCurIds[0][keyPlayer];
+        ObjectPlayerBaseCur[keyPlayer]['BaseId'] = ArrayPlayerBaseCurIdsAndNames[0][keyPlayer];
     }
 }
 
@@ -655,14 +754,17 @@ function buildArrayTableBody(_Id, _Object, _strHtml)
     return ArrayRows;
 }
 
-function resetDataTable(_Id, _ArrayRows, _ArrayPlayerBaseCurIds)
+function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
 {
     if (!$('#' + _Id + '.dataTable')[0])
     {
         $('#' + _Id).DataTable({paging: false, order: [[1]]});
         $('.dataTables_info').parents()[1].remove();
         $('#' + _Id + '_wrapper').children()[1].style['overflow-x'] = 'auto';
-        $('#TablePlayerBase_filter')[0].children[0].children[0].onkeyup = function(){prepareTabPlayerBase();}
+        if (_Id == 'TablePlayerBase')
+        {
+            $('#TablePlayerBase_filter')[0].children[0].children[0].onkeyup = function(){prepareTabPlayerBase();}
+        }
     }
     $('#' + _Id).DataTable().clear();
     $('#' + _Id).DataTable().rows.add(_ArrayRows);
@@ -675,13 +777,13 @@ function resetDataTable(_Id, _ArrayRows, _ArrayPlayerBaseCurIds)
             {
                 $($('#' + _Id + 'Tbody')[0].children[i].children[j]).addClass('text-right');
             }
-            var BaseName = $('#TablePlayerBaseTbody')[0].children[i].children[0].innerHTML;
-            var BaseNameIndex = _ArrayPlayerBaseCurIds[1].indexOf(BaseName);
-            $('#TablePlayerBaseTbody')[0].children[i].id = _ArrayPlayerBaseCurIds[0][BaseNameIndex];
-            $('#TablePlayerBaseTbody')[0].children[i].onclick = function(data){changeBaseWithTableRowOnclick(data.path[1].id);};
-            $('#TablePlayerBaseTbody')[0].children[i].style.cursor = 'pointer';
+            var Name = $('#' + _Id + 'Tbody')[0].children[i].children[0].innerHTML;
+            var NameIndex = _ArrayIdsAndNames[1].indexOf(Name);
+            $('#' + _Id + 'Tbody')[0].children[i].id = _ArrayIdsAndNames[0][NameIndex];
+            $('#' + _Id + 'Tbody')[0].children[i].onclick = function(data){changeBaseWithTableRowOnclick(data.path[1].id);};
+            $('#' + _Id + 'Tbody')[0].children[i].style.cursor = 'pointer';
         }
-        else
+        else if (_Id == 'TableAlliancePlayer')
         {
             for (var j = 1; j < $('#' + _Id + 'Tbody')[0].children[i].children.length; j++)
             {
