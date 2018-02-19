@@ -290,6 +290,13 @@ function HelpFunctionForChangedBase()
     }
 }
 
+function changePlayerWithTableRowOnclick(_AccountId)
+{
+    $('#DropDownListPlayer')[0].value = _AccountId;
+    $('#TabPlayerBase').click();
+    prepareandFillDropDownListDataBase(true);
+}
+
 function changeBaseWithTableRowOnclick(_BaseId)
 {
     $('#DropDownListBase')[0].value = _BaseId;
@@ -385,24 +392,34 @@ function manageContentAllianceMembers()
         });
         $.ajaxSetup({async: true});
     }
-    var ObjectAlliancePlayerCur = ObjectAlliancePlayerData[WorldId + '_' + AllianceId];
+    ObjectAlliancePlayerCur = ObjectAlliancePlayerData[WorldId + '_' + AllianceId];
     var strHtml = '';
     for (var key in ObjectAlliancePlayerCur[0])
     {
-        strHtml += '<th class="text-center">' + key + '</th>';
+        if (key != 'AccountId')
+        {
+            strHtml += '<th class="text-center">' + key + '</th>';
+        }
     }
     if (!$('#TableAlliancePlayerTheadTr')[0].innerHTML)
     {
         $('#TableAlliancePlayerTheadTr')[0].innerHTML = strHtml;
     }
     $('#TableAlliancePlayerTheadTr')[0].children[1].style.minWidth = '64px';
+    var ArrayAlliancePlayerCurIdsAndNames = [[], []];
     strHtml = '';
     for (var keyPlayer in ObjectAlliancePlayerCur)
     {
         strHtml += '<tr>';
             for (var keyField in ObjectAlliancePlayerCur[keyPlayer])
             {
-                if (keyField == 'RepMax')
+                if (keyField == 'AccountId')
+                {
+                    ArrayAlliancePlayerCurIdsAndNames[0].push(ObjectAlliancePlayerCur[keyPlayer][keyField]);
+                    ArrayAlliancePlayerCurIdsAndNames[1].push(ObjectAlliancePlayerCur[keyPlayer]['UserName']);
+                    delete ObjectAlliancePlayerCur[keyPlayer][keyField];
+                }
+                else if (keyField == 'RepMax')
                 {
                     strHtml += '<td>' + ObjectAlliancePlayerCur[keyPlayer][keyField].toTimeFormat() + '</td>';
                 }
@@ -418,7 +435,11 @@ function manageContentAllianceMembers()
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TableAlliancePlayer', ObjectAlliancePlayerCur, strHtml);
-    resetDataTable('TableAlliancePlayer', ArrayRows);
+    resetDataTable('TableAlliancePlayer', ArrayRows, ArrayAlliancePlayerCurIdsAndNames);
+    for (var keyPlayer in ObjectAlliancePlayerCur)
+    {
+        ObjectAlliancePlayerCur[keyPlayer]['AccountId'] = ArrayAlliancePlayerCurIdsAndNames[0][keyPlayer];
+    }
 }
 
 function manageContentAlliance()
@@ -640,41 +661,41 @@ function manageContentPlayerBase()
     }
     var ArrayPlayerBaseCurIdsAndNames = [[], []];
     strHtml = '';
-    for (var keyPlayer in ObjectPlayerBaseCur)
+    for (var keyBase in ObjectPlayerBaseCur)
     {
-        strHtml += '<tr id="' + ObjectPlayerBaseCur[keyPlayer]['BaseId'] + '">';
-            for (var keyField in ObjectPlayerBaseCur[keyPlayer])
+        strHtml += '<tr id="' + ObjectPlayerBaseCur[keyBase]['BaseId'] + '">';
+            for (var keyField in ObjectPlayerBaseCur[keyBase])
             {
                 if (keyField == 'Rep')
                 {
-                    strHtml += '<td>' + ObjectPlayerBaseCur[keyPlayer][keyField].toTimeFormat() + '</td>';
+                    strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField].toTimeFormat() + '</td>';
                 }
                 else if (keyField == 'Tib' || keyField == 'Cry' || keyField == 'Pow' || keyField == 'Cre')
                 {
-                    strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectPlayerBaseCur[keyPlayer][keyField])) + '</td>';
+                    strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectPlayerBaseCur[keyBase][keyField])) + '</td>';
                 }
                 else if (keyField == 'CnCOpt')
                 {
-                    strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyPlayer][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyPlayer]['Name'] + '</a></td>';
+                    strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyBase][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyBase]['Name'] + '</a></td>';
                 }
                 else if (keyField == 'BaseId')
                 {
-                    ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyPlayer][keyField]);
-                    ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyPlayer]['Name']);
-                    delete ObjectPlayerBaseCur[keyPlayer][keyField];
+                    ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyBase][keyField]);
+                    ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyBase]['Name']);
+                    delete ObjectPlayerBaseCur[keyBase][keyField];
                 }
                 else
                 {
-                    strHtml += '<td>' + ObjectPlayerBaseCur[keyPlayer][keyField] + '</td>';
+                    strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField] + '</td>';
                 }
             }
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TablePlayerBase', ObjectPlayerBaseCur, strHtml);
     resetDataTable('TablePlayerBase', ArrayRows, ArrayPlayerBaseCurIdsAndNames);
-    for (var keyPlayer in ObjectPlayerBaseCur)
+    for (var keyBase in ObjectPlayerBaseCur)
     {
-        ObjectPlayerBaseCur[keyPlayer]['BaseId'] = ArrayPlayerBaseCurIdsAndNames[0][keyPlayer];
+        ObjectPlayerBaseCur[keyBase]['BaseId'] = ArrayPlayerBaseCurIdsAndNames[0][keyBase];
     }
 }
 
@@ -765,6 +786,10 @@ function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
         {
             $('#TablePlayerBase_filter')[0].children[0].children[0].onkeyup = function(){prepareTabPlayerBase();}
         }
+        else if (_Id == 'TableAlliancePlayer')
+        {
+            $('#TableAlliancePlayer_filter')[0].children[0].children[0].onkeyup = function(){prepareTabPlayer();}
+        }
     }
     $('#' + _Id).DataTable().clear();
     $('#' + _Id).DataTable().rows.add(_ArrayRows);
@@ -777,11 +802,6 @@ function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
             {
                 $($('#' + _Id + 'Tbody')[0].children[i].children[j]).addClass('text-right');
             }
-            var Name = $('#' + _Id + 'Tbody')[0].children[i].children[0].innerHTML;
-            var NameIndex = _ArrayIdsAndNames[1].indexOf(Name);
-            $('#' + _Id + 'Tbody')[0].children[i].id = _ArrayIdsAndNames[0][NameIndex];
-            $('#' + _Id + 'Tbody')[0].children[i].onclick = function(data){changeBaseWithTableRowOnclick(data.path[1].id);};
-            $('#' + _Id + 'Tbody')[0].children[i].style.cursor = 'pointer';
         }
         else if (_Id == 'TableAlliancePlayer')
         {
@@ -789,6 +809,18 @@ function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
             {
                 $($('#' + _Id + 'Tbody')[0].children[i].children[j]).addClass('text-right');
             }
+        }
+        var Name = $('#' + _Id + 'Tbody')[0].children[i].children[0].innerHTML;
+        var NameIndex = _ArrayIdsAndNames[1].indexOf(Name);
+        $('#' + _Id + 'Tbody')[0].children[i].id = _ArrayIdsAndNames[0][NameIndex];
+        $('#' + _Id + 'Tbody')[0].children[i].style.cursor = 'pointer';
+        if (_Id == 'TablePlayerBase')
+        {
+            $('#' + _Id + 'Tbody')[0].children[i].onclick = function(data){changeBaseWithTableRowOnclick(data.path[1].id);};
+        }
+        else if (_Id == 'TableAlliancePlayer')
+        {
+            $('#' + _Id + 'Tbody')[0].children[i].onclick = function(data){changePlayerWithTableRowOnclick(data.path[1].id);};
         }
     }
 }
