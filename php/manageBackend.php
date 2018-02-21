@@ -669,6 +669,43 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer[0]);
             break;
         }
+        case 'getWorldBaseData':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $WorldId = $_post['WorldId'];
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                $strQuery = '';
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $strQuery .= "SELECT ";
+                    for ($i = 0; $i <= 66; $i++)
+                    {
+                        $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS LvLOff$i, ";
+                    }
+                    $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS LvLOff67 ";
+                    $strQuery .=
+                    "FROM relation_bases b
+                    JOIN relation_alliance a ON a.WorldId=b.WorldId
+                    JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
+                    JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+                    WHERE b.WorldId=$WorldId
+                    AND
+                    ba.Zeit=
+                    (
+                        SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+                    )";
+                }
+                $result = $conn->query($strQuery);
+                while ($zeile = $result->fetch_assoc())
+                {
+                    array_push($UserAnswer, $zeile);
+                }
+            }
+            echo json_encode($UserAnswer[0]);
+            break;
+        }
         case 'optimizeAllTables':
         {
             if (isset($_SESSION['leoStats_AccountId']))

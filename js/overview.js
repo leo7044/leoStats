@@ -41,7 +41,7 @@ var ArrayPlayerCurCps = null;
 var ArrayPlayerCurCpsIndexes = null;
 var ArrayPlayerCurFunds = null;
 var ArrayPlayerCurFundsIndexes = null;
-// AllianceBAseTab
+// AllianceBaseTab
 var ObjectAllianceBaseData = {};
 var ArrayAllianceBaseCurOff = null;
 var ArrayAllianceBaseCurOffIndexes = null;
@@ -55,6 +55,10 @@ var ArrayBaseCurValues = null;
 var ArrayBaseCurValuesIndexes = null;
 var ArrayBaseCurRepairTime = null;
 var ArrayBaseCurRepairTimeIndexes = null;
+// WorldTab
+var ObjectWorldBaseData = {};
+var ArrayWorldBaseCurOff = null;
+var ArrayWorldBaseCurOffIndexes = null;
 
 $(document).ready(function()
 {
@@ -81,7 +85,7 @@ function getSessionVariables()
         ObjectSessionVariables = data;
         if (ObjectSessionVariables.leoStats_IsAdmin)
         {
-            $('#LiTabWorld').removeClass('d-none');
+            $('#LiTabWorldBase').removeClass('d-none');
         }
     });
     $.ajaxSetup({async: true});
@@ -96,7 +100,7 @@ function prepairOnClickEvents()
     $('#TabAlliance').click(prepareTabAlliance);
     $('#TabAllianceBase').click(prepareTabAllianceBase);
     $('#TabBase').click(prepareTabBase);
-    $('#TabWorld').click(prepareTabWorld);
+    $('#TabWorldBase').click(prepareTabWorldBase);
     $('#DropDownListWorld').change(function(){prepareandFillDropDownListDataAlliance(true);});
     $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
     $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
@@ -163,6 +167,10 @@ $(window).resize(function()
     else if ($('#TabAllianceBase.active')[0])
     {
         drawGoogleChartColumn(ArrayAllianceBaseCurOffIndexes, ArrayAllianceBaseCurOff);
+    }
+    else if ($('#TabWorldBase.active')[0])
+    {
+        drawGoogleChartColumn(ArrayWorldBaseCurOffIndexes, ArrayWorldBaseCurOff);
     }
 });
 
@@ -386,12 +394,13 @@ function prepareTabBase()
     setCookie('TabId', 'TabBase');
 }
 
-function prepareTabWorld()
+function prepareTabWorldBase()
 {
     $('#DivDropDownListAlliance').addClass('d-none');
     $('#DivDropDownListPlayer').addClass('d-none');
     $('#DivDropDownListBase').addClass('d-none');
-    setCookie('TabId', 'TabWorld');
+    manageContentWorldBase();
+    setCookie('TabId', 'TabWorldBase');
 }
 
 //==================================================
@@ -828,6 +837,52 @@ function manageContentBase()
     setTimeout(function(){drawGoogleChartLine(ArrayBaseCurProductionIndexes, ArrayBaseCurProduction);}, 1);
     setTimeout(function(){drawGoogleChartLine(ArrayBaseCurValuesIndexes, ArrayBaseCurValues);}, 1);
     setTimeout(function(){drawGoogleChartLine(ArrayBaseCurRepairTimeIndexes, ArrayBaseCurRepairTime);}, 1);
+}
+
+//==================================================
+// manage ContentWorldBase
+//==================================================
+function manageContentWorldBase()
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    if (!ObjectWorldBaseData[WorldId.toString()])
+    {
+        var data =
+        {
+            action: "getWorldBaseData",
+            WorldId: WorldId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            ObjectWorldBaseData[WorldId.toString()] = data;
+        });
+        $.ajaxSetup({async: true});
+    }
+    var ObjectWorldBaseCur = ObjectWorldBaseData[WorldId.toString()];
+    ArrayWorldBaseCurOff = [];
+    ArrayWorldBaseCurOffIndexes = [];
+    for (var i = 0; i <= 67; i++)
+    {
+        ArrayWorldBaseCurOffIndexes.push(i);
+    }
+    ArrayWorldBaseCurOffIndexes.push('World - Offense');
+    var i = j = 0;
+    for (var key in ObjectWorldBaseCur)
+    {
+        if (parseInt(ObjectWorldBaseCur[key]))
+        {
+            ArrayWorldBaseCurOff[j] = [];
+            ArrayWorldBaseCurOff[j].push(parseInt(ArrayWorldBaseCurOffIndexes[i]));
+            ArrayWorldBaseCurOff[j].push(parseInt(ObjectWorldBaseCur[key]));
+            ArrayWorldBaseCurOff.push(ArrayWorldBaseCurOff[j]);
+            j++;
+        }
+        i++;
+    }
+    ArrayWorldBaseCurOff.pop();
+    setTimeout(function(){drawGoogleChartColumn(ArrayWorldBaseCurOffIndexes, ArrayWorldBaseCurOff);}, 1);
 }
 
 //==================================================
