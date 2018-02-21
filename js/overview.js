@@ -41,10 +41,10 @@ var ArrayPlayerCurCps = null;
 var ArrayPlayerCurCpsIndexes = null;
 var ArrayPlayerCurFunds = null;
 var ArrayPlayerCurFundsIndexes = null;
-// AllianceBaseTab
-var ObjectAllianceBaseData = {};
-var ArrayAllianceBaseCurOff = null;
-var ArrayAllianceBaseCurOffIndexes = null;
+// AllianceOverviewTab
+var ObjectAllianceOverviewData = {};
+var ArrayAllianceOverviewCurOff = null;
+var ArrayAllianceOverviewCurOffIndexes = null;
 // PlayerBaseTab
 var ObjectPlayerBaseData = {};
 // BaseTab
@@ -55,10 +55,10 @@ var ArrayBaseCurValues = null;
 var ArrayBaseCurValuesIndexes = null;
 var ArrayBaseCurRepairTime = null;
 var ArrayBaseCurRepairTimeIndexes = null;
-// WorldTab
-var ObjectWorldBaseData = {};
-var ArrayWorldBaseCurOff = null;
-var ArrayWorldBaseCurOffIndexes = null;
+// WorldOverviewTab
+var ObjectWorldOverviewData = {};
+var ArrayWorldOverviewCurOff = null;
+var ArrayWorldOverviewCurOffIndexes = null;
 
 $(document).ready(function()
 {
@@ -85,7 +85,7 @@ function getSessionVariables()
         ObjectSessionVariables = data;
         if (ObjectSessionVariables.leoStats_IsAdmin)
         {
-            $('#LiTabWorldBase').removeClass('d-none');
+            $('#LiTabWorldOverview').removeClass('d-none');
         }
     });
     $.ajaxSetup({async: true});
@@ -98,9 +98,9 @@ function prepairOnClickEvents()
     $('#TabPlayerBase').click(prepareTabPlayerBase);
     $('#TabAllianceMembers').click(prepareTabAllianceMembers);
     $('#TabAlliance').click(prepareTabAlliance);
-    $('#TabAllianceBase').click(prepareTabAllianceBase);
+    $('#TabAllianceOverview').click(prepareTabAllianceOverview);
     $('#TabBase').click(prepareTabBase);
-    $('#TabWorldBase').click(prepareTabWorldBase);
+    $('#TabWorldOverview').click(prepareTabWorldOverview);
     $('#DropDownListWorld').change(function(){prepareandFillDropDownListDataAlliance(true);});
     $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
     $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
@@ -164,13 +164,13 @@ $(window).resize(function()
         drawGoogleChartLine(ArrayPlayerCurCpsIndexes, ArrayPlayerCurCps);
         drawGoogleChartLine(ArrayPlayerCurFundsIndexes, ArrayPlayerCurFunds);
     }
-    else if ($('#TabAllianceBase.active')[0])
+    else if ($('#TabAllianceOverview.active')[0])
     {
-        drawGoogleChartColumn(ArrayAllianceBaseCurOffIndexes, ArrayAllianceBaseCurOff);
+        drawGoogleChartColumn(ArrayAllianceOverviewCurOffIndexes, ArrayAllianceOverviewCurOff);
     }
-    else if ($('#TabWorldBase.active')[0])
+    else if ($('#TabWorldOverview.active')[0])
     {
-        drawGoogleChartColumn(ArrayWorldBaseCurOffIndexes, ArrayWorldBaseCurOff);
+        drawGoogleChartColumn(ArrayWorldOverviewCurOffIndexes, ArrayWorldOverviewCurOff);
     }
 });
 
@@ -272,9 +272,9 @@ function prepareandFillDropDownListDataPlayer(_activeChanged)
     {
         manageContentAlliance();
     }
-    if($('#TabAllianceBase.active')[0])
+    if($('#TabAllianceOverview.active')[0])
     {
-        manageContentAllianceBase();
+        manageContentAllianceOverview();
     }
 }
 
@@ -376,13 +376,13 @@ function prepareTabAlliance()
     setCookie('TabId', 'TabAlliance');
 }
 
-function prepareTabAllianceBase()
+function prepareTabAllianceOverview()
 {
     $('#DivDropDownListAlliance').removeClass('d-none');
     $('#DivDropDownListPlayer').addClass('d-none');
     $('#DivDropDownListBase').addClass('d-none');
-    manageContentAllianceBase();
-    setCookie('TabId', 'TabAllianceBase');
+    manageContentAllianceOverview();
+    setCookie('TabId', 'TabAllianceOverview');
 }
 
 function prepareTabBase()
@@ -394,13 +394,13 @@ function prepareTabBase()
     setCookie('TabId', 'TabBase');
 }
 
-function prepareTabWorldBase()
+function prepareTabWorldOverview()
 {
     $('#DivDropDownListAlliance').addClass('d-none');
     $('#DivDropDownListPlayer').addClass('d-none');
     $('#DivDropDownListBase').addClass('d-none');
-    manageContentWorldBase();
-    setCookie('TabId', 'TabWorldBase');
+    manageContentWorldOverview();
+    setCookie('TabId', 'TabWorldOverview');
 }
 
 //==================================================
@@ -735,17 +735,17 @@ function manageContentPlayerBase()
 }
 
 //==================================================
-// manage ContentAllianceBase
+// manage ContentAllianceOverview
 //==================================================
-function manageContentAllianceBase()
+function manageContentAllianceOverview()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
-    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId])
+    if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId])
     {
         var data =
         {
-            action: "getAllianceBaseData",
+            action: "getAllianceOverviewData",
             WorldId: WorldId,
             AllianceId: AllianceId
         }
@@ -753,33 +753,33 @@ function manageContentAllianceBase()
         $.post('php/manageBackend.php', data)
         .always(function(data)
         {
-            ObjectAllianceBaseData[WorldId + '_' + AllianceId] = data;
+            ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = data;
         });
         $.ajaxSetup({async: true});
     }
-    var ObjectAllianceBaseCur = ObjectAllianceBaseData[WorldId + '_' + AllianceId];
-    ArrayAllianceBaseCurOff = [];
-    ArrayAllianceBaseCurOffIndexes = [];
+    var ObjectAllianceOverviewCur = ObjectAllianceOverviewData[WorldId + '_' + AllianceId];
+    ArrayAllianceOverviewCurOff = [];
+    ArrayAllianceOverviewCurOffIndexes = [];
     for (var i = 0; i <= 67; i++)
     {
-        ArrayAllianceBaseCurOffIndexes.push(i);
+        ArrayAllianceOverviewCurOffIndexes.push(i);
     }
-    ArrayAllianceBaseCurOffIndexes.push('Alliance - Offense');
+    ArrayAllianceOverviewCurOffIndexes.push('Alliance - Offense');
     var i = j = 0;
-    for (var key in ObjectAllianceBaseCur)
+    for (var key in ObjectAllianceOverviewCur)
     {
-        if (parseInt(ObjectAllianceBaseCur[key]))
+        if (parseInt(ObjectAllianceOverviewCur[key]))
         {
-            ArrayAllianceBaseCurOff[j] = [];
-            ArrayAllianceBaseCurOff[j].push(parseInt(ArrayAllianceBaseCurOffIndexes[i]));
-            ArrayAllianceBaseCurOff[j].push(parseInt(ObjectAllianceBaseCur[key]));
-            ArrayAllianceBaseCurOff.push(ArrayAllianceBaseCurOff[j]);
+            ArrayAllianceOverviewCurOff[j] = [];
+            ArrayAllianceOverviewCurOff[j].push(parseInt(ArrayAllianceOverviewCurOffIndexes[i]));
+            ArrayAllianceOverviewCurOff[j].push(parseInt(ObjectAllianceOverviewCur[key]));
+            ArrayAllianceOverviewCurOff.push(ArrayAllianceOverviewCurOff[j]);
             j++;
         }
         i++;
     }
-    ArrayAllianceBaseCurOff.pop();
-    setTimeout(function(){drawGoogleChartColumn(ArrayAllianceBaseCurOffIndexes, ArrayAllianceBaseCurOff);}, 1);
+    ArrayAllianceOverviewCurOff.pop();
+    setTimeout(function(){drawGoogleChartColumn(ArrayAllianceOverviewCurOffIndexes, ArrayAllianceOverviewCurOff);}, 1);
 }
 
 //==================================================
@@ -840,49 +840,49 @@ function manageContentBase()
 }
 
 //==================================================
-// manage ContentWorldBase
+// manage ContentWorldOverview
 //==================================================
-function manageContentWorldBase()
+function manageContentWorldOverview()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
-    if (!ObjectWorldBaseData[WorldId.toString()])
+    if (!ObjectWorldOverviewData[WorldId.toString()])
     {
         var data =
         {
-            action: "getWorldBaseData",
+            action: "getWorldOverviewData",
             WorldId: WorldId
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
         .always(function(data)
         {
-            ObjectWorldBaseData[WorldId.toString()] = data;
+            ObjectWorldOverviewData[WorldId.toString()] = data;
         });
         $.ajaxSetup({async: true});
     }
-    var ObjectWorldBaseCur = ObjectWorldBaseData[WorldId.toString()];
-    ArrayWorldBaseCurOff = [];
-    ArrayWorldBaseCurOffIndexes = [];
+    var ObjectWorldOverviewCur = ObjectWorldOverviewData[WorldId.toString()];
+    ArrayWorldOverviewCurOff = [];
+    ArrayWorldOverviewCurOffIndexes = [];
     for (var i = 0; i <= 67; i++)
     {
-        ArrayWorldBaseCurOffIndexes.push(i);
+        ArrayWorldOverviewCurOffIndexes.push(i);
     }
-    ArrayWorldBaseCurOffIndexes.push('World - Offense');
+    ArrayWorldOverviewCurOffIndexes.push('World - Offense');
     var i = j = 0;
-    for (var key in ObjectWorldBaseCur)
+    for (var key in ObjectWorldOverviewCur)
     {
-        if (parseInt(ObjectWorldBaseCur[key]))
+        if (parseInt(ObjectWorldOverviewCur[key]))
         {
-            ArrayWorldBaseCurOff[j] = [];
-            ArrayWorldBaseCurOff[j].push(parseInt(ArrayWorldBaseCurOffIndexes[i]));
-            ArrayWorldBaseCurOff[j].push(parseInt(ObjectWorldBaseCur[key]));
-            ArrayWorldBaseCurOff.push(ArrayWorldBaseCurOff[j]);
+            ArrayWorldOverviewCurOff[j] = [];
+            ArrayWorldOverviewCurOff[j].push(parseInt(ArrayWorldOverviewCurOffIndexes[i]));
+            ArrayWorldOverviewCurOff[j].push(parseInt(ObjectWorldOverviewCur[key]));
+            ArrayWorldOverviewCurOff.push(ArrayWorldOverviewCurOff[j]);
             j++;
         }
         i++;
     }
-    ArrayWorldBaseCurOff.pop();
-    setTimeout(function(){drawGoogleChartColumn(ArrayWorldBaseCurOffIndexes, ArrayWorldBaseCurOff);}, 1);
+    ArrayWorldOverviewCurOff.pop();
+    setTimeout(function(){drawGoogleChartColumn(ArrayWorldOverviewCurOffIndexes, ArrayWorldOverviewCurOff);}, 1);
 }
 
 //==================================================

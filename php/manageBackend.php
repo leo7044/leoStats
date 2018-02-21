@@ -606,7 +606,7 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer);
             break;
         }
-        case 'getAllianceBaseData':
+        case 'getAllianceOverviewData':
         {
             $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
@@ -669,7 +669,7 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer[0]);
             break;
         }
-        case 'getWorldBaseData':
+        case 'getWorldOverviewData':
         {
             $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
