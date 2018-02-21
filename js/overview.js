@@ -41,6 +41,10 @@ var ArrayPlayerCurCps = null;
 var ArrayPlayerCurCpsIndexes = null;
 var ArrayPlayerCurFunds = null;
 var ArrayPlayerCurFundsIndexes = null;
+// AllianceBAseTab
+var ObjectAllianceBaseData = {};
+var ArrayAllianceBaseCurOff = null;
+var ArrayAllianceBaseCurOffIndexes = null;
 // PlayerBaseTab
 var ObjectPlayerBaseData = {};
 // BaseTab
@@ -137,11 +141,28 @@ $(window).resize(function()
         drawGoogleChartLine(ArrayAllianceCurBonusResIndexes, ArrayAllianceCurBonusRes);
         drawGoogleChartLine(ArrayAllianceCurBonusFightIndexes, ArrayAllianceCurBonusFight);
     }
-    if ($('#TabBase.active')[0])
+    else if ($('#TabBase.active')[0])
     {
         drawGoogleChartLine(ArrayBaseCurProductionIndexes, ArrayBaseCurProduction);
         drawGoogleChartLine(ArrayBaseCurValuesIndexes, ArrayBaseCurValues);
         drawGoogleChartLine(ArrayBaseCurRepairTimeIndexes, ArrayBaseCurRepairTime);
+    }
+    else if ($('#TabPlayer.active')[0])
+    {
+        drawGoogleChartLine(ArrayPlayerCurScorePointsIndexes, ArrayPlayerCurScorePoints);
+        drawGoogleChartLine(ArrayPlayerCurRankIndexes, ArrayPlayerCurRank);
+        drawGoogleChartLine(ArrayPlayerCurProductionIndexes, ArrayPlayerCurProduction);
+        drawGoogleChartLine(ArrayPlayerCurRpsCredIndexes, ArrayPlayerCurRpsCred);
+        drawGoogleChartLine(ArrayPlayerCurShootsIndexes, ArrayPlayerCurShoots);
+        drawGoogleChartLine(ArrayPlayerCurValuesIndexes, ArrayPlayerCurValues);
+        drawGoogleChartLine(ArrayPlayerCurVpsIndexes, ArrayPlayerCurVps);
+        drawGoogleChartLine(ArrayPlayerCurLpsIndexes, ArrayPlayerCurLps);
+        drawGoogleChartLine(ArrayPlayerCurCpsIndexes, ArrayPlayerCurCps);
+        drawGoogleChartLine(ArrayPlayerCurFundsIndexes, ArrayPlayerCurFunds);
+    }
+    else if ($('#TabAllianceBase.active')[0])
+    {
+        drawGoogleChartColumn(ArrayAllianceBaseCurOffIndexes, ArrayAllianceBaseCurOff);
     }
 });
 
@@ -242,6 +263,10 @@ function prepareandFillDropDownListDataPlayer(_activeChanged)
     if($('#TabAlliance.active')[0])
     {
         manageContentAlliance();
+    }
+    if($('#TabAllianceBase.active')[0])
+    {
+        manageContentAllianceBase();
     }
 }
 
@@ -348,6 +373,7 @@ function prepareTabAllianceBase()
     $('#DivDropDownListAlliance').removeClass('d-none');
     $('#DivDropDownListPlayer').addClass('d-none');
     $('#DivDropDownListBase').addClass('d-none');
+    manageContentAllianceBase();
     setCookie('TabId', 'TabAllianceBase');
 }
 
@@ -700,7 +726,55 @@ function manageContentPlayerBase()
 }
 
 //==================================================
-// manage ContenBase
+// manage ContentAllianceBase
+//==================================================
+function manageContentAllianceBase()
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    var AllianceId = $('#DropDownListAlliance')[0].value;
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId])
+    {
+        var data =
+        {
+            action: "getAllianceBaseData",
+            WorldId: WorldId,
+            AllianceId: AllianceId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            ObjectAllianceBaseData[WorldId + '_' + AllianceId] = data;
+        });
+        $.ajaxSetup({async: true});
+    }
+    var ObjectAllianceBaseCur = ObjectAllianceBaseData[WorldId + '_' + AllianceId];
+    ArrayAllianceBaseCurOff = [];
+    ArrayAllianceBaseCurOffIndexes = [];
+    for (var i = 0; i <= 67; i++)
+    {
+        ArrayAllianceBaseCurOffIndexes.push(i);
+    }
+    ArrayAllianceBaseCurOffIndexes.push('Alliance - Offense');
+    var i = j = 0;
+    for (var key in ObjectAllianceBaseCur)
+    {
+        if (parseInt(ObjectAllianceBaseCur[key]))
+        {
+            ArrayAllianceBaseCurOff[j] = [];
+            ArrayAllianceBaseCurOff[j].push(parseInt(ArrayAllianceBaseCurOffIndexes[i]));
+            ArrayAllianceBaseCurOff[j].push(parseInt(ObjectAllianceBaseCur[key]));
+            ArrayAllianceBaseCurOff.push(ArrayAllianceBaseCurOff[j]);
+            j++;
+        }
+        i++;
+    }
+    ArrayAllianceBaseCurOff.pop();
+    setTimeout(function(){drawGoogleChartColumn(ArrayAllianceBaseCurOffIndexes, ArrayAllianceBaseCurOff);}, 1);
+}
+
+//==================================================
+// manage ContentBase
 //==================================================
 function manageContentBase()
 {
@@ -852,6 +926,25 @@ function drawGoogleChartLine(_ArrayIndexes, _ArrayCurChart)
         };
         var chart = new google.visualization.LineChart(document.getElementById('GoogleChartLine' + _ArrayIndexes[_ArrayIndexes.length - 1]));
         chart.draw(data, options);
+    }
+}
+
+function drawGoogleChartColumn(_ArrayIndexes, _ArrayCurChart)
+{
+    _ArrayCurChart.unshift(["Level", "Count"]);
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart()
+    {
+        var data = google.visualization.arrayToDataTable(_ArrayCurChart);
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1]);
+        var options =
+        {
+            title: _ArrayIndexes[_ArrayIndexes.length - 1]
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('GoogleChartColumn' + _ArrayIndexes[_ArrayIndexes.length - 1]));
+        chart.draw(view, options);
     }
 }
 
