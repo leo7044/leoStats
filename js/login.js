@@ -1,4 +1,5 @@
-function login(loginSite)
+/* Deceloper: leo7044 */
+function login()
 {
 	var returnValue = false;
     var strForm = $('#FormLogin').serialize();

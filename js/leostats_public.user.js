@@ -1,13 +1,13 @@
 ﻿// ==UserScript==
-// @name        leoStatsLocal
+// @name        leoStats
 // @version     2018.02.20
 // @author      leo7044
-// @homepage    https://localhost/projekte/leostats/index.php
-// @downloadURL https://localhost/projekte/leostats/js/leostats.min.user.js
+// @homepage    https://leostats.000webhostapp.com/index.php
+// @downloadURL https://leostats.000webhostapp.com/leostats.min.user.js
 // @description Dieses Script überträgt eure Werte.
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @require		https://code.jquery.com/jquery-3.3.1.min.js
-// @icon        https://localhost/projekte/leostats/img/icon_32.png
+// @icon        https://leostats.000webhostapp.com/img/icon_32.png
 // @grant       none
 // ==/UserScript==
 
@@ -24,7 +24,7 @@
         function leoStatsCreate()
 		{
 			// globale Variablen
-			var linkToRoot = "https://localhost/projekte/leostats/";
+			var linkToRoot = "https://leostats.000webhostapp.com/";
 			var ObjectData = {};
 			ObjectData.server = {};
 			ObjectData.alliance = {};
