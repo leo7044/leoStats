@@ -8,57 +8,16 @@ var ArrayDropDownListAlliance = [];
 var ArrayDropDownListPlayer = [];
 var ArrayDropDownListBase = [];
 var ArrayDropDownDefaultOwn = [];
-// AllianceTabs
+// Tabs
+var ObjectPlayerData = {};
+var ObjectPlayerBaseData = {};
 var ObjectAlliancePlayerData = {};
 var ObjectAllianceData = {};
-var ArrayAllianceCurScore = null;
-var ArrayAllianceCurScoreIndexes = null;
-var ArrayAllianceCurRank = null;
-var ArrayAllianceCurRankIndexes = null;
-var ArrayAllianceCurBonusRes = null;
-var ArrayAllianceCurBonusResIndexes = null;
-var ArrayAllianceCurBonusFight = null;
-var ArrayAllianceCurBonusFightIndexes = null;
-// PlayerTab
-var ObjectPlayerData = {};
-var ArrayPlayerCurScorePoints = null;
-var ArrayPlayerCurScorePointsIndexes = null;
-var ArrayPlayerCurRank = null;
-var ArrayPlayerCurRankIndexes = null;
-var ArrayPlayerCurProduction = null;
-var ArrayPlayerCurProductionIndexes = null;
-var ArrayPlayerCurRpsCred = null;
-var ArrayPlayerCurRpsCredIndexes = null;
-var ArrayPlayerCurShoots = null;
-var ArrayPlayerCurShootsIndexes = null;
-var ArrayPlayerCurValues = null;
-var ArrayPlayerCurValuesIndexes = null;
-var ArrayPlayerCurVps = null;
-var ArrayPlayerCurVpsIndexes = null;
-var ArrayPlayerCurLps = null;
-var ArrayPlayerCurLpsIndexes = null;
-var ArrayPlayerCurCps = null;
-var ArrayPlayerCurCpsIndexes = null;
-var ArrayPlayerCurFunds = null;
-var ArrayPlayerCurFundsIndexes = null;
-// AllianceOverviewTab
 var ObjectAllianceOverviewData = {};
-var ArrayAllianceOverviewCurOff = null;
-var ArrayAllianceOverviewCurOffIndexes = null;
-// PlayerBaseTab
-var ObjectPlayerBaseData = {};
-// BaseTab
 var ObjectBaseData = {};
-var ArrayBaseCurProduction = null;
-var ArrayBaseCurProductionIndexes = null;
-var ArrayBaseCurValues = null;
-var ArrayBaseCurValuesIndexes = null;
-var ArrayBaseCurRepairTime = null;
-var ArrayBaseCurRepairTimeIndexes = null;
-// WorldOverviewTab
 var ObjectWorldOverviewData = {};
-var ArrayWorldOverviewCurOff = null;
-var ArrayWorldOverviewCurOffIndexes = null;
+// DiagramData
+var ObjectDiagramData = {};
 
 $(document).ready(function()
 {
@@ -140,37 +99,32 @@ $(window).resize(function()
 {
     if($('#TabAlliance.active')[0])
     {
-        drawGoogleChartLine(ArrayAllianceCurScoreIndexes, ArrayAllianceCurScore);
-        drawGoogleChartLine(ArrayAllianceCurRankIndexes, ArrayAllianceCurRank);
-        drawGoogleChartLine(ArrayAllianceCurBonusResIndexes, ArrayAllianceCurBonusRes);
-        drawGoogleChartLine(ArrayAllianceCurBonusFightIndexes, ArrayAllianceCurBonusFight);
+        for (var keyDiagramType in ObjectDiagramData.Alliance)
+        {
+            drawGoogleChartLine(ObjectDiagramData.Alliance[keyDiagramType][1], ObjectDiagramData.Alliance[keyDiagramType][0]);
+        }
     }
     else if ($('#TabBase.active')[0])
     {
-        drawGoogleChartLine(ArrayBaseCurProductionIndexes, ArrayBaseCurProduction);
-        drawGoogleChartLine(ArrayBaseCurValuesIndexes, ArrayBaseCurValues);
-        drawGoogleChartLine(ArrayBaseCurRepairTimeIndexes, ArrayBaseCurRepairTime);
+        for (var keyDiagramType in ObjectDiagramData.Base)
+        {
+            drawGoogleChartLine(ObjectDiagramData.Base[keyDiagramType][1], ObjectDiagramData.Base[keyDiagramType][0]);
+        }
     }
     else if ($('#TabPlayer.active')[0])
     {
-        drawGoogleChartLine(ArrayPlayerCurScorePointsIndexes, ArrayPlayerCurScorePoints);
-        drawGoogleChartLine(ArrayPlayerCurRankIndexes, ArrayPlayerCurRank);
-        drawGoogleChartLine(ArrayPlayerCurProductionIndexes, ArrayPlayerCurProduction);
-        drawGoogleChartLine(ArrayPlayerCurRpsCredIndexes, ArrayPlayerCurRpsCred);
-        drawGoogleChartLine(ArrayPlayerCurShootsIndexes, ArrayPlayerCurShoots);
-        drawGoogleChartLine(ArrayPlayerCurValuesIndexes, ArrayPlayerCurValues);
-        drawGoogleChartLine(ArrayPlayerCurVpsIndexes, ArrayPlayerCurVps);
-        drawGoogleChartLine(ArrayPlayerCurLpsIndexes, ArrayPlayerCurLps);
-        drawGoogleChartLine(ArrayPlayerCurCpsIndexes, ArrayPlayerCurCps);
-        drawGoogleChartLine(ArrayPlayerCurFundsIndexes, ArrayPlayerCurFunds);
+        for (var keyDiagramType in ObjectDiagramData.Player)
+        {
+            drawGoogleChartLine(ObjectDiagramData.Player[keyDiagramType][1], ObjectDiagramData.Player[keyDiagramType][0]);
+        }
     }
     else if ($('#TabAllianceOverview.active')[0])
     {
-        drawGoogleChartColumn(ArrayAllianceOverviewCurOffIndexes, ArrayAllianceOverviewCurOff);
+        drawGoogleChartColumn(ObjectDiagramData.OverviewAlliance.Off[1], ObjectDiagramData.OverviewAlliance.Off[0]);
     }
     else if ($('#TabWorldOverview.active')[0])
     {
-        drawGoogleChartColumn(ArrayWorldOverviewCurOffIndexes, ArrayWorldOverviewCurOff);
+        drawGoogleChartColumn(ObjectDiagramData.OverviewWorld.Off[1], ObjectDiagramData.OverviewWorld.Off[0]);
     }
 });
 
@@ -232,6 +186,10 @@ function prepareandFillDropDownListDataAlliance(_activeChanged)
             $('#DropDownListAlliance')[0].value = getCookie('AllianceId');
         }
         prepareandFillDropDownListDataPlayer();
+    }
+    if($('#TabWorldOverview.active')[0])
+    {
+        manageContentWorldOverview();
     }
 }
 
@@ -404,7 +362,7 @@ function prepareTabWorldOverview()
 }
 
 //==================================================
-// manage ContentAllianceMembers and ContentAlliance
+// manage ContentOfTabs
 //==================================================
 function manageContentAllianceMembers()
 {
@@ -498,50 +456,14 @@ function manageContentAlliance()
         $.ajaxSetup({async: true});
     }
     var ObjectAllianceCur = ObjectAllianceData[WorldId + '_' + AllianceId];
-    ArrayAllianceCurScore = [];
-    ArrayAllianceCurRank = [];
-    ArrayAllianceCurBonusRes = [];
-    ArrayAllianceCurBonusFight = [];
-    ArrayAllianceCurScoreIndexes = ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef', 'AlliancePoints'];
-    ArrayAllianceCurRankIndexes = ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef', 'AllianceRank'];
-    ArrayAllianceCurBonusResIndexes = ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower', 'AllianceBonus - Ressoucen'];
-    ArrayAllianceCurBonusFightIndexes = ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef', 'AllianceBonus - Fight'];
-    for (var key in ObjectAllianceCur)
-    {
-        ArrayAllianceCurScore[key] = [];
-        ArrayAllianceCurRank[key] = [];
-        ArrayAllianceCurBonusRes[key] = [];
-        ArrayAllianceCurBonusFight[key] = [];
-        ArrayAllianceCurScore[key].push(ObjectAllianceCur[key][ArrayAllianceCurScoreIndexes[0]]);
-        for (var i = 1; i < ArrayAllianceCurScoreIndexes.length - 1 ; i++)
-        {
-            ArrayAllianceCurScore[key].push(parseInt(ObjectAllianceCur[key][ArrayAllianceCurScoreIndexes[i]] * 100) / 100);
-        }
-        ArrayAllianceCurRank[key].push(ObjectAllianceCur[key][ArrayAllianceCurRankIndexes[0]]);
-        for (var i = 1; i < ArrayAllianceCurRankIndexes.length - 1 ; i++)
-        {
-            ArrayAllianceCurRank[key].push(parseInt(ObjectAllianceCur[key][ArrayAllianceCurRankIndexes[i]] * 100) / 100);
-        }
-        ArrayAllianceCurBonusRes[key].push(ObjectAllianceCur[key][ArrayAllianceCurBonusResIndexes[0]]);
-        for (var i = 1; i < ArrayAllianceCurBonusResIndexes.length - 1 ; i++)
-        {
-            ArrayAllianceCurBonusRes[key].push(parseInt(ObjectAllianceCur[key][ArrayAllianceCurBonusResIndexes[i]] * 100) / 100);
-        }
-        ArrayAllianceCurBonusFight[key].push(ObjectAllianceCur[key][ArrayAllianceCurBonusFightIndexes[0]]);
-        for (var i = 1; i < ArrayAllianceCurBonusFightIndexes.length - 1 ; i++)
-        {
-            ArrayAllianceCurBonusFight[key].push(parseInt(ObjectAllianceCur[key][ArrayAllianceCurBonusFightIndexes[i]] * 100) / 100);
-        }
-    }
-    setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurScoreIndexes, ArrayAllianceCurScore);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurRankIndexes, ArrayAllianceCurRank);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurBonusResIndexes, ArrayAllianceCurBonusRes);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayAllianceCurBonusFightIndexes, ArrayAllianceCurBonusFight);}, 1);
+    ObjectDiagramData.Alliance = {};
+    ObjectDiagramData.Alliance.Score = [[], ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef', 'AlliancePoints']];
+    ObjectDiagramData.Alliance.Rank = [[], ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef', 'AllianceRank']];
+    ObjectDiagramData.Alliance.BonusRes = [[], ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower', 'AllianceBonus - Ressoucen']];
+    ObjectDiagramData.Alliance.BonusFight = [[], ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef', 'AllianceBonus - Fight']];
+    drawDiagrams(ObjectAllianceCur, 'Alliance');
 }
 
-//==================================================
-// manage ContentPlayer
-//==================================================
 function manageContentPlayer()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -563,104 +485,20 @@ function manageContentPlayer()
         $.ajaxSetup({async: true});
     }
     var ObjectPlayerCur = ObjectPlayerData[WorldId + '_' + AccountId];
-    ArrayPlayerCurScorePoints = [];
-    ArrayPlayerCurRank = [];
-    ArrayPlayerCurProduction = [];
-    ArrayPlayerCurRpsCred = [];
-    ArrayPlayerCurShoots = [];
-    ArrayPlayerCurValues = [];
-    ArrayPlayerCurVps = [];
-    ArrayPlayerCurLps = [];
-    ArrayPlayerCurCps = [];
-    ArrayPlayerCurFunds = [];
-    ArrayPlayerCurScorePointsIndexes = ['Zeit', 'ScorePoints', 'AverageScore', 'Player - ScorePoints'];
-    ArrayPlayerCurRankIndexes = ['Zeit', 'OverallRank', 'EventRank', 'Player - Ranking'];
-    ArrayPlayerCurProductionIndexes = ['Zeit', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'Player - Production'];
-    ArrayPlayerCurRpsCredIndexes = ['Zeit', 'ResearchPoints', 'Credits', 'Player - RPs / Credits'];
-    ArrayPlayerCurShootsIndexes = ['Zeit', 'Shoot', 'PvP', 'PvE', 'Player - Shoots'];
-    ArrayPlayerCurValuesIndexes = ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values'];
-    ArrayPlayerCurVpsIndexes = ['Zeit', 'VP', 'Player - VPs'];
-    ArrayPlayerCurLpsIndexes = ['Zeit', 'LP', 'Player - LPs'];
-    ArrayPlayerCurCpsIndexes = ['Zeit', 'CPMax', 'CPCur', 'Player - CPs'];
-    ArrayPlayerCurFundsIndexes = ['Zeit', 'Funds', 'Player - Funds'];
-    for (var key in ObjectPlayerCur)
-    {
-        ArrayPlayerCurScorePoints[key] = [];
-        ArrayPlayerCurRank[key] = [];
-        ArrayPlayerCurProduction[key] = [];
-        ArrayPlayerCurRpsCred[key] = [];
-        ArrayPlayerCurShoots[key] = [];
-        ArrayPlayerCurValues[key] = [];
-        ArrayPlayerCurVps[key] = [];
-        ArrayPlayerCurLps[key] = [];
-        ArrayPlayerCurCps[key] = [];
-        ArrayPlayerCurFunds[key] = [];
-        ArrayPlayerCurScorePoints[key].push(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurScorePointsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurScorePoints[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurScorePointsIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurRank[key].push(ObjectPlayerCur[key][ArrayPlayerCurRankIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurRankIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurRank[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurRankIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurProduction[key].push(ObjectPlayerCur[key][ArrayPlayerCurProductionIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurProductionIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurProduction[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurProductionIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurRpsCred[key].push(ObjectPlayerCur[key][ArrayPlayerCurRpsCredIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurRpsCredIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurRpsCred[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurRpsCredIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurShoots[key].push(ObjectPlayerCur[key][ArrayPlayerCurShootsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurShootsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurShoots[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurShootsIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurValues[key].push(ObjectPlayerCur[key][ArrayPlayerCurValuesIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurValuesIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurValues[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurValuesIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurVps[key].push(ObjectPlayerCur[key][ArrayPlayerCurVpsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurVpsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurVps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurVpsIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurLps[key].push(ObjectPlayerCur[key][ArrayPlayerCurLpsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurLpsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurLps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurLpsIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurCps[key].push(ObjectPlayerCur[key][ArrayPlayerCurCpsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurCpsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurCps[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurCpsIndexes[i]] * 100) / 100);
-        }
-        ArrayPlayerCurFunds[key].push(ObjectPlayerCur[key][ArrayPlayerCurFundsIndexes[0]]);
-        for (var i = 1; i < ArrayPlayerCurFundsIndexes.length - 1 ; i++)
-        {
-            ArrayPlayerCurFunds[key].push(parseInt(ObjectPlayerCur[key][ArrayPlayerCurFundsIndexes[i]] * 100) / 100);
-        }
-    }
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurScorePointsIndexes, ArrayPlayerCurScorePoints);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurRankIndexes, ArrayPlayerCurRank);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurProductionIndexes, ArrayPlayerCurProduction);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurRpsCredIndexes, ArrayPlayerCurRpsCred);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurShootsIndexes, ArrayPlayerCurShoots);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurValuesIndexes, ArrayPlayerCurValues);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurVpsIndexes, ArrayPlayerCurVps);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurLpsIndexes, ArrayPlayerCurLps);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurCpsIndexes, ArrayPlayerCurCps);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayPlayerCurFundsIndexes, ArrayPlayerCurFunds);}, 1);
+    ObjectDiagramData.Player = {};
+    ObjectDiagramData.Player.ScorePoints = [[0], ['Zeit', 'ScorePoints', 'AverageScore', 'Player - ScorePoints']];
+    ObjectDiagramData.Player.Rank = [[0], ['Zeit', 'OverallRank', 'EventRank', 'Player - Ranking']];
+    ObjectDiagramData.Player.Production = [[0], ['Zeit', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'Player - Production']];
+    ObjectDiagramData.Player.RpsCred = [[0], ['Zeit', 'ResearchPoints', 'Credits', 'Player - RPs / Credits']];
+    ObjectDiagramData.Player.Shoots = [[0], ['Zeit', 'Shoot', 'PvP', 'PvE', 'Player - Shoots']];
+    ObjectDiagramData.Player.Values = [[0], ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values']];
+    ObjectDiagramData.Player.Vps = [[0], ['Zeit', 'VP', 'Player - VPs']];
+    ObjectDiagramData.Player.Lps = [[0], ['Zeit', 'LP', 'Player - LPs']];
+    ObjectDiagramData.Player.Cps = [[0], ['Zeit', 'CPMax', 'CPCur', 'Player - CPs']];
+    ObjectDiagramData.Player.Funds = [[0], ['Zeit', 'Funds', 'Player - Funds']];
+    drawDiagrams(ObjectPlayerCur, 'Player');
 }
 
-//==================================================
-// manage ContentPlayerBase
-//==================================================
 function manageContentPlayerBase()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -734,9 +572,6 @@ function manageContentPlayerBase()
     }
 }
 
-//==================================================
-// manage ContentAllianceOverview
-//==================================================
 function manageContentAllianceOverview()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -758,33 +593,9 @@ function manageContentAllianceOverview()
         $.ajaxSetup({async: true});
     }
     var ObjectAllianceOverviewCur = ObjectAllianceOverviewData[WorldId + '_' + AllianceId];
-    ArrayAllianceOverviewCurOff = [];
-    ArrayAllianceOverviewCurOffIndexes = [];
-    for (var i = 0; i <= 67; i++)
-    {
-        ArrayAllianceOverviewCurOffIndexes.push(i);
-    }
-    ArrayAllianceOverviewCurOffIndexes.push('Alliance - Offense');
-    var i = j = 0;
-    for (var key in ObjectAllianceOverviewCur)
-    {
-        if (parseInt(ObjectAllianceOverviewCur[key]))
-        {
-            ArrayAllianceOverviewCurOff[j] = [];
-            ArrayAllianceOverviewCurOff[j].push(parseInt(ArrayAllianceOverviewCurOffIndexes[i]));
-            ArrayAllianceOverviewCurOff[j].push(parseInt(ObjectAllianceOverviewCur[key]));
-            ArrayAllianceOverviewCurOff.push(ArrayAllianceOverviewCurOff[j]);
-            j++;
-        }
-        i++;
-    }
-    ArrayAllianceOverviewCurOff.pop();
-    setTimeout(function(){drawGoogleChartColumn(ArrayAllianceOverviewCurOffIndexes, ArrayAllianceOverviewCurOff);}, 1);
+    drawOverviews(ObjectAllianceOverviewCur, 'OverviewAlliance', 'Alliance');
 }
 
-//==================================================
-// manage ContentBase
-//==================================================
 function manageContentBase()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -806,42 +617,14 @@ function manageContentBase()
         $.ajaxSetup({async: true});
     }
     var ObjectBaseCur = ObjectBaseData[WorldId + '_' + BaseId];
-    ArrayBaseCurProduction = [];
-    ArrayBaseCurValues = [];
-    ArrayBaseCurRepairTime = [];
-    ArrayBaseCurProductionIndexes = ['Zeit', 'Tib', 'Cry', 'Pow', 'Cre', 'Base - Production'];
-    ArrayBaseCurValuesIndexes = ['Zeit', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'Base - Values'];
-    ArrayBaseCurRepairTimeIndexes = ['Zeit', 'Rep', 'RepMax', 'Base - RepairTime'];
-    for (var key in ObjectBaseCur)
-    {
-        ArrayBaseCurProduction[key] = [];
-        ArrayBaseCurValues[key] = [];
-        ArrayBaseCurRepairTime[key] = [];
-        ArrayBaseCurProduction[key].push(ObjectBaseCur[key][ArrayBaseCurProductionIndexes[0]]);
-        for (var i = 1; i < ArrayBaseCurProductionIndexes.length - 1 ; i++)
-        {
-            ArrayBaseCurProduction[key].push(parseInt(ObjectBaseCur[key][ArrayBaseCurProductionIndexes[i]] * 100) / 100);
-        }
-        ArrayBaseCurValues[key].push(ObjectBaseCur[key][ArrayBaseCurValuesIndexes[0]]);
-        for (var i = 1; i < ArrayBaseCurValuesIndexes.length - 1 ; i++)
-        {
-            ArrayBaseCurValues[key].push(parseInt(ObjectBaseCur[key][ArrayBaseCurValuesIndexes[i]] * 100) / 100);
-        }
-        ArrayBaseCurRepairTime[key].push(ObjectBaseCur[key][ArrayBaseCurRepairTimeIndexes[0]]);
-        for (var i = 1; i < ArrayBaseCurRepairTimeIndexes.length - 1 ; i++)
-        {
-            ArrayBaseCurRepairTime[key].push(parseInt(ObjectBaseCur[key][ArrayBaseCurRepairTimeIndexes[i]] * 100) / 100);
-        }
-    }
+    ObjectDiagramData.Base = {};
+    ObjectDiagramData.Base.Production = [[], ['Zeit', 'Tib', 'Cry', 'Pow', 'Cre', 'Base - Production']];
+    ObjectDiagramData.Base.Values = [[], ['Zeit', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'Base - Values']];
+    ObjectDiagramData.Base.RepairTime = [[], ['Zeit', 'Rep', 'RepMax', 'Base - RepairTime']];
+    drawDiagrams(ObjectBaseCur, 'Base');
     $('#LinkCncOpt')[0].href = ObjectBaseCur[countLength(ObjectBaseCur) - 1].CnCOpt;
-    setTimeout(function(){drawGoogleChartLine(ArrayBaseCurProductionIndexes, ArrayBaseCurProduction);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayBaseCurValuesIndexes, ArrayBaseCurValues);}, 1);
-    setTimeout(function(){drawGoogleChartLine(ArrayBaseCurRepairTimeIndexes, ArrayBaseCurRepairTime);}, 1);
 }
 
-//==================================================
-// manage ContentWorldOverview
-//==================================================
 function manageContentWorldOverview()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -861,28 +644,7 @@ function manageContentWorldOverview()
         $.ajaxSetup({async: true});
     }
     var ObjectWorldOverviewCur = ObjectWorldOverviewData[WorldId.toString()];
-    ArrayWorldOverviewCurOff = [];
-    ArrayWorldOverviewCurOffIndexes = [];
-    for (var i = 0; i <= 67; i++)
-    {
-        ArrayWorldOverviewCurOffIndexes.push(i);
-    }
-    ArrayWorldOverviewCurOffIndexes.push('World - Offense');
-    var i = j = 0;
-    for (var key in ObjectWorldOverviewCur)
-    {
-        if (parseInt(ObjectWorldOverviewCur[key]))
-        {
-            ArrayWorldOverviewCurOff[j] = [];
-            ArrayWorldOverviewCurOff[j].push(parseInt(ArrayWorldOverviewCurOffIndexes[i]));
-            ArrayWorldOverviewCurOff[j].push(parseInt(ObjectWorldOverviewCur[key]));
-            ArrayWorldOverviewCurOff.push(ArrayWorldOverviewCurOff[j]);
-            j++;
-        }
-        i++;
-    }
-    ArrayWorldOverviewCurOff.pop();
-    setTimeout(function(){drawGoogleChartColumn(ArrayWorldOverviewCurOffIndexes, ArrayWorldOverviewCurOff);}, 1);
+    drawOverviews(ObjectWorldOverviewCur, 'OverviewWorld', 'World');
 }
 
 //==================================================
@@ -954,6 +716,56 @@ function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
     }
 }
 
+function drawDiagrams(_ObjectCur, _NameOfSubObject)
+{
+    for (var key in _ObjectCur)
+    {
+        for (var keyDiagramType in ObjectDiagramData[_NameOfSubObject])
+        {
+            ObjectDiagramData[_NameOfSubObject][keyDiagramType][0][key] = [];
+            ObjectDiagramData[_NameOfSubObject][keyDiagramType][0][key].push(_ObjectCur[key][ObjectDiagramData[_NameOfSubObject][keyDiagramType][1][0]]);
+            for (var i = 1; i < ObjectDiagramData[_NameOfSubObject][keyDiagramType][1].length - 1 ; i++)
+            {
+                ObjectDiagramData[_NameOfSubObject][keyDiagramType][0][key].push(parseInt(_ObjectCur[key][ObjectDiagramData[_NameOfSubObject][keyDiagramType][1][i]] * 100) / 100);
+            }
+        }
+    }
+    setTimeout(function()
+    {
+        for (var keyDiagramType in ObjectDiagramData[_NameOfSubObject])
+        {
+            drawGoogleChartLine(ObjectDiagramData[_NameOfSubObject][keyDiagramType][1], ObjectDiagramData[_NameOfSubObject][keyDiagramType][0]);
+        }
+    });
+}
+
+function drawOverviews(_ObjectCur, _nameOfSubObject, _typeOfOverview)
+{
+    ObjectDiagramData[_nameOfSubObject] = {};
+    ObjectDiagramData[_nameOfSubObject].Off = [[], []];
+    for (var i = 0; i <= 67; i++)
+    {
+        ObjectDiagramData[_nameOfSubObject].Off[1].push(i);
+    }
+    ObjectDiagramData[_nameOfSubObject].Off[1].push(_typeOfOverview + ' - Offense');
+    var i = j = 0;
+    for (var key in _ObjectCur)
+    {
+        if (parseInt(_ObjectCur[key]))
+        {
+            ObjectDiagramData[_nameOfSubObject].Off[0][j] = [];
+            ObjectDiagramData[_nameOfSubObject].Off[0][j].push(parseInt(ObjectDiagramData[_nameOfSubObject].Off[1][i]));
+            ObjectDiagramData[_nameOfSubObject].Off[0][j].push(parseInt(_ObjectCur[key]));
+            ObjectDiagramData[_nameOfSubObject].Off[0].push(ObjectDiagramData[_nameOfSubObject].Off[0][j]);
+            j++;
+        }
+        i++;
+    }
+    ObjectDiagramData[_nameOfSubObject].Off[0].pop();
+    ObjectDiagramData[_nameOfSubObject].Off[0].unshift(["Level", "Count"]);
+    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Off[1], ObjectDiagramData[_nameOfSubObject].Off[0]);}, 1);
+}
+
 function drawGoogleChartLine(_ArrayIndexes, _ArrayCurChart)
 {
     google.charts.load('current', {packages: ['corechart', 'line']});
@@ -986,7 +798,6 @@ function drawGoogleChartLine(_ArrayIndexes, _ArrayCurChart)
 
 function drawGoogleChartColumn(_ArrayIndexes, _ArrayCurChart)
 {
-    _ArrayCurChart.unshift(["Level", "Count"]);
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart()
