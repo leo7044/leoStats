@@ -245,6 +245,17 @@ if (!$conn->connect_error)
             echo json_encode($_SESSION);
             break;
         }
+        case 'getSeasonServerIds':
+        {
+            $UserAnswer = [];
+            $result = $conn->query("SELECT WorldId FROM relation_server WHERE SeasonServer='1'");
+            while ($zeile = $result->fetch_assoc())
+            {
+                array_push($UserAnswer, $zeile['WorldId']);
+            }
+            echo json_encode($UserAnswer);
+            break;
+        }
         case 'getDropDownListData':
         {
             $UserAnswer = [];

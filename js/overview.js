@@ -1,12 +1,9 @@
 /* Developer: leo7044 */
 // (function(){
 var ObjectSessionVariables = {};
+var ArraySeasonServerIds = [];
 // DropDown
 var ArrayDropDownListData = [];
-var ArrayDropDownListWorld = [];
-var ArrayDropDownListAlliance = [];
-var ArrayDropDownListPlayer = [];
-var ArrayDropDownListBase = [];
 var ArrayDropDownDefaultOwn = [];
 // Tabs
 var ObjectPlayerData = {};
@@ -22,6 +19,7 @@ var ObjectDiagramData = {};
 $(document).ready(function()
 {
     getSessionVariables();
+    getSeasonServerIds();
     prepairOnClickEvents();
     getDropDownListData();
     prepareandFillDropDownListDataWorld();
@@ -46,6 +44,21 @@ function getSessionVariables()
         {
             $('#LiTabWorldOverview').removeClass('d-none');
         }
+    });
+    $.ajaxSetup({async: true});
+}
+
+function getSeasonServerIds()
+{
+    var data =
+    {
+        action: "getSeasonServerIds"
+    };
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', data)
+    .always(function(data)
+    {
+        ArraySeasonServerIds = data;
     });
     $.ajaxSetup({async: true});
 }
@@ -149,7 +162,7 @@ function getDropDownListData()
 
 function prepareandFillDropDownListDataWorld()
 {
-    ArrayDropDownListWorld = alasql('SELECT DISTINCT WorldId, ServerName FROM ?',[ArrayDropDownListData]);
+    var ArrayDropDownListWorld = alasql('SELECT DISTINCT WorldId, ServerName FROM ?',[ArrayDropDownListData]);
     var strHtml = '';
     for (var key in ArrayDropDownListWorld)
     {
@@ -167,7 +180,7 @@ function prepareandFillDropDownListDataAlliance(_activeChanged)
 {
     var WorldId = $('#DropDownListWorld')[0].value;
     setCookie('WorldId', WorldId);
-    ArrayDropDownListAlliance = alasql('SELECT DISTINCT AllianceId, AllianceName FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownListData]);
+    var ArrayDropDownListAlliance = alasql('SELECT DISTINCT AllianceId, AllianceName FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownListData]);
     var strHtml = '';
     for (var key in ArrayDropDownListAlliance)
     {
@@ -198,7 +211,7 @@ function prepareandFillDropDownListDataPlayer(_activeChanged)
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     setCookie('AllianceId', AllianceId);
-    ArrayDropDownListPlayer = alasql('SELECT DISTINCT AccountId, UserName FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '"' ,[ArrayDropDownListData]);
+    var ArrayDropDownListPlayer = alasql('SELECT DISTINCT AccountId, UserName FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '"' ,[ArrayDropDownListData]);
     var strHtml = '';
     for (var key in ArrayDropDownListPlayer)
     {
@@ -242,7 +255,7 @@ function prepareandFillDropDownListDataBase(_activeChanged)
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var AccountId = $('#DropDownListPlayer')[0].value;
     setCookie('AccountId', AccountId);
-    ArrayDropDownListBase = alasql('SELECT DISTINCT BaseId, Name FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '" AND AccountId="' + AccountId + '"' ,[ArrayDropDownListData]);
+    var ArrayDropDownListBase = alasql('SELECT DISTINCT BaseId, Name FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '" AND AccountId="' + AccountId + '"' ,[ArrayDropDownListData]);
     var strHtml = '';
     for (var key in ArrayDropDownListBase)
     {
@@ -458,7 +471,14 @@ function manageContentAlliance()
     var ObjectAllianceCur = ObjectAllianceData[WorldId + '_' + AllianceId];
     ObjectDiagramData.Alliance = {};
     ObjectDiagramData.Alliance.Score = [[], ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef', 'AlliancePoints']];
-    ObjectDiagramData.Alliance.Rank = [[], ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef', 'AllianceRank']];
+    if (ArraySeasonServerIds.indexOf(WorldId) != -1)
+    {
+        ObjectDiagramData.Alliance.Rank = [[], ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef', 'AllianceRank']];
+    }
+    else
+    {
+        ObjectDiagramData.Alliance.Rank = [[], ['Zeit', 'AllianceRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef', 'AllianceRank']];
+    }
     ObjectDiagramData.Alliance.BonusRes = [[], ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower', 'AllianceBonus - Ressoucen']];
     ObjectDiagramData.Alliance.BonusFight = [[], ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef', 'AllianceBonus - Fight']];
     drawDiagrams(ObjectAllianceCur, 'Alliance');
@@ -487,13 +507,30 @@ function manageContentPlayer()
     var ObjectPlayerCur = ObjectPlayerData[WorldId + '_' + AccountId];
     ObjectDiagramData.Player = {};
     ObjectDiagramData.Player.ScorePoints = [[0], ['Zeit', 'ScorePoints', 'AverageScore', 'Player - ScorePoints']];
-    ObjectDiagramData.Player.Rank = [[0], ['Zeit', 'OverallRank', 'EventRank', 'Player - Ranking']];
+    if (ArraySeasonServerIds.indexOf(WorldId) != -1)
+    {
+        ObjectDiagramData.Player.Rank = [[0], ['Zeit', 'OverallRank', 'EventRank', 'Player - Ranking']];
+    }
+    else
+    {
+        ObjectDiagramData.Player.Rank = [[0], ['Zeit', 'OverallRank', 'Player - Ranking']];
+    }
     ObjectDiagramData.Player.Production = [[0], ['Zeit', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'Player - Production']];
     ObjectDiagramData.Player.RpsCred = [[0], ['Zeit', 'ResearchPoints', 'Credits', 'Player - RPs / Credits']];
     ObjectDiagramData.Player.Shoots = [[0], ['Zeit', 'Shoot', 'PvP', 'PvE', 'Player - Shoots']];
     ObjectDiagramData.Player.Values = [[0], ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values']];
-    ObjectDiagramData.Player.Vps = [[0], ['Zeit', 'VP', 'Player - VPs']];
-    ObjectDiagramData.Player.Lps = [[0], ['Zeit', 'LP', 'Player - LPs']];
+    if (ArraySeasonServerIds.indexOf(WorldId) != -1)
+    {
+        document.getElementById('GoogleChartLinePlayer - VPs').className = 'divGoogleChart';
+        document.getElementById('GoogleChartLinePlayer - LPs').className = 'divGoogleChart';
+        ObjectDiagramData.Player.Vps = [[0], ['Zeit', 'VP', 'Player - VPs']];
+        ObjectDiagramData.Player.Lps = [[0], ['Zeit', 'LP', 'Player - LPs']];
+    }
+    else
+    {
+        document.getElementById('GoogleChartLinePlayer - VPs').className = 'd-none';
+        document.getElementById('GoogleChartLinePlayer - LPs').className = 'd-none';
+    }
     ObjectDiagramData.Player.Cps = [[0], ['Zeit', 'CPMax', 'CPCur', 'Player - CPs']];
     ObjectDiagramData.Player.Funds = [[0], ['Zeit', 'Funds', 'Player - Funds']];
     drawDiagrams(ObjectPlayerCur, 'Player');
