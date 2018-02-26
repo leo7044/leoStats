@@ -73,10 +73,12 @@ function prepairOnClickEvents()
     $('#TabAllianceOverview').click(prepareTabAllianceOverview);
     $('#TabBase').click(prepareTabBase);
     $('#TabWorldOverview').click(prepareTabWorldOverview);
+    $('#TabSettings').click(prepareTabSettings);
     $('#DropDownListWorld').change(function(){prepareandFillDropDownListDataAlliance(true);});
     $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
     $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
     $('#DropDownListBase').change(function(){HelpFunctionForChangedBase(true);});
+    $('#ButtonOptimizeAllTables').click(optimizeAllTables);
 }
 
 //==================================================
@@ -282,6 +284,10 @@ function prepareandFillDropDownListDataBase(_activeChanged)
     {
         manageContentPlayerBase();
     }
+    if($('#TabSettings.active')[0])
+    {
+        manageContentSettings();
+    }
 }
 
 function HelpFunctionForChangedBase()
@@ -372,6 +378,25 @@ function prepareTabWorldOverview()
     $('#DivDropDownListBase').addClass('d-none');
     manageContentWorldOverview();
     setCookie('TabId', 'TabWorldOverview');
+}
+
+function prepareTabSettings()
+{
+    $('#DivDropDownListAlliance').removeClass('d-none');
+    if (ObjectSessionVariables.leoStats_IsAdmin)
+    {
+        $('#DivDropDownListPlayer').removeClass('d-none');
+    }
+    else
+    {
+        $('#DivDropDownListPlayer').addClass('d-none');
+        // setzt den eigenen Account als ausgewählt, damit im eigenen Spieler rumgefuhrwerkt wird
+        // theoretisch ist das egal, aber für die Admin-Verwaltung ist es leichter, wenn auf die AccountId zugegriffen wird des derzeit ausgewählten Spielers
+        $('#DropDownListPlayer')[0].value = ObjectSessionVariables.leoStats_AccountId;
+    }
+    $('#DivDropDownListBase').addClass('d-none');
+    manageContentSettings();
+    setCookie('TabId', 'TabSettings');
 }
 
 //==================================================
@@ -682,6 +707,36 @@ function manageContentWorldOverview()
     }
     var ObjectWorldOverviewCur = ObjectWorldOverviewData[WorldId.toString()];
     drawOverviews(ObjectWorldOverviewCur, 'OverviewWorld', 'World');
+}
+
+function manageContentSettings()
+{
+    if (ObjectSessionVariables.leoStats_IsAdmin)
+    {
+        $('#v-pills-server-tab').removeClass('d-none');
+    }
+    $('#v-pills-player-tab').addClass('active show');
+    $('#v-pills-alliance-tab').removeClass('active show');
+    $('#v-pills-server-tab').removeClass('active show');
+    $('#v-pills-player').addClass('active show');
+    $('#v-pills-alliance').removeClass('active show');
+    $('#v-pills-server').removeClass('active show');
+}
+
+function optimizeAllTables()
+{
+    $('#LoadingSymbol').removeClass('d-none');
+    setTimeout(function()
+    {
+        var data =
+        {
+            action: "optimizeAllTables"
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data);
+        $.ajaxSetup({async: true});
+        $('#LoadingSymbol').addClass('d-none');
+    }, 50);
 }
 
 //==================================================

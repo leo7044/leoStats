@@ -60,6 +60,9 @@
                     <li id="LiTabWorldOverview" class="nav-item d-none">
                         <a id="TabWorldOverview" class="nav-link" data-toggle="tab" href="#ContentWorldOverview"><i class="fas fa-globe"></i> World - Overview</a>
                     </li>
+                    <li class="nav-item">
+                        <a id="TabSettings" class="nav-link" data-toggle="tab" href="#ContentSettings"><i class="fas fa-cogs"></i> Settings</a>
+                    </li>
                 </ul><br/>
                 <div class="row">
                     <div id="DivDropDownListWorld" class="col-md-3 form-group">
@@ -122,6 +125,27 @@
                 </div>
                 <div id="ContentWorldOverview" class="tab-pane">
                     <div id="GoogleChartColumnWorld - Offense" class="divGoogleChart"></div><br/>
+                </div>
+                <div id="ContentSettings" class="tab-pane">
+                    <div class="row">
+                        <div class="col-md-3 nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                            <a class="nav-link active" id="v-pills-player-tab" data-toggle="pill" href="#v-pills-player" role="tab" aria-controls="v-pills-player" aria-selected="true">Player</a>
+                            <a class="nav-link" id="v-pills-alliance-tab" data-toggle="pill" href="#v-pills-alliance" role="tab" aria-controls="v-pills-alliance" aria-selected="false">Alliance</a>
+                            <a class="nav-link d-none" id="v-pills-server-tab" data-toggle="pill" href="#v-pills-server" role="tab" aria-controls="v-pills-server" aria-selected="false">Server</a>
+                        </div>
+                        <div class="col-md-9 tab-content" id="v-pills-tabContent">
+                            <div class="tab-pane fade show active" id="v-pills-player" role="tabpanel" aria-labelledby="v-pills-player-tab">
+                                change Password
+                            </div>
+                            <div class="tab-pane fade" id="v-pills-alliance" role="tabpanel" aria-labelledby="v-pills-alliance-tab">
+                                who sees other member in alliance?
+                            </div>
+                            <div class="tab-pane fade" id="v-pills-server" role="tabpanel" aria-labelledby="v-pills-server-tab">
+                                <button id="ButtonOptimizeAllTables" class="btn btn-primary"><i class="fas fa-table"></i> optimize all tables</button>
+                                <br/><br/><i id="LoadingSymbol" class="fas fa-sync fa-spin fa-6x d-none"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
