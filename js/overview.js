@@ -714,6 +714,7 @@ function manageContentSettings()
     if (ObjectSessionVariables.leoStats_IsAdmin)
     {
         $('#v-pills-server-tab').removeClass('d-none');
+        $('#AdminButtonsPlayer').removeClass('d-none');
     }
     $('#v-pills-player-tab').addClass('active show');
     $('#v-pills-alliance-tab').removeClass('active show');
@@ -721,6 +722,7 @@ function manageContentSettings()
     $('#v-pills-player').addClass('active show');
     $('#v-pills-alliance').removeClass('active show');
     $('#v-pills-server').removeClass('active show');
+    $('#InputUserName')[0].value = $('#DropDownListPlayer')[0].textContent;
 }
 
 function optimizeAllTables()

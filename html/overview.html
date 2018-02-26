@@ -135,7 +135,33 @@
                         </div>
                         <div class="col-md-9 tab-content" id="v-pills-tabContent">
                             <div class="tab-pane fade show active" id="v-pills-player" role="tabpanel" aria-labelledby="v-pills-player-tab">
-                                change Password
+                                <h3>Change Password</h3>
+                                <form method="POST" action="" onsubmit="return false;" id="FormChangePassword">
+                                    <div class="form-group">
+                                        <input class="form-control" id="InputUserName" name="InputUserName" required readonly disabled />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="InputOldPassword" placeholder="Old password" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="InputNewPassword" placeholder="New password" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" name="InputConfirmNewPassowrd" placeholder="Confirm new password" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="reset" class="btn btn-danger" id="ButtonCancelChangePassword"><i class="fas fa-times"></i> Cancel</button>
+                                        <button type="submit" class="btn btn-success float-right" id="ButtonConfirmhangePassword"><i class="fas fa-check"></i> Confirm</button>
+                                    </div>
+                                </form>
+                                <div id="AdminButtonsPlayer" class="d-none">
+                                    <div class="form-group">
+                                        <button id="ButtonResetPlayer" class="btn btn-warning"><i class="fas fa-sync"></i> reset Player</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="ButtonDeletePlayer" class="btn btn-danger"><i class="fas fa-user-times"></i> delete Player</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="v-pills-alliance" role="tabpanel" aria-labelledby="v-pills-alliance-tab">
                                 who sees other member in alliance?
