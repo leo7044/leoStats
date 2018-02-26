@@ -18,6 +18,11 @@ var ObjectDiagramData = {};
 
 $(document).ready(function()
 {
+    initializeStart();
+});
+
+function initializeStart()
+{
     getSessionVariables();
     getSeasonServerIds();
     prepairOnClickEvents();
@@ -27,7 +32,7 @@ $(document).ready(function()
     {
         $('#' + getCookie('TabId')).click();
     }
-});
+}
 
 function getSessionVariables()
 {
@@ -78,7 +83,10 @@ function prepairOnClickEvents()
     $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
     $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
     $('#DropDownListBase').change(function(){HelpFunctionForChangedBase(true);});
+    $('#ButtonResetPlayer').click(resetPlayer);
+    $('#ButtonDeletePlayer').click(deletePlayer);
     $('#ButtonOptimizeAllTables').click(optimizeAllTables);
+    $('#ButtonDeleteServer').click(deleteServer);
 }
 
 //==================================================
@@ -722,7 +730,43 @@ function manageContentSettings()
     $('#v-pills-player').addClass('active show');
     $('#v-pills-alliance').removeClass('active show');
     $('#v-pills-server').removeClass('active show');
-    $('#InputUserName')[0].value = $('#DropDownListPlayer')[0].textContent;
+    $('#InputUserName')[0].value = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+}
+
+function resetPlayer()
+{
+    var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+    if (confirm('Do you want reset player ' + playerName + '?'))
+    {
+        var playerId = $('#DropDownListPlayer')[0].value;
+        var data =
+        {
+            action: "resetPlayer",
+            Id: playerId,
+            PlayerName: playerName
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data);
+        $.ajaxSetup({async: true});
+    }
+}
+
+function deletePlayer()
+{
+    var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+    if (confirm('Do you want to delete player ' + playerName + ' from database?'))
+    {
+        var playerId = $('#DropDownListPlayer')[0].value;
+        var data =
+        {
+            action: "deletePlayer",
+            Id: playerId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data);
+        $.ajaxSetup({async: true});
+        initializeStart();
+    }
 }
 
 function optimizeAllTables()
@@ -739,6 +783,24 @@ function optimizeAllTables()
         $.ajaxSetup({async: true});
         $('#LoadingSymbol').addClass('d-none');
     }, 50);
+}
+
+function deleteServer()
+{
+    var serverName = $('#DropDownListWorld')[0][$('#DropDownListWorld')[0].selectedIndex].innerHTML;
+    if (confirm('Do you want to delete server ' + serverName + ' from database?'))
+    {
+        var worldId = $('#DropDownListWorld')[0].value;
+        var data =
+        {
+            action: "deleteServer",
+            Id: worldId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data);
+        $.ajaxSetup({async: true});
+        initializeStart();
+    }
 }
 
 //==================================================

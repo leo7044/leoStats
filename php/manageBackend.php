@@ -717,6 +717,48 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer[0]);
             break;
         }
+        // Administration
+        case 'resetPlayer':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $Id = $_post['Id'];
+                    $PlayerName = $_post['PlayerName'];
+                    $password = md5($PlayerName . '_' . $Id);
+                    $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$Id';");
+                }
+            }
+            break;
+        }
+        case 'deletePlayer':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $Id = $_post['Id'];
+                    $conn->query("DELETE FROM `login` WHERE AccountId='$Id';");
+                }
+            }
+            break;
+        }
+        case 'deleteServer':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $Id = $_post['Id'];
+                    $conn->query("DELETE FROM `relation_server` WHERE WorldId='$Id';");
+                }
+            }
+            break;
+        }
         case 'optimizeAllTables':
         {
             if (isset($_SESSION['leoStats_AccountId']))
