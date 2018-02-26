@@ -1,4 +1,14 @@
 /* Deceloper: leo7044 */
+// (function(){
+$(document).ready(function()
+{
+    $('#FormLogin')[0].onsubmit =
+    function()
+    {
+        return login();
+    }
+});
+
 function login()
 {
 	var returnValue = false;
@@ -29,3 +39,4 @@ function login()
 	$.ajaxSetup({async: true});
 	return returnValue;
 }
+// })();

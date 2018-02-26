@@ -87,6 +87,14 @@ function prepairOnClickEvents()
     $('#ButtonDeletePlayer').click(deletePlayer);
     $('#ButtonOptimizeAllTables').click(optimizeAllTables);
     $('#ButtonDeleteServer').click(deleteServer);
+    $('#ButtonCancelChangePassword').click(resetFormChangePassword);
+    $('#FormChangePassword')[0].onsubmit =
+    function()
+    {
+        return changePassword();
+    };
+    $('#InputNewPassword').change(validatePassword);
+    $('#InputConfirmNewPassword').keyup(validatePassword);
 }
 
 //==================================================
@@ -717,6 +725,10 @@ function manageContentWorldOverview()
     drawOverviews(ObjectWorldOverviewCur, 'OverviewWorld', 'World');
 }
 
+//==================================================
+// Administration & settings
+//==================================================
+
 function manageContentSettings()
 {
     if (ObjectSessionVariables.leoStats_IsAdmin)
@@ -730,7 +742,51 @@ function manageContentSettings()
     $('#v-pills-player').addClass('active show');
     $('#v-pills-alliance').removeClass('active show');
     $('#v-pills-server').removeClass('active show');
+    resetFormChangePassword();
+    $('#PasswordChangeFail').addClass('d-none');
+    $('#PasswordChangeSuccess').addClass('d-none');
+}
+
+function changePassword()
+{
+    var ownAccountId = ObjectSessionVariables.leoStats_AccountId;
+    var dataUrl = 'action=changePassword&AccountId=' + ownAccountId + '&' + $('#FormChangePassword').serialize();
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', dataUrl)
+    .always(function(data)
+    {
+        if (data[0])
+        {
+            $('#PasswordChangeFail').addClass('d-none');
+            $('#PasswordChangeSuccess').removeClass('d-none');
+            resetFormChangePassword();
+        }
+        else
+        {
+            $('#PasswordChangeFail').removeClass('d-none');
+            $('#PasswordChangeSuccess').addClass('d-none');
+        }
+    });
+    $.ajaxSetup({async: true});
+    return false;
+}
+
+function resetFormChangePassword()
+{
+    document.forms.FormChangePassword.reset();
     $('#InputUserName')[0].value = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+}
+
+function validatePassword()
+{
+    if ($('#InputNewPassword')[0].value != $('#InputConfirmNewPassword')[0].value)
+    {
+        $('#InputConfirmNewPassword')[0].setCustomValidity("Passwords do not match");
+    }
+    else
+    {
+        $('#InputConfirmNewPassword')[0].setCustomValidity('');
+    }
 }
 
 function resetPlayer()

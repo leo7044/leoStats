@@ -136,22 +136,28 @@
                         <div class="col-md-9 tab-content" id="v-pills-tabContent">
                             <div class="tab-pane fade show active" id="v-pills-player" role="tabpanel" aria-labelledby="v-pills-player-tab">
                                 <h3>Change Password</h3>
-                                <form method="POST" action="" onsubmit="return false;" id="FormChangePassword">
+                                <form method="POST" action="" id="FormChangePassword">
                                     <div class="form-group">
                                         <input class="form-control" id="InputUserName" name="InputUserName" required readonly disabled />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" name="InputOldPassword" placeholder="Old password" required />
+                                        <input type="password" class="form-control" id="InputOldPassword" name="InputOldPassword" placeholder="Old password" required />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" name="InputNewPassword" placeholder="New password" required />
+                                        <input type="password" class="form-control" id="InputNewPassword" name="InputNewPassword" placeholder="New password" required />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" name="InputConfirmNewPassowrd" placeholder="Confirm new password" required />
+                                        <input type="password" class="form-control" id="InputConfirmNewPassword" name="InputConfirmNewPassword" placeholder="Confirm new password" required />
                                     </div>
                                     <div class="form-group">
-                                        <button type="reset" class="btn btn-danger" id="ButtonCancelChangePassword"><i class="fas fa-times"></i> Cancel</button>
+                                        <button type="button" class="btn btn-danger" id="ButtonCancelChangePassword"><i class="fas fa-times"></i> Cancel</button>
                                         &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-success float-right" id="ButtonConfirmhangePassword"><i class="fas fa-check"></i> Confirm</button>
+                                    </div>
+                                    <div class="alert alert-danger d-none" id="PasswordChangeFail">
+                                        <b>Error!</b> Your password was not successfully changed.
+                                    </div>
+                                    <div class="alert alert-success d-none" id="PasswordChangeSuccess">
+                                        <b>Success!</b> Your password was successfully changed.
                                     </div>
                                 </form>
                                 <div id="AdminButtonsPlayer" class="d-none">

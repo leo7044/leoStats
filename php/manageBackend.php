@@ -717,7 +717,48 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer[0]);
             break;
         }
-        // Administration
+        // Administration & settings
+        case 'changePassword':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                $AccountId = $_post['AccountId'];
+                $oldPw = md5($_post['InputOldPassword']);
+                $newPw = md5($_post['InputNewPassword']);
+                $confNewPw = $_post['InputConfirmNewPassword'];
+                if ($OwnAccountId == $AccountId)
+                {
+                    $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId' AND `Password`='$oldPw';");
+                    if ($conn->affected_rows > 0)
+                    {
+                        $UserAnswer[0] = 1;
+                        $UserAnswer[1] = 'success';
+                    }
+                    else
+                    {
+                        $UserAnswer[0] = 0;
+                        $UserAnswer[1] = 'fail';
+                    }
+                }
+                else if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId';");
+                    if ($conn->affected_rows > 0)
+                    {
+                        $UserAnswer[0] = 1;
+                        $UserAnswer[1] = 'success';
+                    }
+                    else
+                    {
+                        $UserAnswer[0] = 0;
+                        $UserAnswer[1] = 'fail';
+                    }
+                }
+            }
+            echo json_encode($UserAnswer);
+        }
         case 'resetPlayer':
         {
             if (isset($_SESSION['leoStats_AccountId']))
