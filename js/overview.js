@@ -868,7 +868,9 @@ function prepareSettingsAlliance()
     {
         strHtml +=
             '<td id="TableCell_' + $('#DropDownListPlayer')[0].options[i].value + '">' +
-                $('#DropDownListPlayer')[0].options[i].innerHTML +
+                '<span id="TableCellName_' + $('#DropDownListPlayer')[0].options[i].value + '">' +
+                    $('#DropDownListPlayer')[0].options[i].innerHTML +
+                '</span>' +
                 '<button class="btn btn-light float-right" onclick="deletePlayerTableCell(\'TableCell_' + $('#DropDownListPlayer')[0].options[i].value + '\');">' +
                     '<font color="#FF0000;">' +
                         '<i class="fas fa-times"></i>' +
@@ -886,12 +888,36 @@ function prepareSettingsAlliance()
 
 function deletePlayerTableCell(_cellId)
 {
-    $('#' + _cellId)[0].outerHTML = '<td style="background-color: #F8F8FF;"></td>';
+    var accountId = _cellId.substr(10, _cellId.length - 10);
+    var playerName = $('#TableCellName_' + accountId)[0].innerHTML;
+    if (confirm('Do you want to remove ' + playerName + ' from alliance?'))
+    {
+        var WorldId = $('#DropDownListWorld')[0].value;
+        var data =
+        {
+            action: "deletePlayerFromAlliance",
+            WorldId: WorldId,
+            AccountId: accountId
+        }
+        initializeStart();
+        prepareSettingsAlliance();
+    }
 }
 
 function saveSettingsAlliance()
 {
-    // Backend
+    var worldId = $('#DropDownListWorld')[0].value;
+    var allianceId = $('#DropDownListAlliance')[0].value;
+    var data =
+    {
+        action: "changeNeededMemberRole",
+        WorldId: worldId,
+        AllianceId: allianceId
+    }
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', data);
+    $.ajaxSetup({async: true});
+    $('#DropDownListMemberRole')[0].value;
     initializeStart();
     prepareSettingsAlliance();
 }

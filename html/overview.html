@@ -173,15 +173,25 @@
                                 <div class="card form-group">
                                     <div class="card-header">Needed MemberRole to view other AllianceMember</div>
                                     <div class="card-body">
-                                        <select id="DropDownListMemberRole" class="form-control">
-                                            <option value="1">Commander-in-chief</option>
-                                            <option value="2">Second Commander</option>
-                                            <option value="3">Officer</option>
-                                            <option value="4">Veteran</option>
-                                            <option value="5">Member</option>
-                                            <option value="6">Trial</option>
-                                            <option value="7">Inactive</option>
-                                        </select>
+                                        <div class="row">
+                                            <div class="col-lg form-group">
+                                                <select id="DropDownListMemberRole" class="form-control">
+                                                    <option value="1">Commander-in-chief</option>
+                                                    <option value="2">Second Commander</option>
+                                                    <option value="3">Officer</option>
+                                                    <option value="4">Veteran</option>
+                                                    <option value="5">Member</option>
+                                                    <option value="6">Trial</option>
+                                                    <option value="7">Inactive</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-2 form-group">
+                                                <button id="ButtonCancelChangeNeededMemberRole" class="btn btn-danger btn-block"><i class="fas fa-times"></i> Cancel</button>
+                                            </div>
+                                            <div class="col-lg-2 form-group">
+                                                <button id="ButtonSaveChangeNeededMemberRole" class="btn btn-success btn-block"><i class="fas fa-check"></i> Save</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card form-group">
@@ -190,14 +200,6 @@
                                         <table class="table table-bordered">
                                             <tbody id="TableSettingsAlliancePlayerTBody"></tbody>
                                         </table>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md form-group">
-                                        <button id="ButtonCancelChangeNeededMemberRole" class="btn btn-danger btn-block"><i class="fas fa-times"></i> Cancel</button>
-                                    </div>
-                                    <div class="col-md form-group">
-                                        <button id="ButtonSaveChangeNeededMemberRole" class="btn btn-success btn-block"><i class="fas fa-check"></i> Save</button>
                                     </div>
                                 </div>
                             </div>
