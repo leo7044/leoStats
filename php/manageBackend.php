@@ -758,6 +758,7 @@ if (!$conn->connect_error)
                 }
             }
             echo json_encode($UserAnswer);
+            break;
         }
         case 'resetPlayer':
         {
