@@ -736,30 +736,20 @@ if (!$conn->connect_error)
                 if ($OwnAccountId == $AccountId)
                 {
                     $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId' AND `Password`='$oldPw';");
-                    if ($conn->affected_rows > 0)
-                    {
-                        $UserAnswer[0] = 1;
-                        $UserAnswer[1] = 'success';
-                    }
-                    else
-                    {
-                        $UserAnswer[0] = 0;
-                        $UserAnswer[1] = 'fail';
-                    }
                 }
                 else if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId';");
-                    if ($conn->affected_rows > 0)
-                    {
-                        $UserAnswer[0] = 1;
-                        $UserAnswer[1] = 'success';
-                    }
-                    else
-                    {
-                        $UserAnswer[0] = 0;
-                        $UserAnswer[1] = 'fail';
-                    }
+                }
+                if ($conn->affected_rows > 0)
+                {
+                    $UserAnswer[0] = 1;
+                    $UserAnswer[1] = 'Success';
+                }
+                else
+                {
+                    $UserAnswer[0] = 0;
+                    $UserAnswer[1] = 'Fail';
                 }
             }
             echo json_encode($UserAnswer);
@@ -791,6 +781,47 @@ if (!$conn->connect_error)
                     $conn->query("DELETE FROM `login` WHERE AccountId='$Id';");
                 }
             }
+            break;
+        }
+        case 'changeNeededMemberRole':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $WorldId = $_post['WorldId'];
+                $MemberRole = $_post['MemberRole'];
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $strQuery =
+                        "";
+                    $conn->query($strQuery);
+                }
+                else
+                {
+                    $AllianceId = $_post['AllianceId'];
+                    $strQuery =
+                        "UPDATE relation_alliance a SET MemberRole='$MemberRole'
+                        WHERE a.WorldId='$WorldId'
+                        AND a.AllianceId='$AllianceId';";
+                    $conn->query($strQuery);
+                }
+                if ($conn->affected_rows > 0)
+                {
+                    $UserAnswer[0] = 1;
+                    $UserAnswer[1] = 'Success';
+                }
+                else
+                {
+                    $UserAnswer[0] = 0;
+                    $UserAnswer[1] = 'Fail';
+                }
+            }
+            echo json_encode($UserAnswer);
+            break;
+        }
+        case 'deletePlayerFromAlliance':
+        {
             break;
         }
         case 'deleteServer':
