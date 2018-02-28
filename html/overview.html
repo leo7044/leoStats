@@ -170,17 +170,27 @@
                             </div>
                             <div class="tab-pane fade" id="v-pills-alliance" role="tabpanel" aria-labelledby="v-pills-alliance-tab">
                                 <h3>Alliance-Settings</h3>
-                                <h6>Needed MemberRole to view other AllianceMember:</h6>
-                                <div class="form-group">
-                                    <select id="DropDownListMemberRole" class="form-control">
-                                        <option value="1">Commander-in-chief</option>
-                                        <option value="2">Second Commander</option>
-                                        <option value="3">Officer</option>
-                                        <option value="4">Veteran</option>
-                                        <option value="5">Member</option>
-                                        <option value="6">Trial</option>
-                                        <option value="7">Inactive</option>
-                                    </select>
+                                <div class="card form-group">
+                                    <div class="card-header">Needed MemberRole to view other AllianceMember</div>
+                                    <div class="card-body">
+                                        <select id="DropDownListMemberRole" class="form-control">
+                                            <option value="1">Commander-in-chief</option>
+                                            <option value="2">Second Commander</option>
+                                            <option value="3">Officer</option>
+                                            <option value="4">Veteran</option>
+                                            <option value="5">Member</option>
+                                            <option value="6">Trial</option>
+                                            <option value="7">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card form-group">
+                                    <div class="card-header">Member in alliance</div>
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <tbody id="TableSettingsAlliancePlayerTBody"></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md form-group">

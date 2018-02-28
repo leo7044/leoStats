@@ -212,7 +212,6 @@ function prepareandFillDropDownListDataAlliance(_activeChanged)
     if (_activeChanged)
     {
         prepareandFillDropDownListDataPlayer(_activeChanged);
-        resetViewSettingsTabs();
     }
     else
     {
@@ -248,6 +247,7 @@ function prepareandFillDropDownListDataPlayer(_activeChanged)
     if (_activeChanged)
     {
         prepareandFillDropDownListDataBase(_activeChanged);
+        resetViewSettingsTabs();
     }
     else
     {
@@ -750,7 +750,7 @@ function manageContentSettings()
         $('#v-pills-server-tab').removeClass('d-none');
         $('#AdminButtonsPlayer').removeClass('d-none');
     }
-    else if (ArrayDropDownDefaultOwn[indexWorldId].MemberRole <= ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole)
+    else if (ArrayDropDownDefaultOwn[indexWorldId].MemberRole == 1)
     {
         $('#v-pills-alliance-tab').removeClass('d-none');
     }
@@ -863,6 +863,30 @@ function prepareSettingsAlliance()
         }
     }
     $('#DropDownListMemberRole')[0].selectedIndex = ArrayDropDownDefaultOwn[i].NeededMemberRole - 1;
+    var strHtml = '<tr>';
+    for (var i = 0; i < $('#DropDownListPlayer')[0].length; i++)
+    {
+        strHtml +=
+            '<td id="TableCell_' + $('#DropDownListPlayer')[0].options[i].value + '">' +
+                $('#DropDownListPlayer')[0].options[i].innerHTML +
+                '<button class="btn btn-light float-right" onclick="deletePlayerTableCell(\'TableCell_' + $('#DropDownListPlayer')[0].options[i].value + '\');">' +
+                    '<font color="#FF0000;">' +
+                        '<i class="fas fa-times"></i>' +
+                    '</font>' +
+                '</button>' +
+            '</td>';
+        if (!((i + 1) % 5))
+        {
+            strHtml += '</tr><tr>';
+        }
+    }
+    strHtml += '</tr>';
+    $('#TableSettingsAlliancePlayerTBody')[0].innerHTML = strHtml;
+}
+
+function deletePlayerTableCell(_cellId)
+{
+    $('#' + _cellId)[0].outerHTML = '<td style="background-color: #F8F8FF;"></td>';
 }
 
 function saveSettingsAlliance()
