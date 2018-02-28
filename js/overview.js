@@ -95,6 +95,9 @@ function prepairOnClickEvents()
     };
     $('#InputNewPassword').change(validatePassword);
     $('#InputConfirmNewPassword').keyup(validatePassword);
+    $('#v-pills-alliance-tab').click(prepareSettingsAlliance);
+    $('#ButtonCancelChangeNeededMemberRole').click(prepareSettingsAlliance);
+    $('#ButtonSaveChangeNeededMemberRole').click(saveSettingsAlliance);
 }
 
 //==================================================
@@ -209,6 +212,7 @@ function prepareandFillDropDownListDataAlliance(_activeChanged)
     if (_activeChanged)
     {
         prepareandFillDropDownListDataPlayer(_activeChanged);
+        resetViewSettingsTabs();
     }
     else
     {
@@ -731,20 +735,42 @@ function manageContentWorldOverview()
 
 function manageContentSettings()
 {
+    var indexWorldId = 0;
+    for (var i = 0; i < ArrayDropDownDefaultOwn.length; i++)
+    {
+        if (ArrayDropDownDefaultOwn[i].WorldId == $('#DropDownListWorld')[0].value)
+        {
+            indexWorldId = i;
+            break;
+        }
+    }
     if (ObjectSessionVariables.leoStats_IsAdmin)
     {
+        $('#v-pills-alliance-tab').removeClass('d-none');
         $('#v-pills-server-tab').removeClass('d-none');
         $('#AdminButtonsPlayer').removeClass('d-none');
     }
+    else if (ArrayDropDownDefaultOwn[indexWorldId].MemberRole <= ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole)
+    {
+        $('#v-pills-alliance-tab').removeClass('d-none');
+    }
+    else
+    {
+        $('#v-pills-alliance-tab').addClass('d-none');
+    }
+    resetFormChangePassword();
+    $('#PasswordChangeFail').addClass('d-none');
+    $('#PasswordChangeSuccess').addClass('d-none');
+}
+
+function resetViewSettingsTabs()
+{
     $('#v-pills-player-tab').addClass('active show');
     $('#v-pills-alliance-tab').removeClass('active show');
     $('#v-pills-server-tab').removeClass('active show');
     $('#v-pills-player').addClass('active show');
     $('#v-pills-alliance').removeClass('active show');
     $('#v-pills-server').removeClass('active show');
-    resetFormChangePassword();
-    $('#PasswordChangeFail').addClass('d-none');
-    $('#PasswordChangeSuccess').addClass('d-none');
 }
 
 function changePassword()
@@ -823,6 +849,27 @@ function deletePlayer()
         $.ajaxSetup({async: true});
         initializeStart();
     }
+}
+
+function prepareSettingsAlliance()
+{
+    var indexWorldId = 0;
+    for (var i = 0; i < ArrayDropDownDefaultOwn.length; i++)
+    {
+        if (ArrayDropDownDefaultOwn[i].WorldId == $('#DropDownListWorld')[0].value)
+        {
+            indexWorldId = i;
+            break;
+        }
+    }
+    $('#DropDownListMemberRole')[0].selectedIndex = ArrayDropDownDefaultOwn[i].NeededMemberRole - 1;
+}
+
+function saveSettingsAlliance()
+{
+    // Backend
+    initializeStart();
+    prepareSettingsAlliance();
 }
 
 function optimizeAllTables()

@@ -309,7 +309,12 @@ if (!$conn->connect_error)
                 {
                     array_push($UserAnswer[0], $zeile);
                 }
-                $result = $conn->query("SELECT p.WorldId, p.AllianceId, p.AccountId FROM relation_player p WHERE p.AccountId=$OwnAccountId;");
+                $strQuery =
+                    "SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
+                    JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+                    WHERE p.AccountId='$OwnAccountId'
+                    ORDER BY p.WorldId;";
+                $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer[1], $zeile);
