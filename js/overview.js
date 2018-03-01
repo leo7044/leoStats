@@ -209,7 +209,11 @@ function prepareandFillDropDownListDataAlliance(_activeChanged)
         strHtml += '<option value="' + ArrayDropDownListAlliance[key].AllianceId + '">' + ArrayDropDownListAlliance[key].AllianceName + '</option>';
     }
     $('#DropDownListAlliance')[0].innerHTML = strHtml;
-    $('#DropDownListAlliance')[0].value = alasql('SELECT DISTINCT AllianceId FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownDefaultOwn])[0].AllianceId;
+    var AllianceValue = alasql('SELECT DISTINCT AllianceId FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownDefaultOwn])[0];
+    if (AllianceValue)
+    {
+        $('#DropDownListAlliance')[0].value = AllianceValue.AllianceId;
+    }
     if (_activeChanged)
     {
         prepareandFillDropDownListDataPlayer(_activeChanged);

@@ -6,7 +6,7 @@ include_once('config.php'); // Datenbankanbindung
 session_start(); // starten der PHP-Session
 $_post = filter_input_array(INPUT_POST); // es werden nur POST-Variablen akzeptiert, damit nicht mittels Link (get-vars) Anderungen an DB vorgenommen werden können
 $_post = replaceChars($_post);
-$action = $_post['action'];
+$action = $_REQUEST['action'];
 if (!$conn->connect_error)
 {
 	switch ($action)
@@ -788,14 +788,47 @@ if (!$conn->connect_error)
             $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
-                $WorldId = $_post['WorldId'];
-                $MemberRole = $_post['MemberRole'];
+                $WorldId = $_REQUEST['WorldId'];
+                $AllianceId = $_REQUEST['AllianceId'];
+                $MemberRole = $_REQUEST['MemberRole'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $strQuery =
-                        "";
-                    $conn->query($strQuery);
+                        "SELECT p.AllianceId FROM relation_alliance a
+                        JOIN relation_player p ON p.WorldId=a.WorldId AND p.AllianceId=a.AllianceId
+                        WHERE
+                        p.WorldId='$WorldId'
+                        AND
+                        p.AllianceId=
+                        (
+                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
+                        )
+                        AND
+                        p.AccountId='$OwnAccountId'
+                        AND
+                        (
+                            IF
+                            (
+                                p.MemberRole=1,
+                                true,
+                                false
+                            )
+                        );";
+                    $result = $conn->query($strQuery);
+                    $OwnAllianceId = 0;
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        $OwnAllianceId = $zeile['AllianceId'];
+                    }
+                    if ($OwnAllianceId == $AllianceId)
+                    {
+                        $strQuery =
+                            "UPDATE relation_alliance a SET MemberRole='$MemberRole'
+                            WHERE a.WorldId='$WorldId'
+                            AND a.AllianceId='$AllianceId';";
+                        $conn->query($strQuery);
+                    }
                 }
                 else
                 {
