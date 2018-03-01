@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2018.02.20
+// @version     2018.03.01
 // @author      leo7044
 // @homepage    https://leostats.000webhostapp.com/index.php
 // @downloadURL https://leostats.000webhostapp.com/leostats.min.user.js
@@ -35,6 +35,7 @@
 			ObjectData.substitution.outgoing = '';
 			ObjectData.substitution.active = [];
 			var linkBase = '';
+			var sendChatInfoStatus = true;
 
             // Abschüsse
             function Shoots(context, data)
@@ -770,11 +771,11 @@
 				var ChatString = '';
 				if (dataAnswer[0] == 0 && !ClientLib.Data.MainData.GetInstance().get_Player().get_IsSubstituted())
 				{
-					ChatString = "/w " + PlayerName + " Hallo " + PlayerName + ", um zu DC-Stats zu gelangen, klicke auf [url]" + linkToRoot + "[/url]. Dein Benutzername ist \"" + PlayerName + "\" und dein Standardpasswort: \"" + PlayerName + "_" + AccountId + "\"";
+					ChatString = "/w " + PlayerName + " Hallo " + PlayerName + ", um zu leoStats zu gelangen, klicke auf [url]" + linkToRoot + "[/url]. Dein Benutzername ist \"" + PlayerName + "\" und dein Standardpasswort: \"" + PlayerName + "_" + AccountId + "\"";
 				}
 				else
 				{
-					ChatString = "/w " + PlayerName + " Hallo " + PlayerName + ", um zu DC-Stats zu gelangen, klicke auf [url]" + linkToRoot + "[/url].";
+					ChatString = "/w " + PlayerName + " Hallo " + PlayerName + ", um zu leoStats zu gelangen, klicke auf [url]" + linkToRoot + "[/url].";
 				}
 				qx.core.Init.getApplication().getChat().getChatWidget().send(ChatString);
 			}
@@ -787,7 +788,11 @@
 					$.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
 					.always(function(data)
 					{
-						sendChatInfo(data);
+						if (sendChatInfoStatus)
+						{
+							sendChatInfo(data);
+							sendChatInfoStatus = false;
+						}
 					});
 				}
 				else
