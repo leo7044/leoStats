@@ -783,6 +783,26 @@ if (!$conn->connect_error)
             }
             break;
         }
+        case 'getNeededMemberRoles':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $WorldId = $_post['WorldId'];
+                    $AllianceId = $_post['AllianceId'];
+                    $result = $conn->query("SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a WHERE WorldId='$WorldId' AND AllianceId='$AllianceId';");
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                }
+            }
+            echo json_encode($UserAnswer[0]);
+            break;
+        }
         case 'changeNeededMemberRole':
         {
             $UserAnswer = [];

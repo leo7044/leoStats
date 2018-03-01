@@ -5,6 +5,7 @@ var ArraySeasonServerIds = [];
 // DropDown
 var ArrayDropDownListData = [];
 var ArrayDropDownDefaultOwn = [];
+var ObjectNeededMemberRoles = {};
 // Tabs
 var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
@@ -740,12 +741,15 @@ function manageContentWorldOverview()
 
 function manageContentSettings()
 {
-    for (var i = 0; i < ArrayDropDownDefaultOwn.length; i++)
+    if (!ObjectSessionVariables.leoStats_IsAdmin)
     {
-        if (ArrayDropDownDefaultOwn[i].WorldId == $('#DropDownListWorld')[0].value)
+        for (var i = 0; i < ArrayDropDownDefaultOwn.length; i++)
         {
-            indexWorldId = i;
-            break;
+            if (ArrayDropDownDefaultOwn[i].WorldId == $('#DropDownListWorld')[0].value)
+            {
+                indexWorldId = i;
+                break;
+            }
         }
     }
     if (ObjectSessionVariables.leoStats_IsAdmin)
@@ -857,7 +861,17 @@ function deletePlayer()
 
 function prepareSettingsAlliance()
 {
-    $('#DropDownListMemberRole')[0].selectedIndex = ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole - 1;
+    if (ObjectSessionVariables.leoStats_IsAdmin)
+    {
+        var WorldId = $('#DropDownListWorld')[0].value;
+        var AllianceId = $('#DropDownListAlliance')[0].value;
+        getNeededMemberRoles(WorldId, AllianceId);
+        $('#DropDownListMemberRole')[0].selectedIndex = ObjectNeededMemberRoles[WorldId + '_' + AllianceId].MemberRole - 1;
+    }
+    else
+    {
+        $('#DropDownListMemberRole')[0].selectedIndex = ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole - 1;
+    }
     var strHtml = '<tr>';
     for (var i = 0; i < $('#DropDownListPlayer')[0].length; i++)
     {
@@ -904,7 +918,14 @@ function saveChangeNeededMemberRole()
         {
             $('#MemberRoleChangeFail').addClass('d-none');
             $('#MemberRoleChangeSuccess').removeClass('d-none');
-            ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole = $('#DropDownListMemberRole')[0].value;
+            if (ObjectSessionVariables.leoStats_IsAdmin)
+            {
+                ObjectNeededMemberRoles[WorldId + '_' + AllianceId].MemberRole = $('#DropDownListMemberRole')[0].selectedIndex + 1;
+            }
+            else
+            {
+                ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole = $('#DropDownListMemberRole')[0].value;
+            }
         }
         else
         {
@@ -913,6 +934,27 @@ function saveChangeNeededMemberRole()
         }
     });
     $.ajaxSetup({async: true});
+}
+
+function getNeededMemberRoles(_WorldId, _AllianceId)
+{
+    if (!ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId])
+    {
+        var data =
+        {
+            action: "getNeededMemberRoles",
+            WorldId: _WorldId,
+            AllianceId: _AllianceId
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            console.log(data);
+            ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = data;
+        });
+        $.ajaxSetup({async: true});
+    }
 }
 
 function deletePlayerTableCell(_cellId)
