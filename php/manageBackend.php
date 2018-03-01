@@ -6,7 +6,7 @@ include_once('config.php'); // Datenbankanbindung
 session_start(); // starten der PHP-Session
 $_post = filter_input_array(INPUT_POST); // es werden nur POST-Variablen akzeptiert, damit nicht mittels Link (get-vars) Anderungen an DB vorgenommen werden können
 $_post = replaceChars($_post);
-$action = $_REQUEST['action'];
+$action = $_post['action'];
 if (!$conn->connect_error)
 {
 	switch ($action)
@@ -788,9 +788,9 @@ if (!$conn->connect_error)
             $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
-                $WorldId = $_REQUEST['WorldId'];
-                $AllianceId = $_REQUEST['AllianceId'];
-                $MemberRole = $_REQUEST['MemberRole'];
+                $WorldId = $_post['WorldId'];
+                $AllianceId = $_post['AllianceId'];
+                $MemberRole = $_post['MemberRole'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
