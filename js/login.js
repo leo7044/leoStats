@@ -1,4 +1,5 @@
 /* Deceloper: leo7044 */
+// reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
 // (function(){
 $(document).ready(function()
 {

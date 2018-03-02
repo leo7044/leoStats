@@ -1,6 +1,4 @@
 /* Developer: leo7044 */
-// reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
-// (function(){
 var ObjectSessionVariables = {};
 var ArraySeasonServerIds = [];
 // DropDown
@@ -1228,4 +1226,3 @@ function getCookie(_name)
     }
     return returnValue;
 }
-// })();
