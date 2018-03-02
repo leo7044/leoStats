@@ -1,4 +1,5 @@
 /* Developer: leo7044 */
+// reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
 // (function(){
 var ObjectSessionVariables = {};
 var ArraySeasonServerIds = [];
@@ -70,7 +71,6 @@ function getSeasonServerIds()
     $.ajaxSetup({async: true});
 }
 
-// reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
 function prepairOnClickEvents()
 {
     $('#TabPlayer').click(prepareTabPlayer);
@@ -465,30 +465,31 @@ function manageContentAllianceMembers()
     $('#TableAlliancePlayerTheadTr')[0].children[1].style.minWidth = '64px';
     var ArrayAlliancePlayerCurIdsAndNames = [[], []];
     strHtml = '';
+    var ArrayExcludedFieldsFromUsNumberFormat = ['Zeit', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD'];
     for (var keyPlayer in ObjectAlliancePlayerCur)
     {
         strHtml += '<tr>';
-            for (var keyField in ObjectAlliancePlayerCur[keyPlayer])
+        for (var keyField in ObjectAlliancePlayerCur[keyPlayer])
+        {
+            if (keyField == 'AccountId')
             {
-                if (keyField == 'AccountId')
-                {
-                    ArrayAlliancePlayerCurIdsAndNames[0].push(ObjectAlliancePlayerCur[keyPlayer][keyField]);
-                    ArrayAlliancePlayerCurIdsAndNames[1].push(ObjectAlliancePlayerCur[keyPlayer]['UserName']);
-                    delete ObjectAlliancePlayerCur[keyPlayer][keyField];
-                }
-                else if (keyField == 'RepMax')
-                {
-                    strHtml += '<td>' + ObjectAlliancePlayerCur[keyPlayer][keyField].toTimeFormat() + '</td>';
-                }
-                else if (!isNaN(parseInt(ObjectAlliancePlayerCur[keyPlayer][keyField])) && keyField != 'Zeit')
-                {
-                    strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectAlliancePlayerCur[keyPlayer][keyField])) + '</td>';
-                }
-                else
-                {
-                    strHtml += '<td>' + ObjectAlliancePlayerCur[keyPlayer][keyField] + '</td>';
-                }
+                ArrayAlliancePlayerCurIdsAndNames[0].push(ObjectAlliancePlayerCur[keyPlayer][keyField]);
+                ArrayAlliancePlayerCurIdsAndNames[1].push(ObjectAlliancePlayerCur[keyPlayer]['UserName']);
+                delete ObjectAlliancePlayerCur[keyPlayer][keyField];
             }
+            else if (keyField == 'RepMax')
+            {
+                strHtml += '<td>' + ObjectAlliancePlayerCur[keyPlayer][keyField].toTimeFormat() + '</td>';
+            }
+            else if (!isNaN(parseInt(ObjectAlliancePlayerCur[keyPlayer][keyField])) && ArrayExcludedFieldsFromUsNumberFormat.indexOf(keyField) == -1)
+            {
+                strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectAlliancePlayerCur[keyPlayer][keyField])) + '</td>';
+            }
+            else
+            {
+                strHtml += '<td>' + ObjectAlliancePlayerCur[keyPlayer][keyField] + '</td>';
+            }
+        }
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TableAlliancePlayer', ObjectAlliancePlayerCur, strHtml);
@@ -625,31 +626,31 @@ function manageContentPlayerBase()
     for (var keyBase in ObjectPlayerBaseCur)
     {
         strHtml += '<tr id="' + ObjectPlayerBaseCur[keyBase]['BaseId'] + '">';
-            for (var keyField in ObjectPlayerBaseCur[keyBase])
+        for (var keyField in ObjectPlayerBaseCur[keyBase])
+        {
+            if (keyField == 'Rep')
             {
-                if (keyField == 'Rep')
-                {
-                    strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField].toTimeFormat() + '</td>';
-                }
-                else if (keyField == 'Tib' || keyField == 'Cry' || keyField == 'Pow' || keyField == 'Cre')
-                {
-                    strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectPlayerBaseCur[keyBase][keyField])) + '</td>';
-                }
-                else if (keyField == 'CnCOpt')
-                {
-                    strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyBase][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyBase]['Name'] + '</a></td>';
-                }
-                else if (keyField == 'BaseId')
-                {
-                    ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyBase][keyField]);
-                    ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyBase]['Name']);
-                    delete ObjectPlayerBaseCur[keyBase][keyField];
-                }
-                else
-                {
-                    strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField] + '</td>';
-                }
+                strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField].toTimeFormat() + '</td>';
             }
+            else if (keyField == 'Tib' || keyField == 'Cry' || keyField == 'Pow' || keyField == 'Cre')
+            {
+                strHtml += '<td>' + Intl.NumberFormat('en-US').format(parseInt(ObjectPlayerBaseCur[keyBase][keyField])) + '</td>';
+            }
+            else if (keyField == 'CnCOpt')
+            {
+                strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyBase][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyBase]['Name'] + '</a></td>';
+            }
+            else if (keyField == 'BaseId')
+            {
+                ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyBase][keyField]);
+                ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyBase]['Name']);
+                delete ObjectPlayerBaseCur[keyBase][keyField];
+            }
+            else
+            {
+                strHtml += '<td>' + ObjectPlayerBaseCur[keyBase][keyField] + '</td>';
+            }
+        }
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TablePlayerBase', ObjectPlayerBaseCur, strHtml);
@@ -709,7 +710,21 @@ function manageContentBase()
     ObjectDiagramData.Base.Production = [[], ['Zeit', 'Tib', 'Cry', 'Pow', 'Cre', 'Base - Production']];
     ObjectDiagramData.Base.Values = [[], ['Zeit', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'Base - Values']];
     ObjectDiagramData.Base.RepairTime = [[], ['Zeit', 'Rep', 'RepMax', 'Base - RepairTime']];
+    var tmpArrayForRep = [];
+    for (var key in ObjectBaseCur)
+    {
+        tmpArrayForRep[key] = [];
+        tmpArrayForRep[key][0] = ObjectBaseCur[key].Rep;
+        tmpArrayForRep[key][1] = ObjectBaseCur[key].RepMax;
+        ObjectBaseCur[key].Rep = ObjectBaseCur[key].Rep / 3600;
+        ObjectBaseCur[key].RepMax = ObjectBaseCur[key].RepMax / 3600;
+    }
     drawDiagrams(ObjectBaseCur, 'Base');
+    for (var key in ObjectBaseCur)
+    {
+        ObjectBaseCur[key].Rep = tmpArrayForRep[key][0];
+        ObjectBaseCur[key].RepMax = tmpArrayForRep[key][1];
+    }
     $('#LinkCncOpt')[0].href = ObjectBaseCur[countLength(ObjectBaseCur) - 1].CnCOpt;
 }
 
