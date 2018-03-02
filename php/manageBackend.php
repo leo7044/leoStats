@@ -815,17 +815,9 @@ if (!$conn->connect_error)
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $strQuery =
-                        "SELECT p.AllianceId FROM relation_alliance a
-                        JOIN relation_player p ON p.WorldId=a.WorldId AND p.AllianceId=a.AllianceId
-                        WHERE
-                        p.WorldId='$WorldId'
-                        AND
-                        p.AllianceId=
-                        (
-                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
-                        )
-                        AND
-                        p.AccountId='$OwnAccountId'
+                        "SELECT p.AllianceId FROM relation_player p
+                        WHERE p.WorldId='$WorldId'
+                        AND p.AccountId='$OwnAccountId'
                         AND
                         (
                             IF
@@ -844,19 +836,18 @@ if (!$conn->connect_error)
                     if ($OwnAllianceId == $AllianceId)
                     {
                         $strQuery =
-                            "UPDATE relation_alliance a SET MemberRole='$MemberRole'
-                            WHERE a.WorldId='$WorldId'
-                            AND a.AllianceId='$AllianceId';";
+                            "UPDATE relation_alliance SET MemberRole='$MemberRole'
+                            WHERE WorldId='$WorldId'
+                            AND AllianceId='$AllianceId';";
                         $conn->query($strQuery);
                     }
                 }
                 else
                 {
-                    $AllianceId = $_post['AllianceId'];
                     $strQuery =
-                        "UPDATE relation_alliance a SET MemberRole='$MemberRole'
-                        WHERE a.WorldId='$WorldId'
-                        AND a.AllianceId='$AllianceId';";
+                        "UPDATE relation_alliance SET MemberRole='$MemberRole'
+                        WHERE WorldId='$WorldId'
+                        AND AllianceId='$AllianceId';";
                     $conn->query($strQuery);
                 }
                 if ($conn->affected_rows > 0)
@@ -875,6 +866,54 @@ if (!$conn->connect_error)
         }
         case 'deletePlayerFromAlliance':
         {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $WorldId = $_post['WorldId'];
+                $AllianceId = $_post['AllianceId'];
+                $AccountId = $_post['AccountId'];
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $strQuery =
+                        "SELECT p.AllianceId FROM relation_player p
+                        WHERE p.WorldId='$WorldId'
+                        AND p.AccountId='$OwnAccountId'
+                        AND
+                        (
+                            IF
+                            (
+                                p.MemberRole=1,
+                                true,
+                                false
+                            )
+                        );";
+                    $result = $conn->query($strQuery);
+                    $OwnAllianceId = 0;
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        $OwnAllianceId = $zeile['AllianceId'];
+                    }
+                    if ($OwnAllianceId == $AllianceId)
+                    {
+                        $strQuery =
+                            "DELETE FROM relation_player
+                            WHERE WorldId='$WorldId'
+                            AND AllianceId='$AllianceId'
+                            AND AccountId='$AccountId';";
+                        $conn->query($strQuery);
+                    }
+                }
+                else
+                {
+                    $strQuery =
+                        "DELETE FROM relation_player
+                        WHERE WorldId='$WorldId'
+                        AND AllianceId='$AllianceId'
+                        AND AccountId='$AccountId';";
+                    $conn->query($strQuery);
+                    echo $strQuery;
+                }
+            }
             break;
         }
         case 'deleteServer':

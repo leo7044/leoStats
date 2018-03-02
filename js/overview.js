@@ -965,7 +965,6 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
         $.post('php/manageBackend.php', data)
         .always(function(data)
         {
-            console.log(data);
             ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = data;
         });
         $.ajaxSetup({async: true});
@@ -979,14 +978,20 @@ function deletePlayerTableCell(_cellId)
     if (confirm('Do you want to remove ' + playerName + ' from alliance?'))
     {
         var WorldId = $('#DropDownListWorld')[0].value;
+        var AllianceId = $('#DropDownListAlliance')[0].value;
         var data =
         {
             action: "deletePlayerFromAlliance",
             WorldId: WorldId,
+            AllianceId: AllianceId,
             AccountId: AccountId
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            console.log(data);
+        });
         $.ajaxSetup({async: true});
         initializeStart();
         prepareSettingsAlliance();
