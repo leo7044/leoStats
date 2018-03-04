@@ -500,12 +500,12 @@ if (!$conn->connect_error)
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $strQuery .=
-                        "SELECT pl.Zeit, pl.ScorePoints, a.AverageScore, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+                        "SELECT pl.Zeit, pl.ScorePoints,
+                        IFNULL(a.AverageScore, 0) AS AverageScore,
+                        pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
                         JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
-                        JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId
+                        LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
                         WHERE
-                        pl.Zeit=a.Zeit
-                        AND
                         pl.WorldId='$WorldId'
                         AND
                         p.AllianceId IN
@@ -539,11 +539,12 @@ if (!$conn->connect_error)
                 else
                 {
                     $strQuery .=
-                        "SELECT pl.Zeit, pl.ScorePoints, a.AverageScore, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+                        "SELECT pl.Zeit, pl.ScorePoints,
+                        IFNULL(a.AverageScore, 0) AS AverageScore,
+                        pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
                         JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
-                        JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId
+                        LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
                         WHERE pl.WorldId='$WorldId'
-                        AND pl.Zeit=a.Zeit
                         AND pl.AccountId='$AccountId'
                         ORDER BY pl.Zeit ASC;";
                 }

@@ -985,11 +985,7 @@ function deletePlayerTableCell(_cellId)
             AccountId: AccountId
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data)
-        .always(function(data)
-        {
-            console.log(data);
-        });
+        $.post('php/manageBackend.php', data);
         $.ajaxSetup({async: true});
         initializeStart();
         prepareSettingsAlliance();
