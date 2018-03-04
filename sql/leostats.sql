@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.7
+-- version 4.7.8
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 09. Feb 2018 um 08:48
--- Server-Version: 10.2.12-MariaDB
--- PHP-Version: 7.2.2
+-- Erstellungszeit: 04. Mrz 2018 um 12:17
+-- Server-Version: 10.2.13-MariaDB
+-- PHP-Version: 7.2.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -98,21 +98,6 @@ CREATE TABLE `bases` (
   `Cre` bigint(10) NOT NULL,
   `Rep` int(7) NOT NULL,
   `CnCOpt` text COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `contact`
---
-
-CREATE TABLE `contact` (
-  `ID` int(11) NOT NULL,
-  `Zeit` datetime NOT NULL,
-  `WorldId` int(11) NOT NULL,
-  `UserName` text COLLATE utf8_bin NOT NULL,
-  `Email` text COLLATE utf8_bin NOT NULL,
-  `description` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -254,13 +239,6 @@ ALTER TABLE `bases`
   ADD KEY `WorldId` (`WorldId`,`ID`);
 
 --
--- Indizes für die Tabelle `contact`
---
-ALTER TABLE `contact`
-  ADD PRIMARY KEY (`ID`),
-  ADD KEY `WorldId` (`WorldId`);
-
---
 -- Indizes für die Tabelle `login`
 --
 ALTER TABLE `login`
@@ -315,12 +293,6 @@ ALTER TABLE `substitution`
 -- AUTO_INCREMENT für Tabelle `adminlog`
 --
 ALTER TABLE `adminlog`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT für Tabelle `contact`
---
-ALTER TABLE `contact`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -338,12 +310,6 @@ ALTER TABLE `alliance`
 --
 ALTER TABLE `bases`
   ADD CONSTRAINT `bases_ibfk_1` FOREIGN KEY (`WorldId`,`ID`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints der Tabelle `contact`
---
-ALTER TABLE `contact`
-  ADD CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `player`
