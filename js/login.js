@@ -8,6 +8,7 @@ $(document).ready(function()
     {
         return login();
     }
+    $('#CheckBoxDownloadScript').click(toggleDownloadButtonScript);
 });
 
 function login()
@@ -39,5 +40,22 @@ function login()
     });
 	$.ajaxSetup({async: true});
 	return returnValue;
+}
+
+function toggleDownloadButtonScript()
+{
+    if ($('#CheckBoxDownloadScript')[0].checked)
+    {
+        $('#ButtonDownloadScript')[0].disabled = false;
+        $('#ButtonDownloadScript')[0].onclick = function()
+        {
+            window.location.href='js/leostats.min.user.js';
+        };
+    }
+    else
+    {
+        $('#ButtonDownloadScript')[0].disabled = true;
+        $('#ButtonDownloadScript')[0].onclick = function(){};
+    }
 }
 // })();

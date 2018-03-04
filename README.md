@@ -1,5 +1,8 @@
 # leoStats
 
+### Script installieren
+Um das Script zu installieren müssen alle Informationen durchgelesen und akzeptiert werden. Erst durch die Bestätigung in Form des Anhakens der Checkbox (siehe unten) wird der Download freigegeben.
+
 ### Login erhalten
 Sobald das Script auf einer Welt aktiv ist, wird im InGame-Chat Benutzername und Passwort angezeigt, sofern sich der Account <b>nicht</b> in einer UV befindet und das Passwort noch nicht geändert wurde. Man kann auf den blauen Link im InGame-Chat klicken und sich dort mit diesem personalisieren Login kann man sich einloggen.
 
