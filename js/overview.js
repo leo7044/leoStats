@@ -99,6 +99,7 @@ function prepairOnClickEvents()
     $('#v-pills-alliance-tab').click(prepareSettingsAlliance);
     $('#ButtonCancelChangeNeededMemberRole').click(prepareSettingsAlliance);
     $('#ButtonSaveChangeNeededMemberRole').click(saveChangeNeededMemberRole);
+    $('#v-pills-server-tab').click(prepareSettingsServer);
 }
 
 //==================================================
@@ -771,8 +772,6 @@ function manageContentSettings()
         $('#v-pills-alliance-tab').removeClass('d-none');
         $('#v-pills-server-tab').removeClass('d-none');
         $('#AdminButtonsPlayer').removeClass('d-none');
-        getAdminLog();
-        prepareAdminLogTable();
     }
     else if (ArrayDropDownDefaultOwn[indexWorldId].MemberRole == 1)
     {
@@ -913,6 +912,13 @@ function prepareSettingsAlliance()
     $('#MemberRoleChangeSuccess').addClass('d-none');
 }
 
+function prepareSettingsServer()
+{
+    $('#TableAdminLog').DataTable().destroy();
+    getAdminLog();
+    prepareAdminLogTable();
+}
+
 function saveChangeNeededMemberRole()
 {
     var WorldId = $('#DropDownListWorld')[0].value;
@@ -1050,7 +1056,7 @@ function prepareAdminLogTable()
     for (var key in ArrayAdminLog)
     {
         ArrayAdminLog[key].Delete =
-            '<button class="btn btn-light float-right" onclick="">' +
+            '<button class="btn btn-light float-right" onclick="deleteElementAdminLog(\'' + ArrayAdminLog[key].ID + '\')">' +
                 '<font color="#FF0000;">' +
                     '<i class="fas fa-times"></i>' +
                 '</font>' +
@@ -1071,6 +1077,21 @@ function prepareAdminLogTable()
             ]
         }
     );
+}
+
+function deleteElementAdminLog(_Id)
+{
+    $('#TableAdminLog').DataTable().destroy();
+    var data=
+    {
+        action: "deleteElementAdminLog",
+        Id: _Id
+    }
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', data);
+    $.ajaxSetup({async: true});
+    getAdminLog();
+    prepareAdminLogTable();
 }
 
 //==================================================

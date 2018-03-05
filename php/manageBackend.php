@@ -960,6 +960,19 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer);
             break;
         }
+        case 'deleteElementAdminLog':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $Id = $_post['Id'];
+                    $conn->query("UPDATE adminlog SET `Show`=FALSE WHERE ID='$Id';");
+                }
+            }
+            break;
+        }
 		default:
 		{
 			echo 'no Action';
