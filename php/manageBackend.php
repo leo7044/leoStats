@@ -942,6 +942,24 @@ if (!$conn->connect_error)
             }
             break;
         }
+        case 'getAdminLog':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $result = $conn->query("SELECT ID, `Zeit`, `Initiator`, `Description` FROM adminlog WHERE `SHOW`=TRUE ORDER BY ID DESC;");
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                }
+            }
+            echo json_encode($UserAnswer);
+            break;
+        }
 		default:
 		{
 			echo 'no Action';

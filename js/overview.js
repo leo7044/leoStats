@@ -1,9 +1,9 @@
 /* Developer: leo7044 */
-var ObjectSessionVariables = {};
-var ArraySeasonServerIds = [];
+var ObjectSessionVariables = null;
+var ArraySeasonServerIds = null;
 // DropDown
-var ArrayDropDownListData = [];
-var ArrayDropDownDefaultOwn = [];
+var ArrayDropDownListData = null;
+var ArrayDropDownDefaultOwn = null;
 var ObjectNeededMemberRoles = {};
 // Tabs
 var ObjectPlayerData = {};
@@ -16,6 +16,7 @@ var ObjectWorldOverviewData = {};
 // DiagramData
 var ObjectDiagramData = {};
 var indexWorldId = 0;
+var ArrayAdminLog = null;;
 
 $(document).ready(function()
 {
@@ -770,6 +771,8 @@ function manageContentSettings()
         $('#v-pills-alliance-tab').removeClass('d-none');
         $('#v-pills-server-tab').removeClass('d-none');
         $('#AdminButtonsPlayer').removeClass('d-none');
+        getAdminLog();
+        prepareAdminLogTable();
     }
     else if (ArrayDropDownDefaultOwn[indexWorldId].MemberRole == 1)
     {
@@ -1024,6 +1027,50 @@ function deleteServer()
         $.ajaxSetup({async: true});
         initializeStart();
     }
+}
+
+function getAdminLog()
+{
+    var data=
+    {
+        action: "getAdminLog"
+    }
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', data)
+    .always(function(data)
+    {
+        ArrayAdminLog = data;
+    });
+    $.ajaxSetup({async: true});
+}
+
+function prepareAdminLogTable()
+{
+    var strHtml = '';
+    for (var key in ArrayAdminLog)
+    {
+        ArrayAdminLog[key].Delete =
+            '<button class="btn btn-light float-right" onclick="">' +
+                '<font color="#FF0000;">' +
+                    '<i class="fas fa-times"></i>' +
+                '</font>' +
+            '</button>';
+        strHtml += '<tr>' +
+            '<td>' + ArrayAdminLog[key].ID + '</td>' +
+            '<td>' + ArrayAdminLog[key].Zeit + '</td>' +
+            '<td>' + ArrayAdminLog[key].Initiator + '</td>' +
+            '<td>' + ArrayAdminLog[key].Description + '</td>' +
+            '<td>' + ArrayAdminLog[key].Delete + '</td>' +
+        '</tr>';
+    }
+    $('#TableAdminLogTbody')[0].innerHTML = strHtml;
+    $('#TableAdminLog').DataTable(
+        {"order":
+            [
+                [ 0, "desc" ]
+            ]
+        }
+    );
 }
 
 //==================================================
