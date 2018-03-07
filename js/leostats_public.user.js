@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2018.03.01
+// @version     2018.03.07
 // @author      leo7044
 // @homepage    https://leostats.000webhostapp.com/index.php
 // @downloadURL https://leostats.000webhostapp.com/leostats.min.user.js
@@ -21,6 +21,7 @@
 (function () {
     var leoStatsMain = function ()
 	{
+		var sendChatInfoStatus = true;
         function leoStatsCreate()
 		{
 			// globale Variablen
@@ -35,7 +36,6 @@
 			ObjectData.substitution.outgoing = '';
 			ObjectData.substitution.active = [];
 			var linkBase = '';
-			var sendChatInfoStatus = true;
 
             // Abschüsse
             function Shoots(context, data)
