@@ -14,6 +14,7 @@
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> <!-- DataTable -->
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script> <!-- DataTable -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.5/alasql.min.js"></script> <!-- alasql -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.4/xlsx.core.min.js"></script> <!-- .xlsx-Export -->
         <script src="https://www.gstatic.com/charts/loader.js"></script> <!-- GoogleChart -->      
 		<script src="js/overview.js"></script> <!-- alles eigene -->
 
@@ -99,6 +100,7 @@
                         </thead>
                         <tbody id="TablePlayerBaseTbody"></tbody>
                     </table>
+                    <br/><button id="ButtonDownloadPlayerBaseData" class="btn btn-primary float-right"><i class="fas fa-download"></i> Download</button>
                 </div>
                 <div id="ContentAllianceMembers" class="tab-pane">
                     <table id="TableAlliancePlayer" class="table table-striped table-bordered table-hover">
@@ -107,6 +109,7 @@
                         </thead>
                         <tbody id="TableAlliancePlayerTbody"></tbody>
                     </table>
+                    <br/><button id="ButtonDownloadAlliancePlayerData" class="btn btn-primary float-right"><i class="fas fa-download"></i> Download</button>
                 </div>
                 <div id="ContentAlliance" class="tab-pane">
                     <div id="GoogleChartLineAllianceRank" class="divGoogleChart"></div><br/>

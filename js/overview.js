@@ -100,6 +100,8 @@ function prepairOnClickEvents()
     $('#ButtonCancelChangeNeededMemberRole').click(prepareSettingsAlliance);
     $('#ButtonSaveChangeNeededMemberRole').click(saveChangeNeededMemberRole);
     $('#v-pills-server-tab').click(prepareSettingsServer);
+    $('#ButtonDownloadPlayerBaseData').click(function(){manageDownloadOfTable(this);});
+    $('#ButtonDownloadAlliancePlayerData').click(function(){manageDownloadOfTable(this);});
 }
 
 //==================================================
@@ -1293,6 +1295,31 @@ function drawGoogleChartColumn(_ArrayIndexes, _ArrayCurChart)
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('GoogleChartColumn' + _ArrayIndexes[_ArrayIndexes.length - 1]));
         chart.draw(view, options);
+    }
+}
+
+// Download
+function manageDownloadOfTable(_this)
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    switch(_this.id)
+    {
+        case 'ButtonDownloadPlayerBaseData':
+        {
+            var PlayerId = $('#DropDownListPlayer')[0].value;
+            alasql("SELECT * INTO XLSX('PlayerBaseData.xlsx',{headers:true}) FROM ? ",[ObjectPlayerBaseData[WorldId + '_' + PlayerId]]);
+            break;
+        }
+        case 'ButtonDownloadAlliancePlayerData':
+        {
+            var AllianceId = $('#DropDownListAlliance')[0].value;
+            alasql("SELECT * INTO XLSX('AlliancePlayerData.xlsx',{headers:true}) FROM ? ",[ObjectAlliancePlayerData[WorldId + '_' + AllianceId]]);
+            break;
+        }
+        default:
+        {
+            break;
+        }
     }
 }
 
