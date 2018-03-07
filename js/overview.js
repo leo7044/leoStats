@@ -156,11 +156,11 @@ $(window).resize(function()
     }
     else if ($('#TabAllianceOverview.active')[0])
     {
-        drawGoogleChartColumn(ObjectDiagramData.OverviewAlliance.Off[1], ObjectDiagramData.OverviewAlliance.Off[0]);
+        drawGoogleChartColumn(ObjectDiagramData.OverviewAlliance[_typeOfPlayerData][1], ObjectDiagramData.OverviewAlliance[_typeOfPlayerData][0]);
     }
     else if ($('#TabWorldOverview.active')[0])
     {
-        drawGoogleChartColumn(ObjectDiagramData.OverviewWorld.Off[1], ObjectDiagramData.OverviewWorld.Off[0]);
+        drawGoogleChartColumn(ObjectDiagramData.OverviewWorld[_typeOfPlayerData][1], ObjectDiagramData.OverviewWorld[_typeOfPlayerData][0]);
     }
 });
 
@@ -493,7 +493,7 @@ function manageContentAllianceMembers()
         strHtml += '</tr>';
     }
     var ArrayRows = buildArrayTableBody('TableAlliancePlayer', ObjectAlliancePlayerCur, strHtml);
-    resetDataTable('TableAlliancePlayer', ArrayRows, ArrayAlliancePlayerCurIdsAndNames);
+    resetDataTable('TableAlliancePlayer', ArrayRows, ArrayAlliancePlayerCurIdsAndNames, true);
     for (var keyPlayer in ObjectAlliancePlayerCur)
     {
         ObjectAlliancePlayerCur[keyPlayer]['AccountId'] = ArrayAlliancePlayerCurIdsAndNames[0][keyPlayer];
@@ -681,8 +681,11 @@ function manageContentAllianceOverview()
         });
         $.ajaxSetup({async: true});
     }
-    var ObjectAllianceOverviewCur = ObjectAllianceOverviewData[WorldId + '_' + AllianceId];
-    drawOverviews(ObjectAllianceOverviewCur, 'OverviewAlliance', 'Alliance');
+    var ObjectAllianceOverviewCurOff = ObjectAllianceOverviewData[WorldId + '_' + AllianceId][0];
+    var ObjectAllianceOverviewCurDef = ObjectAllianceOverviewData[WorldId + '_' + AllianceId][1];
+    createOverviews(ObjectAllianceOverviewCurOff, 'OverviewAlliance', 'Alliance', 'Offense');
+    createOverviews(ObjectAllianceOverviewCurDef, 'OverviewAlliance', 'Alliance', 'Defense');
+    drawOverviews('OverviewAlliance');
 }
 
 function manageContentBase()
@@ -746,8 +749,11 @@ function manageContentWorldOverview()
         });
         $.ajaxSetup({async: true});
     }
-    var ObjectWorldOverviewCur = ObjectWorldOverviewData[WorldId.toString()];
-    drawOverviews(ObjectWorldOverviewCur, 'OverviewWorld', 'World');
+    var ObjectWorldOverviewCurOff = ObjectWorldOverviewData[WorldId.toString()][0];
+    var ObjectWorldOverviewCurDef = ObjectWorldOverviewData[WorldId.toString()][1];
+    createOverviews(ObjectWorldOverviewCurOff, 'OverviewWorld', 'World', 'Offense');
+    createOverviews(ObjectWorldOverviewCurDef, 'OverviewWorld', 'World', 'Defense');
+    drawOverviews('OverviewWorld');
 }
 
 //==================================================
@@ -1113,11 +1119,18 @@ function buildArrayTableBody(_Id, _Object, _strHtml)
     return ArrayRows;
 }
 
-function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames)
+function resetDataTable(_Id, _ArrayRows, _ArrayIdsAndNames, _sort)
 {
     if (!$('#' + _Id + '.dataTable')[0])
     {
-        $('#' + _Id).DataTable({paging: false, order: [[1]]});
+        if (_sort)
+        {
+            $('#' + _Id).DataTable({paging: false, order: [[0, "asc"]]});
+        }
+        else
+        {
+            $('#' + _Id).DataTable({paging: false, order:[[1]]});
+        }
         $('.dataTables_info').parents()[1].remove();
         $('#' + _Id + '_wrapper').children()[1].style['overflow-x'] = 'auto';
         if (_Id == 'TablePlayerBase')
@@ -1186,31 +1199,39 @@ function drawDiagrams(_ObjectCur, _NameOfSubObject)
     });
 }
 
-function drawOverviews(_ObjectCur, _nameOfSubObject, _typeOfOverview)
+function createOverviews(_ObjectCur, _nameOfSubObject, _typeOfOverview, _typeOfPlayerData)
 {
-    ObjectDiagramData[_nameOfSubObject] = {};
-    ObjectDiagramData[_nameOfSubObject].Off = [[], []];
+    if (!ObjectDiagramData[_nameOfSubObject])
+    {
+        ObjectDiagramData[_nameOfSubObject] = {};
+    }
+    ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData] = [[], []];
     for (var i = 0; i <= 67; i++)
     {
-        ObjectDiagramData[_nameOfSubObject].Off[1].push(i);
+        ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][1].push(i);
     }
-    ObjectDiagramData[_nameOfSubObject].Off[1].push(_typeOfOverview + ' - Offense');
+    ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][1].push(_typeOfOverview + ' - ' + _typeOfPlayerData);
     var i = j = 0;
     for (var key in _ObjectCur)
     {
         if (parseInt(_ObjectCur[key]))
         {
-            ObjectDiagramData[_nameOfSubObject].Off[0][j] = [];
-            ObjectDiagramData[_nameOfSubObject].Off[0][j].push(parseInt(ObjectDiagramData[_nameOfSubObject].Off[1][i]));
-            ObjectDiagramData[_nameOfSubObject].Off[0][j].push(parseInt(_ObjectCur[key]));
-            ObjectDiagramData[_nameOfSubObject].Off[0].push(ObjectDiagramData[_nameOfSubObject].Off[0][j]);
+            ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0][j] = [];
+            ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0][j].push(parseInt(ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][1][i]));
+            ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0][j].push(parseInt(_ObjectCur[key]));
+            ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0].push(ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0][j]);
             j++;
         }
         i++;
     }
-    ObjectDiagramData[_nameOfSubObject].Off[0].pop();
-    ObjectDiagramData[_nameOfSubObject].Off[0].unshift(["Level", "Count"]);
-    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Off[1], ObjectDiagramData[_nameOfSubObject].Off[0]);}, 1);
+    ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0].pop();
+    ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][0].unshift(["Level", "Count"]);
+}
+
+function drawOverviews(_nameOfSubObject)
+{
+    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Offense[1], ObjectDiagramData[_nameOfSubObject].Offense[0]);}, 1);
+    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Defense[1], ObjectDiagramData[_nameOfSubObject].Defense[0]);}, 1);
 }
 
 function drawGoogleChartLine(_ArrayIndexes, _ArrayCurChart)

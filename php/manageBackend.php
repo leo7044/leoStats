@@ -630,60 +630,35 @@ if (!$conn->connect_error)
             {
                 $WorldId = $_post['WorldId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $strQuery .= "SELECT ";
-                    for ($i = 0; $i <= 66; $i++)
+                    $result = $conn->query(prepareSelectStringOverviewAlliance('LvLOff', $WorldId, $OwnAccountId));
+                    while ($zeile = $result->fetch_assoc())
                     {
-                        $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS LvLOff$i, ";
+                        array_push($UserAnswer, $zeile);
                     }
-                    $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS LvLOff67 ";
-                    $strQuery .=
-                    "FROM relation_bases b
-                    JOIN relation_alliance a ON a.WorldId=b.WorldId
-                    JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-                    JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
-                    WHERE b.WorldId=$WorldId
-                    AND a.AllianceId=
-                    (
-                        SELECT p.AllianceId FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=b.WorldId
-                    )
-                    AND
-                    ba.Zeit=
-                    (
-                        SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
-                    )";
+                    $result = $conn->query(prepareSelectStringOverviewAlliance('LvLDef', $WorldId, $OwnAccountId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
                 }
                 else
                 {
                     $AllianceId = $_post['AllianceId'];
-                    $strQuery .= "SELECT ";
-                    for ($i = 0; $i <= 66; $i++)
+                    $result = $conn->query(prepareSelectStringOverviewAllianceAdmin('LvLOff', $WorldId, $AllianceId));
+                    while ($zeile = $result->fetch_assoc())
                     {
-                        $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS LvLOff$i, ";
+                        array_push($UserAnswer, $zeile);
                     }
-                    $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS LvLOff67 ";
-                    $strQuery .=
-                    "FROM relation_bases b
-                    JOIN relation_alliance a ON a.WorldId=b.WorldId
-                    JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-                    JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
-                    WHERE b.WorldId=$WorldId
-                    AND a.AllianceId=$AllianceId
-                    AND
-                    ba.Zeit=
-                    (
-                        SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
-                    )";
-                }
-                $result = $conn->query($strQuery);
-                while ($zeile = $result->fetch_assoc())
-                {
-                    array_push($UserAnswer, $zeile);
+                    $result = $conn->query(prepareSelectStringOverviewAllianceAdmin('LvLDef', $WorldId, $AllianceId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
                 }
             }
-            echo json_encode($UserAnswer[0]);
+            echo json_encode($UserAnswer);
             break;
         }
         case 'getWorldOverviewData':
@@ -693,34 +668,21 @@ if (!$conn->connect_error)
             {
                 $WorldId = $_post['WorldId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $strQuery .= "SELECT ";
-                    for ($i = 0; $i <= 66; $i++)
+                    $result = $conn->query(prepareSelectStringOverviewWorld('LvLOff', $WorldId));
+                    while ($zeile = $result->fetch_assoc())
                     {
-                        $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS LvLOff$i, ";
+                        array_push($UserAnswer, $zeile);
                     }
-                    $strQuery .= "SUM(CASE WHEN ba.LvLOff BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS LvLOff67 ";
-                    $strQuery .=
-                    "FROM relation_bases b
-                    JOIN relation_alliance a ON a.WorldId=b.WorldId
-                    JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-                    JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
-                    WHERE b.WorldId=$WorldId
-                    AND
-                    ba.Zeit=
-                    (
-                        SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
-                    )";
-                }
-                $result = $conn->query($strQuery);
-                while ($zeile = $result->fetch_assoc())
-                {
-                    array_push($UserAnswer, $zeile);
+                    $result = $conn->query(prepareSelectStringOverviewWorld('LvLDef', $WorldId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
                 }
             }
-            echo json_encode($UserAnswer[0]);
+            echo json_encode($UserAnswer);
             break;
         }
         // Administration & settings
@@ -986,6 +948,77 @@ else
     $UserAnswer[0] = 0;
     $UserAnswer[1] = 'noDb';
     echo json_encode($UserAnswer);
+}
+
+function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAccountId)
+{
+    $strQuery = "SELECT ";
+    for ($i = 0; $i <= 66; $i++)
+    {
+        $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
+    }
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "67 ";
+    $strQuery .=
+        "FROM relation_bases b
+        JOIN relation_alliance a ON a.WorldId=b.WorldId
+        JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        WHERE b.WorldId='$WorldId'
+        AND a.AllianceId=
+        (
+            SELECT p.AllianceId FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=b.WorldId
+        )
+        AND
+        ba.Zeit=
+        (
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+        );";
+    return $strQuery;
+}
+
+function prepareSelectStringOverviewAllianceAdmin($typeOfPlayerData, $WorldId, $AllianceId)
+{
+    $strQuery = "SELECT ";
+    for ($i = 0; $i <= 66; $i++)
+    {
+        $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
+    }
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "67 ";
+    $strQuery .=
+        "FROM relation_bases b
+        JOIN relation_alliance a ON a.WorldId=b.WorldId
+        JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        WHERE b.WorldId='$WorldId'
+        AND a.AllianceId='$AllianceId'
+        AND
+        ba.Zeit=
+        (
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+        );";
+    return $strQuery;
+}
+
+function prepareSelectStringOverviewWorld($typeOfPlayerData, $WorldId)
+{
+    $strQuery = "SELECT ";
+    for ($i = 0; $i <= 66; $i++)
+    {
+        $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
+    }
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "67 ";
+    $strQuery .=
+        "FROM relation_bases b
+        JOIN relation_alliance a ON a.WorldId=b.WorldId
+        JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        WHERE b.WorldId='$WorldId'
+        AND
+        ba.Zeit=
+        (
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+        );";
+    return $strQuery;
 }
 
 // ersetzt Sonderzeichen (für schreiben in DB) // ersetzt durch hauseigene Fkt von PHP
