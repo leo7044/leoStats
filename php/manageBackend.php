@@ -642,6 +642,11 @@ if (!$conn->connect_error)
                     {
                         array_push($UserAnswer, $zeile);
                     }
+                    $result = $conn->query(prepareSelectStringOverviewAlliance('LvLSup', $WorldId, $OwnAccountId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
                 }
                 else
                 {
@@ -652,6 +657,11 @@ if (!$conn->connect_error)
                         array_push($UserAnswer, $zeile);
                     }
                     $result = $conn->query(prepareSelectStringOverviewAllianceAdmin('LvLDef', $WorldId, $AllianceId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                    $result = $conn->query(prepareSelectStringOverviewAllianceAdmin('LvLSup', $WorldId, $AllianceId));
                     while ($zeile = $result->fetch_assoc())
                     {
                         array_push($UserAnswer, $zeile);
@@ -676,6 +686,11 @@ if (!$conn->connect_error)
                         array_push($UserAnswer, $zeile);
                     }
                     $result = $conn->query(prepareSelectStringOverviewWorld('LvLDef', $WorldId));
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                    $result = $conn->query(prepareSelectStringOverviewWorld('LvLSup', $WorldId));
                     while ($zeile = $result->fetch_assoc())
                     {
                         array_push($UserAnswer, $zeile);

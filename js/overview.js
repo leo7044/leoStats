@@ -156,11 +156,17 @@ $(window).resize(function()
     }
     else if ($('#TabAllianceOverview.active')[0])
     {
-        drawGoogleChartColumn(ObjectDiagramData.OverviewAlliance[_typeOfPlayerData][1], ObjectDiagramData.OverviewAlliance[_typeOfPlayerData][0]);
+        for (var keyDiagramType in ObjectDiagramData.OverviewAlliance)
+        {
+            drawGoogleChartColumn(ObjectDiagramData.OverviewAlliance[keyDiagramType][1], ObjectDiagramData.OverviewAlliance[keyDiagramType][0]);
+        }
     }
     else if ($('#TabWorldOverview.active')[0])
     {
-        drawGoogleChartColumn(ObjectDiagramData.OverviewWorld[_typeOfPlayerData][1], ObjectDiagramData.OverviewWorld[_typeOfPlayerData][0]);
+        for (var keyDiagramType in ObjectDiagramData.OverviewWorld)
+        {
+            drawGoogleChartColumn(ObjectDiagramData.OverviewWorld[keyDiagramType][1], ObjectDiagramData.OverviewWorld[keyDiagramType][0]);
+        }
     }
 });
 
@@ -683,8 +689,10 @@ function manageContentAllianceOverview()
     }
     var ObjectAllianceOverviewCurOff = ObjectAllianceOverviewData[WorldId + '_' + AllianceId][0];
     var ObjectAllianceOverviewCurDef = ObjectAllianceOverviewData[WorldId + '_' + AllianceId][1];
+    var ObjectAllianceOverviewCurSup = ObjectAllianceOverviewData[WorldId + '_' + AllianceId][2];
     createOverviews(ObjectAllianceOverviewCurOff, 'OverviewAlliance', 'Alliance', 'Offense');
     createOverviews(ObjectAllianceOverviewCurDef, 'OverviewAlliance', 'Alliance', 'Defense');
+    createOverviews(ObjectAllianceOverviewCurSup, 'OverviewAlliance', 'Alliance', 'Support');
     drawOverviews('OverviewAlliance');
 }
 
@@ -751,8 +759,10 @@ function manageContentWorldOverview()
     }
     var ObjectWorldOverviewCurOff = ObjectWorldOverviewData[WorldId.toString()][0];
     var ObjectWorldOverviewCurDef = ObjectWorldOverviewData[WorldId.toString()][1];
+    var ObjectWorldOverviewCurSup = ObjectWorldOverviewData[WorldId.toString()][2];
     createOverviews(ObjectWorldOverviewCurOff, 'OverviewWorld', 'World', 'Offense');
     createOverviews(ObjectWorldOverviewCurDef, 'OverviewWorld', 'World', 'Defense');
+    createOverviews(ObjectWorldOverviewCurSup, 'OverviewWorld', 'World', 'Support');
     drawOverviews('OverviewWorld');
 }
 
@@ -1230,8 +1240,12 @@ function createOverviews(_ObjectCur, _nameOfSubObject, _typeOfOverview, _typeOfP
 
 function drawOverviews(_nameOfSubObject)
 {
-    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Offense[1], ObjectDiagramData[_nameOfSubObject].Offense[0]);}, 1);
-    setTimeout(function(){drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Defense[1], ObjectDiagramData[_nameOfSubObject].Defense[0]);}, 1);
+    setTimeout(function()
+    {
+        drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Offense[1], ObjectDiagramData[_nameOfSubObject].Offense[0]);
+        drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Defense[1], ObjectDiagramData[_nameOfSubObject].Defense[0]);
+        drawGoogleChartColumn(ObjectDiagramData[_nameOfSubObject].Support[1], ObjectDiagramData[_nameOfSubObject].Support[0]);
+    });
 }
 
 function drawGoogleChartLine(_ArrayIndexes, _ArrayCurChart)
