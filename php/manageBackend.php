@@ -1036,11 +1036,11 @@ function prepareSelectStringOverviewWorld($typeOfPlayerData, $WorldId)
     return $strQuery;
 }
 
-// ersetzt Sonderzeichen (für schreiben in DB) // ersetzt durch hauseigene Fkt von PHP
+// ersetzt Sonderzeichen (für schreiben in DB)
 function replaceChars($str)
 {
 	$str = str_replace("\\", "&#92;", $str); // Backslash
-	$str = str_replace("'", "&#39;", $str); // eInfaches Anführungszeichen
+	$str = str_replace("'", "&#39;", $str); // einfaches Anführungszeichen
 	$str = str_replace("`", "&#96;", $str); // schräges eInfaches Anführungszeichen links (gravis)
 	return $str;
 }
