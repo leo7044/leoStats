@@ -510,7 +510,7 @@ if (!$conn->connect_error)
                         AND
                         p.AllianceId IN
                         (
-                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=264 AND p.AccountId=2906176
+                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
                         )
                         AND
                         pl.AccountId='$AccountId'
