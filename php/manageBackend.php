@@ -38,7 +38,7 @@ if (!$conn->connect_error)
             }
             if (!$accountExists)
             {
-                $strQuery .= "INSERT INTO `login`(`AccountId`, `UserName`, `Password`) VALUES ('$AccountId', '$PlayerName', '$PasswordStandard');";
+                $strQuery .= "INSERT INTO `login`(`AccountId`, `UserName`, `Password`) VALUES ('$AccountId', '$PlayerName', '$PasswordStandardSha512');";
                 $Time = date("Y-m-d H:i:s");
                 $strQuery .= "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$PlayerName', 'Spieler angelegt', true);";
                 $UserAnswer[0] = 0;
@@ -57,6 +57,7 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 0;
                 $UserAnswer[1] = 'UserDidNotChangedPassword';
+                $strQuery .= "UPDATE `login` SET `Password`='$PasswordStandardSha512' WHERE AccountId='$AccountId';";
             }
             else
             {
@@ -231,6 +232,7 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 1;
                 $UserAnswer[1] = 'UserInDb';
+                $conn->query("UPDATE `login` SET `Password`='$PasswordSha512' WHERE UserName='$UserName';");
             }
             else
             {
@@ -710,13 +712,12 @@ if (!$conn->connect_error)
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 $AccountId = $_post['AccountId'];
-                $oldPwMd5 = md5($_post['InputOldPassword']);
-                $oldPwSha512 = hash('sha512', $_post['InputOldPassword']);
+                $oldPw = hash('sha512', $_post['InputOldPassword']);
                 $newPw = hash('sha512', $_post['InputNewPassword']);
                 $confNewPw = $_post['InputConfirmNewPassword'];
                 if ($OwnAccountId == $AccountId)
                 {
-                    $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId' AND (`Password`='$oldPwMd5' OR `Password`='$oldPwSha512');");
+                    $conn->query("UPDATE `login` SET `Password`='$newPw' WHERE AccountId='$AccountId' AND `Password`='$oldPw';");
                 }
                 else if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
