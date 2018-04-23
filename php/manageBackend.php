@@ -57,7 +57,6 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 0;
                 $UserAnswer[1] = 'UserDidNotChangedPassword';
-                $strQuery .= "UPDATE `login` SET `Password`='$PasswordStandardSha512' WHERE AccountId='$AccountId';";
             }
             else
             {
