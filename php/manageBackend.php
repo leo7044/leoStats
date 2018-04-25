@@ -23,8 +23,7 @@ if (!$conn->connect_error)
             // Login
             $AccountId = $ObjectPlayer['AccountId'];
             $PlayerName = $ObjectPlayer['PlayerName'];
-            $PasswordStandardMd5 = md5($PlayerName . '_' . $AccountId);
-            $PasswordStandardSha512 = hash('sha512', $PlayerName . '_' . $AccountId);
+            $PasswordStandard = hash('sha512', $PlayerName . '_' . $AccountId);
             $result = $conn->query("SELECT `AccountId`, `UserName`, `Password` FROM `login` WHERE `AccountId`='$AccountId';");
             $oldPlayerName = '';
             $password = '';
@@ -38,7 +37,7 @@ if (!$conn->connect_error)
             }
             if (!$accountExists)
             {
-                $strQuery .= "INSERT INTO `login`(`AccountId`, `UserName`, `Password`) VALUES ('$AccountId', '$PlayerName', '$PasswordStandardSha512');";
+                $strQuery .= "INSERT INTO `login`(`AccountId`, `UserName`, `Password`) VALUES ('$AccountId', '$PlayerName', '$PasswordStandard');";
                 $Time = date("Y-m-d H:i:s");
                 $strQuery .= "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$PlayerName', 'Spieler angelegt', true);";
                 $UserAnswer[0] = 0;
@@ -53,7 +52,7 @@ if (!$conn->connect_error)
                     $strQuery .= "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$PlayerName', 'Spieler umbenannt (alter Name: " . $oldPlayerName . ")', true);";
                 }
             }
-            if (!$password || $password == $PasswordStandardMd5 || $password == $PasswordStandardSha512)
+            if (!$password || $password == $PasswordStandard)
             {
                 $UserAnswer[0] = 0;
                 $UserAnswer[1] = 'UserDidNotChangedPassword';
@@ -214,10 +213,9 @@ if (!$conn->connect_error)
         {
             $UserAnswer = [];
             $UserName = $_post['UserName'];
-            $PasswordMd5 = md5($_post['Password']);
-            $PasswordSha512 = hash('sha512', $_post['Password']);
+            $Password = hash('sha512', $_post['Password']);
             $AccountId = 0;
-            $result = $conn->query("SELECT `AccountId` FROM `login` WHERE `UserName`='$UserName' AND (`Password`='$PasswordMd5' OR `Password`='$PasswordSha512');");
+            $result = $conn->query("SELECT `AccountId` FROM `login` WHERE `UserName`='$UserName' AND `Password`='$Password';");
             while ($zeile = $result->fetch_assoc())
             {
                 $_SESSION['leoStats_AccountId'] = $AccountId = $zeile['AccountId'];
@@ -231,7 +229,7 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 1;
                 $UserAnswer[1] = 'UserInDb';
-                $conn->query("UPDATE `login` SET `Password`='$PasswordSha512' WHERE UserName='$UserName';");
+                $conn->query("UPDATE `login` SET `Password`='$Password' WHERE UserName='$UserName';");
             }
             else
             {
