@@ -456,7 +456,7 @@ if (!$conn->connect_error)
                             AND
                             IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=s.WorldId)<=a.MemberRole,
+                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
                                 true,
                                 p.AccountId='$OwnAccountId'
                             )
@@ -532,7 +532,7 @@ if (!$conn->connect_error)
                             AND
                             IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=s.WorldId)<=a.MemberRole,
+                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
                                 true,
                                 p.AccountId='$OwnAccountId'
                             )
@@ -598,7 +598,7 @@ if (!$conn->connect_error)
                             AND
                             IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=s.WorldId)<=a.MemberRole,
+                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
                                 true,
                                 p.AccountId='$OwnAccountId'
                             )
