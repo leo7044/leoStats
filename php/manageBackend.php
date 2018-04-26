@@ -284,13 +284,15 @@ if (!$conn->connect_error)
                             SELECT p.AllianceId FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=s.WorldId
                         )
                         AND
-                        IF
                         (
-                            p.MemberRole<=a.MemberRole,
-                            true,
-                            p.AccountId='$OwnAccountId'
+                        IF
+                            (
+                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId')<=a.MemberRole,
+                                true,
+                                p.AccountId='$OwnAccountId'
+                            )
                         )
-                        ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC;";
+                        ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC";
                 }
                 else
                 {
