@@ -473,7 +473,7 @@ function manageContentAllianceMembers()
     $('#TableAlliancePlayerTheadTr')[0].children[1].style.minWidth = '64px';
     var ArrayAlliancePlayerCurIdsAndNames = [[], []];
     strHtml = '';
-    var ArrayExcludedFieldsFromUsNumberFormat = ['Zeit', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD'];
+    var ArrayExcludedFieldsFromUsNumberFormat = ['UserName', 'Zeit', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD'];
     for (var keyPlayer in ObjectAlliancePlayerCur)
     {
         strHtml += '<tr>';
