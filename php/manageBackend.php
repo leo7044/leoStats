@@ -292,7 +292,7 @@ if (!$conn->connect_error)
                                 p.AccountId='$OwnAccountId'
                             )
                         )
-                        ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC";
+                        ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC;";
                 }
                 else
                 {
