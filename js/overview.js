@@ -585,32 +585,55 @@ function manageContentAllianceBase()
     }
     var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
     var maxBaseCount = 0;
-    var lastName = '';
     var curBaseCount = 0;
-    var strHtml = '<tr>';
+    var lastName = '';
+    var nameCount = 0;
     for (key in curObjectAllianceBaseData)
     {
         if (curObjectAllianceBaseData[key]['UserName'] != lastName)
         {
             curBaseCount = 0;
-            strHtml += '</tr><tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+            nameCount++;
         }
-        strHtml += '<td style="text-align: right;">' + curObjectAllianceBaseData[key][type] + '</td>';
         lastName = curObjectAllianceBaseData[key]['UserName'];
-        curBaseCount += 1;
+        curBaseCount++;
         if (curBaseCount > maxBaseCount)
         {
             maxBaseCount = curBaseCount;
         }
     }
-    strHtml += '</tr>';
-    $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
-    strHtml = '<th>PlayerName</th>';
+    var strHtml = '<th>PlayerName</th>';
     for (var i = 1; i <= maxBaseCount; i++)
     {
         strHtml += '<th>Base ' + i + '</th>';
     }
     $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
+    strHtml = '';
+    for (var row = 0; row < nameCount; row++)
+    {
+        strHtml += '<tr><td></td>';
+        for (var col = 1; col <= maxBaseCount; col++)
+        {
+            strHtml += '<td style="text-align: right;"></td>';
+        }
+        strHtml += '</tr>';
+    }
+    $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
+    lastName = '';
+    curBaseCount = 1;
+    var nameCount = -1;
+    for (var key in curObjectAllianceBaseData)
+    {
+        if (curObjectAllianceBaseData[key]['UserName'] != lastName)
+        {
+            nameCount++;
+            curBaseCount = 1;
+            $('#TableAllianceBaseTbody')[0].children[nameCount].children[0].innerHTML = curObjectAllianceBaseData[key]['UserName'];
+        }
+        $('#TableAllianceBaseTbody')[0].children[nameCount].children[curBaseCount].innerHTML = curObjectAllianceBaseData[key][type];
+        lastName = curObjectAllianceBaseData[key]['UserName'];
+        curBaseCount++;
+    }
 }
 
 function manageContentPlayer()
