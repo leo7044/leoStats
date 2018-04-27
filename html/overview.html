@@ -53,6 +53,9 @@
                         <a id="TabAlliance" class="nav-link" data-toggle="tab" href="#ContentAlliance"><i class="fas fa-chart-line"></i> Alliance</a>
                     </li>
                     <li class="nav-item">
+                        <a id="TabAllianceBase" class="nav-link" data-toggle="tab" href="#ContentAllianceBase"><i class="fas fa-home"></i> Alliance - Bases</a>
+                    </li>
+                    <li class="nav-item">
                         <a id="TabAllianceOverview" class="nav-link" data-toggle="tab" href="#ContentAllianceOverview"><i class="fas fa-eye"></i> Alliance - Overview</a>
                     </li>
                     <li class="nav-item">
@@ -116,6 +119,21 @@
                     <div id="GoogleChartLineAlliancePoints" class="divGoogleChart"></div><br/>
                     <div id="GoogleChartLineAllianceBonus - Ressoucen" class="divGoogleChart"></div><br/>
                     <div id="GoogleChartLineAllianceBonus - Fight" class="divGoogleChart"></div><br/>
+                </div>
+                <div id="ContentAllianceBase" class="tab-pane">
+                    <select id="DropDownAllianceBaseType">
+                        <option id="LvLOff">LvLOff</option>
+                        <option id="LvLDef">LvLDef</option>
+                        <option id="LvLSup">LvLSup</option>
+                    </select><br/><br/>
+                    <div style="overflow-x: auto;">
+                        <table id="TableAllianceBase" border="1px">
+                            <thead>
+                                <tr id="TableAllianceBaseTheadTr"></tr>
+                            </thead>
+                            <tbody id="TableAllianceBaseTbody"></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div id="ContentAllianceOverview" class="tab-pane">
                     <div id="GoogleChartColumnAlliance - Offense" class="divGoogleChart"></div><br/>

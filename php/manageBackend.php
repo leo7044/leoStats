@@ -703,6 +703,45 @@ if (!$conn->connect_error)
             echo json_encode($UserAnswer);
             break;
         }
+        case 'getAllianceBaseData':
+        {
+            $UserAnswer = [];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $WorldId = $_post['WorldId'];
+                $type = $_post['type'];
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                }
+                else
+                {
+                    $AllianceId = $_post['AllianceId'];
+                    $strQuery =
+                        "SELECT l.UserName, ba.$type FROM relation_player p
+                        JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
+                        JOIN login l ON l.AccountId=p.AccountId
+                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+                        WHERE ba.Zeit=
+                        (
+                            SELECT ba.Zeit FROM bases ba
+                            WHERE ba.WorldId=p.WorldId
+                            AND ba.ID=b.BaseId
+                            ORDER BY ba.Zeit DESC LIMIT 1
+                        )
+                        AND p.WorldId='$WorldId'
+                        AND p.AllianceId='$AllianceId'
+                        ORDER BY l.UserName ASC, ba.Id ASC;";
+                    $result = $conn->query($strQuery);
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                }
+            }
+            echo json_encode($UserAnswer);
+            break;
+        }
         // Administration & settings
         case 'changePassword':
         {

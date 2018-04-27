@@ -10,6 +10,7 @@ var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
 var ObjectAlliancePlayerData = {};
 var ObjectAllianceData = {};
+var ObjectAllianceBaseData = {};
 var ObjectAllianceOverviewData = {};
 var ObjectBaseData = {};
 var ObjectWorldOverviewData = {};
@@ -76,6 +77,7 @@ function prepairOnClickEvents()
     $('#TabPlayerBase').click(prepareTabPlayerBase);
     $('#TabAllianceMembers').click(prepareTabAllianceMembers);
     $('#TabAlliance').click(prepareTabAlliance);
+    $('#TabAllianceBase').click(prepareTabAllianceBase);
     $('#TabAllianceOverview').click(prepareTabAllianceOverview);
     $('#TabBase').click(prepareTabBase);
     $('#TabWorldOverview').click(prepareTabWorldOverview);
@@ -84,6 +86,7 @@ function prepairOnClickEvents()
     $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
     $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
     $('#DropDownListBase').change(function(){HelpFunctionForChangedBase(true);});
+    $('#DropDownAllianceBaseType').change(manageContentAllianceBase);
     $('#ButtonResetPlayer').click(resetPlayer);
     $('#ButtonDeletePlayer').click(deletePlayer);
     $('#ButtonOptimizeAllTables').click(optimizeAllTables);
@@ -279,6 +282,10 @@ function prepareandFillDropDownListDataPlayer(_activeChanged)
     {
         manageContentAlliance();
     }
+    if($('#TabAllianceBase.active')[0])
+    {
+        manageContentAllianceBase();
+    }
     if($('#TabAllianceOverview.active')[0])
     {
         manageContentAllianceOverview();
@@ -385,6 +392,15 @@ function prepareTabAlliance()
     $('#DivDropDownListBase').addClass('d-none');
     manageContentAlliance();
     setCookie('TabId', 'TabAlliance');
+}
+
+function prepareTabAllianceBase()
+{
+    $('#DivDropDownListAlliance').removeClass('d-none');
+    $('#DivDropDownListPlayer').addClass('d-none');
+    $('#DivDropDownListBase').addClass('d-none');
+    manageContentAllianceBase();
+    setCookie('TabId', 'TabAllianceBase');
 }
 
 function prepareTabAllianceOverview()
@@ -542,6 +558,59 @@ function manageContentAlliance()
     ObjectDiagramData.Alliance.BonusRes = [[], ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower', 'AllianceBonus - Ressoucen']];
     ObjectDiagramData.Alliance.BonusFight = [[], ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef', 'AllianceBonus - Fight']];
     drawDiagrams(ObjectAllianceCur, 'Alliance');
+}
+
+function manageContentAllianceBase()
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    var AllianceId = $('#DropDownListAlliance')[0].value;
+    var type = $('#DropDownAllianceBaseType')[0].value;
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId] || !ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
+    {
+        var data =
+        {
+            action: "getAllianceBaseData",
+            WorldId: WorldId,
+            AllianceId: AllianceId,
+            type: type
+        }
+        $.ajaxSetup({async: false});
+        $.post('php/manageBackend.php', data)
+        .always(function(data)
+        {
+            ObjectAllianceBaseData[WorldId + '_' + AllianceId] = {};
+            ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = data;
+        });
+        $.ajaxSetup({async: true});
+    }
+    var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
+    var maxBaseCount = 0;
+    var lastName = '';
+    var curBaseCount = 0;
+    var strHtml = '<tr>';
+    for (key in curObjectAllianceBaseData)
+    {
+        if (curObjectAllianceBaseData[key]['UserName'] != lastName)
+        {
+            curBaseCount = 0;
+            strHtml += '</tr><tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+        }
+        strHtml += '<td style="text-align: right;">' + curObjectAllianceBaseData[key][type] + '</td>';
+        lastName = curObjectAllianceBaseData[key]['UserName'];
+        curBaseCount += 1;
+        if (curBaseCount > maxBaseCount)
+        {
+            maxBaseCount = curBaseCount;
+        }
+    }
+    strHtml += '</tr>';
+    $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
+    strHtml = '<th>PlayerName</th>';
+    for (var i = 1; i <= maxBaseCount; i++)
+    {
+        strHtml += '<th>Base ' + i + '</th>';
+    }
+    $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
 }
 
 function manageContentPlayer()
