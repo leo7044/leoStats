@@ -28,7 +28,6 @@ function initializeStart()
 {
     getSessionVariables();
     getSeasonServerIds();
-    prepairOnClickEvents();
     getDropDownListData();
     prepareandFillDropDownListDataWorld();
     if (getCookie('TabId'))
@@ -69,42 +68,6 @@ function getSeasonServerIds()
         ArraySeasonServerIds = data;
     });
     $.ajaxSetup({async: true});
-}
-
-function prepairOnClickEvents()
-{
-    $('#TabPlayer').click(prepareTabPlayer);
-    $('#TabPlayerBase').click(prepareTabPlayerBase);
-    $('#TabAllianceMembers').click(prepareTabAllianceMembers);
-    $('#TabAlliance').click(prepareTabAlliance);
-    $('#TabAllianceBase').click(prepareTabAllianceBase);
-    $('#TabAllianceOverview').click(prepareTabAllianceOverview);
-    $('#TabBase').click(prepareTabBase);
-    $('#TabWorldOverview').click(prepareTabWorldOverview);
-    $('#TabSettings').click(prepareTabSettings);
-    $('#DropDownListWorld').change(function(){prepareandFillDropDownListDataAlliance(true);});
-    $('#DropDownListAlliance').change(function(){prepareandFillDropDownListDataPlayer(true);});
-    $('#DropDownListPlayer').change(function(){prepareandFillDropDownListDataBase(true);});
-    $('#DropDownListBase').change(function(){HelpFunctionForChangedBase(true);});
-    $('#DropDownAllianceBaseType').change(manageContentAllianceBase);
-    $('#ButtonResetPlayer').click(resetPlayer);
-    $('#ButtonDeletePlayer').click(deletePlayer);
-    $('#ButtonOptimizeAllTables').click(optimizeAllTables);
-    $('#ButtonDeleteServer').click(deleteServer);
-    $('#ButtonCancelChangePassword').click(resetFormChangePassword);
-    $('#FormChangePassword')[0].onsubmit =
-    function()
-    {
-        return changePassword();
-    };
-    $('#InputNewPassword').change(validatePassword);
-    $('#InputConfirmNewPassword').keyup(validatePassword);
-    $('#v-pills-alliance-tab').click(prepareSettingsAlliance);
-    $('#ButtonCancelChangeNeededMemberRole').click(prepareSettingsAlliance);
-    $('#ButtonSaveChangeNeededMemberRole').click(saveChangeNeededMemberRole);
-    $('#v-pills-server-tab').click(prepareSettingsServer);
-    $('#ButtonDownloadPlayerBaseData').click(function(){manageDownloadOfTable(this);});
-    $('#ButtonDownloadAlliancePlayerData').click(function(){manageDownloadOfTable(this);});
 }
 
 //==================================================
@@ -605,7 +568,7 @@ function manageContentAllianceBase()
     var strHtml = '<th>PlayerName</th>';
     for (var i = 1; i <= maxBaseCount; i++)
     {
-        strHtml += '<th>Base ' + i + '</th>';
+        strHtml += '<th style="text-align: center;">Base ' + i + '</th>';
     }
     $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
     strHtml = '';
@@ -622,6 +585,15 @@ function manageContentAllianceBase()
     lastName = '';
     curBaseCount = 1;
     var nameCount = -1;
+    var maxLvL = alasql('SELECT MAX(' + type + ') FROM ?',[curObjectAllianceBaseData])[0]['MAX(' + type + ')'];
+    var ArrayColors =
+    [
+        '#33CC33', '#44CC33', '#55CC33', '#66CC33', '#77CC33',
+        '#88CC33', '#99CC33', '#AACC33', '#BBCC33', '#CCCC33',
+        '#CCBB33', '#CCAA33', '#CC9933', '#CC8833', '#CC7733',
+        '#CC6633', '#CC5533', '#CC4433', '#CC3333'
+    ];
+    var curColor = '';
     for (var key in curObjectAllianceBaseData)
     {
         if (curObjectAllianceBaseData[key]['UserName'] != lastName)
@@ -630,6 +602,28 @@ function manageContentAllianceBase()
             curBaseCount = 1;
             $('#TableAllianceBaseTbody')[0].children[nameCount].children[0].innerHTML = curObjectAllianceBaseData[key]['UserName'];
         }
+        var procentLvLOff = parseFloat(curObjectAllianceBaseData[key][type]) / parseFloat(maxLvL);
+        if (procentLvLOff >= 0.99){curColor = ArrayColors[0];}
+        else if (procentLvLOff >= 0.98){curColor = ArrayColors[1];}
+        else if (procentLvLOff >= 0.97){curColor = ArrayColors[2];}
+        else if (procentLvLOff >= 0.96){curColor = ArrayColors[3];}
+        else if (procentLvLOff >= 0.95){curColor = ArrayColors[4];}
+        else if (procentLvLOff >= 0.94){curColor = ArrayColors[5];}
+        else if (procentLvLOff >= 0.93){curColor = ArrayColors[6];}
+        else if (procentLvLOff >= 0.92){curColor = ArrayColors[7];}
+        else if (procentLvLOff >= 0.91){curColor = ArrayColors[8];}
+        else if (procentLvLOff >= 0.90){curColor = ArrayColors[9];}
+        else if (procentLvLOff >= 0.80){curColor = ArrayColors[10];}
+        else if (procentLvLOff >= 0.70){curColor = ArrayColors[11];}
+        else if (procentLvLOff >= 0.60){curColor = ArrayColors[12];}
+        else if (procentLvLOff >= 0.50){curColor = ArrayColors[13];}
+        else if (procentLvLOff >= 0.40){curColor = ArrayColors[14];}
+        else if (procentLvLOff >= 0.30){curColor = ArrayColors[15];}
+        else if (procentLvLOff >= 0.20){curColor = ArrayColors[16];}
+        else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
+        else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
+        else {curColor = '';}
+        $('#TableAllianceBaseTbody')[0].children[nameCount].children[curBaseCount].style.backgroundColor = curColor;
         $('#TableAllianceBaseTbody')[0].children[nameCount].children[curBaseCount].innerHTML = curObjectAllianceBaseData[key][type];
         lastName = curObjectAllianceBaseData[key]['UserName'];
         curBaseCount++;
@@ -891,9 +885,7 @@ function manageContentSettings()
     {
         $('#v-pills-alliance-tab').addClass('d-none');
     }
-    resetFormChangePassword();
-    $('#PasswordChangeFail').addClass('d-none');
-    $('#PasswordChangeSuccess').addClass('d-none');
+    resetFormChangePassword(true);
 }
 
 function resetViewSettingsTabs()
@@ -930,9 +922,14 @@ function changePassword()
     return false;
 }
 
-function resetFormChangePassword()
+function resetFormChangePassword(_activeClicked)
 {
     document.forms.FormChangePassword.reset();
+    if (_activeClicked)
+    {
+        $('#PasswordChangeFail').addClass('d-none');
+        $('#PasswordChangeSuccess').addClass('d-none');
+    }
     $('#InputUserName')[0].value = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
 }
 

@@ -14,7 +14,7 @@
         <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> <!-- DataTable -->
         <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script> <!-- DataTable -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.5/alasql.min.js"></script> <!-- alasql -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.8/xlsx.core.min.js"></script> <!-- .xlsx-Export -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.12.10/xlsx.core.min.js"></script> <!-- .xlsx-Export -->
         <script src="https://www.gstatic.com/charts/loader.js"></script> <!-- GoogleChart -->      
 		<script src="js/overview.js"></script> <!-- alles eigene -->
 
@@ -41,44 +41,44 @@
             <div class="sticky-top own-jumbotron-bgcolor">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a id="TabPlayer" class="nav-link active show" data-toggle="tab" href="#ContentPlayer"><i class="fas fa-user"></i> Player</a>
+                        <a id="TabPlayer" class="nav-link active show" data-toggle="tab" href="#ContentPlayer" onclick="prepareTabPlayer();"><i class="fas fa-user"></i> Player</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabPlayerBase" class="nav-link" data-toggle="tab" href="#ContentPlayerBase"><i class="fas fa-street-view"></i> Player - Bases</a>
+                        <a id="TabPlayerBase" class="nav-link" data-toggle="tab" href="#ContentPlayerBase" onclick="prepareTabPlayerBase();"><i class="fas fa-street-view"></i> Player - Bases</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabAllianceMembers" class="nav-link" data-toggle="tab" href="#ContentAllianceMembers"><i class="fas fa-users"></i> Members</a>
+                        <a id="TabAllianceMembers" class="nav-link" data-toggle="tab" href="#ContentAllianceMembers" onclick="prepareTabAllianceMembers();"><i class="fas fa-users"></i> Members</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabAlliance" class="nav-link" data-toggle="tab" href="#ContentAlliance"><i class="fas fa-chart-line"></i> Alliance</a>
+                        <a id="TabAlliance" class="nav-link" data-toggle="tab" href="#ContentAlliance" onclick="prepareTabAlliance();"i class="fas fa-chart-line"></i> Alliance</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabAllianceBase" class="nav-link" data-toggle="tab" href="#ContentAllianceBase"><i class="fas fa-home"></i> Alliance - Bases</a>
+                        <a id="TabAllianceBase" class="nav-link" data-toggle="tab" href="#ContentAllianceBase" onclick="prepareTabAllianceBase();"><i class="fas fa-home"></i> Alliance - Bases</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabAllianceOverview" class="nav-link" data-toggle="tab" href="#ContentAllianceOverview"><i class="fas fa-eye"></i> Alliance - Overview</a>
+                        <a id="TabAllianceOverview" class="nav-link" data-toggle="tab" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><i class="fas fa-eye"></i> Alliance - Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabBase" class="nav-link" data-toggle="tab" href="#ContentBase"><i class="fas fa-home"></i> Base</a>
+                        <a id="TabBase" class="nav-link" data-toggle="tab" href="#ContentBase" onclick="prepareTabBase();"><i class="fas fa-home"></i> Base</a>
                     </li>
                     <li id="LiTabWorldOverview" class="nav-item d-none">
-                        <a id="TabWorldOverview" class="nav-link" data-toggle="tab" href="#ContentWorldOverview"><i class="fas fa-globe"></i> World - Overview</a>
+                        <a id="TabWorldOverview" class="nav-link" data-toggle="tab" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><i class="fas fa-globe"></i> World - Overview</a>
                     </li>
                     <li class="nav-item">
-                        <a id="TabSettings" class="nav-link" data-toggle="tab" href="#ContentSettings"><i class="fas fa-cogs"></i> Settings</a>
+                        <a id="TabSettings" class="nav-link" data-toggle="tab" href="#ContentSettings" onclick="prepareTabSettings();"><i class="fas fa-cogs"></i> Settings</a>
                     </li>
                 </ul><br/>
                 <div class="row">
-                    <div id="DivDropDownListWorld" class="col-md-3 form-group">
+                    <div id="DivDropDownListWorld" class="col-md-3 form-group" onchange="prepareandFillDropDownListDataAlliance(true);">
                         <select class="form-control" id="DropDownListWorld"></select>
                     </div>
-                    <div id="DivDropDownListAlliance" class="col-md-3 form-group">
+                    <div id="DivDropDownListAlliance" class="col-md-3 form-group" onchange="prepareandFillDropDownListDataPlayer(true);">
                         <select class="form-control" id="DropDownListAlliance"></select>
                     </div>
-                    <div id="DivDropDownListPlayer" class="col-md-3 form-group">
+                    <div id="DivDropDownListPlayer" class="col-md-3 form-group" onchange="prepareandFillDropDownListDataBase(true);">
                         <select class="form-control" id="DropDownListPlayer"></select>
                     </div>
-                    <div id="DivDropDownListBase" class="col-md-3 form-group d-none">
+                    <div id="DivDropDownListBase" class="col-md-3 form-group d-none" onchange="HelpFunctionForChangedBase(true);">
                         <select class="form-control" id="DropDownListBase"></select>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         </thead>
                         <tbody id="TablePlayerBaseTbody"></tbody>
                     </table>
-                    <br/><button id="ButtonDownloadPlayerBaseData" class="btn btn-primary float-right"><i class="fas fa-download"></i> Download</button>
+                    <br/><button id="ButtonDownloadPlayerBaseData" class="btn btn-primary float-right" onclick="manageDownloadOfTable(this);"><i class="fas fa-download"></i> Download</button>
                 </div>
                 <div id="ContentAllianceMembers" class="tab-pane">
                     <table id="TableAlliancePlayer" class="table table-striped table-bordered table-hover">
@@ -112,7 +112,7 @@
                         </thead>
                         <tbody id="TableAlliancePlayerTbody"></tbody>
                     </table>
-                    <br/><button id="ButtonDownloadAlliancePlayerData" class="btn btn-primary float-right"><i class="fas fa-download"></i> Download</button>
+                    <br/><button id="ButtonDownloadAlliancePlayerData" class="btn btn-primary float-right" onclick="manageDownloadOfTable(this);"><i class="fas fa-download"></i> Download</button>
                 </div>
                 <div id="ContentAlliance" class="tab-pane">
                     <div id="GoogleChartLineAllianceRank" class="divGoogleChart"></div><br/>
@@ -121,7 +121,7 @@
                     <div id="GoogleChartLineAllianceBonus - Fight" class="divGoogleChart"></div><br/>
                 </div>
                 <div id="ContentAllianceBase" class="tab-pane">
-                    <select id="DropDownAllianceBaseType">
+                    <select id="DropDownAllianceBaseType" onchange="manageContentAllianceBase();">
                         <option id="LvLOff">LvLOff</option>
                         <option id="LvLDef">LvLDef</option>
                         <option id="LvLSup">LvLSup</option>
@@ -155,13 +155,13 @@
                     <div class="row">
                         <div class="col-md-3 nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                             <a class="nav-link active" id="v-pills-player-tab" data-toggle="pill" href="#v-pills-player" role="tab" aria-controls="v-pills-player" aria-selected="true">Player</a>
-                            <a class="nav-link d-none" id="v-pills-alliance-tab" data-toggle="pill" href="#v-pills-alliance" role="tab" aria-controls="v-pills-alliance" aria-selected="false">Alliance</a>
-                            <a class="nav-link d-none" id="v-pills-server-tab" data-toggle="pill" href="#v-pills-server" role="tab" aria-controls="v-pills-server" aria-selected="false">Server</a>
+                            <a class="nav-link d-none" id="v-pills-alliance-tab" data-toggle="pill" href="#v-pills-alliance" role="tab" aria-controls="v-pills-alliance" aria-selected="false" onclick="prepareSettingsAlliance();">Alliance</a>
+                            <a class="nav-link d-none" id="v-pills-server-tab" data-toggle="pill" href="#v-pills-server" role="tab" aria-controls="v-pills-server" aria-selected="false" onclick="prepareSettingsServer();">Server</a>
                         </div>
                         <div class="col-md-9 tab-content" id="v-pills-tabContent">
                             <div class="tab-pane fade show active" id="v-pills-player" role="tabpanel" aria-labelledby="v-pills-player-tab">
                                 <h3>Change Password</h3>
-                                <form method="POST" action="" id="FormChangePassword">
+                                <form method="POST" action="" id="FormChangePassword" onsubmit="return changePassword();">
                                     <div class="form-group">
                                         <input class="form-control" id="InputUserName" name="InputUserName" required readonly disabled />
                                     </div>
@@ -169,13 +169,13 @@
                                         <input type="password" class="form-control" id="InputOldPassword" name="InputOldPassword" placeholder="Old password" required />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" id="InputNewPassword" name="InputNewPassword" placeholder="New password" required />
+                                        <input type="password" class="form-control" id="InputNewPassword" name="InputNewPassword" placeholder="New password" onchange="validatePassword();" required />
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" id="InputConfirmNewPassword" name="InputConfirmNewPassword" placeholder="Confirm new password" required />
+                                        <input type="password" class="form-control" id="InputConfirmNewPassword" name="InputConfirmNewPassword" placeholder="Confirm new password" onkeyup="validatePassword();" required />
                                     </div>
                                     <div class="form-group">
-                                        <button type="button" class="btn btn-danger" id="ButtonCancelChangePassword"><i class="fas fa-times"></i> Cancel</button>
+                                        <button type="button" class="btn btn-danger" id="ButtonCancelChangePassword" onclick="resetFormChangePassword(true);"><i class="fas fa-times"></i> Cancel</button>
                                         &nbsp;&nbsp;&nbsp;<button type="submit" class="btn btn-success float-right" id="ButtonConfirmhangePassword"><i class="fas fa-check"></i> Confirm</button>
                                     </div>
                                     <div class="alert alert-danger d-none" id="PasswordChangeFail">
@@ -188,8 +188,8 @@
                                 <div id="AdminButtonsPlayer" class="d-none">
                                     <h3>Admin-Settings</h3>
                                     <div class="form-group">
-                                        <button id="ButtonResetPlayer" class="btn btn-warning"><i class="fas fa-sync"></i> reset Player</button>
-                                        <button id="ButtonDeletePlayer" class="btn btn-danger"><i class="fas fa-user-times"></i> delete Player</button>
+                                        <button id="ButtonResetPlayer" class="btn btn-warning" onclick="resetPlayer();"><i class="fas fa-sync"></i> reset Player</button>
+                                        <button id="ButtonDeletePlayer" class="btn btn-danger" onclick="deletePlayer();"><i class="fas fa-user-times"></i> delete Player</button>
                                     </div>
                                 </div>
                             </div>
@@ -211,10 +211,10 @@
                                                 </select>
                                             </div>
                                             <div class="col-lg-2 form-group">
-                                                <button id="ButtonCancelChangeNeededMemberRole" class="btn btn-danger btn-block"><i class="fas fa-times"></i> Cancel</button>
+                                                <button id="ButtonCancelChangeNeededMemberRole" class="btn btn-danger btn-block" onclick="prepareSettingsAlliance();"><i class="fas fa-times"></i> Cancel</button>
                                             </div>
                                             <div class="col-lg-2 form-group">
-                                                <button id="ButtonSaveChangeNeededMemberRole" class="btn btn-success btn-block"><i class="fas fa-check"></i> Save</button>
+                                                <button id="ButtonSaveChangeNeededMemberRole" class="btn btn-success btn-block" onclick="saveChangeNeededMemberRole();"><i class="fas fa-check"></i> Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -235,8 +235,8 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="v-pills-server" role="tabpanel" aria-labelledby="v-pills-server-tab">
-                                <button id="ButtonOptimizeAllTables" class="btn btn-primary"><i class="fas fa-table"></i> optimize all tables</button>
-                                &nbsp;&nbsp;&nbsp;<button id="ButtonDeleteServer" class="btn btn-danger"><i class="fas fa-times"></i> delete server</button>
+                                <button id="ButtonOptimizeAllTables" class="btn btn-primary" onclick="optimizeAllTables();"><i class="fas fa-table"></i> optimize all tables</button>
+                                &nbsp;&nbsp;&nbsp;<button id="ButtonDeleteServer" class="btn btn-danger" onclick="deleteServer();"><i class="fas fa-times"></i> delete server</button>
                                 <br/><br/><i id="LoadingSymbol" class="fas fa-sync fa-spin fa-6x d-none"></i><br/><br/>
                                 <table id="TableAdminLog" class="table table-striped table-bordered table-hover">
                                     <thead>

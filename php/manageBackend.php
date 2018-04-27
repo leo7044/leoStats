@@ -285,7 +285,7 @@ if (!$conn->connect_error)
                         )
                         AND
                         (
-                        IF
+                            IF
                             (
                                 (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=s.WorldId)<=a.MemberRole,
                                 true,
@@ -454,11 +454,13 @@ if (!$conn->connect_error)
                                 SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
                             )
                             AND
-                            IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
-                                true,
-                                p.AccountId='$OwnAccountId'
+                                IF
+                                (
+                                    (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
+                                    true,
+                                    p.AccountId='$OwnAccountId'
+                                )
                             )
                         )
                         AND
@@ -530,11 +532,13 @@ if (!$conn->connect_error)
                                 SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
                             )
                             AND
-                            IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
-                                true,
-                                p.AccountId='$OwnAccountId'
+                                IF
+                                (
+                                    (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
+                                    true,
+                                    p.AccountId='$OwnAccountId'
+                                )
                             )
                         )
                         ORDER BY pl.Zeit ASC;";
@@ -596,11 +600,13 @@ if (!$conn->connect_error)
                                 SELECT p.AllianceId FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId=b.WorldId
                             )
                             AND
-                            IF
                             (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
-                                true,
-                                p.AccountId='$OwnAccountId'
+                                IF
+                                (
+                                    (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
+                                    true,
+                                    p.AccountId='$OwnAccountId'
+                                )
                             )
                         )
                         ORDER BY ba.Zeit ASC";
@@ -713,6 +719,34 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
+                    $strQuery =
+                        "SELECT l.UserName, ba.$type FROM relation_player p
+                        JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
+                        JOIN login l ON l.AccountId=p.AccountId
+                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+                        JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+                        WHERE ba.Zeit=
+                        (
+                            SELECT ba.Zeit FROM bases ba
+                            WHERE ba.WorldId=p.WorldId
+                            AND ba.ID=b.BaseId
+                            ORDER BY ba.Zeit DESC LIMIT 1
+                        )
+                        AND p.WorldId='$WorldId'
+                        AND a.AllianceId=
+                        (
+                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
+                        )
+                        AND
+                        (
+                            IF
+                            (
+                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
+                                true,
+                                p.AccountId='$OwnAccountId'
+                            )
+                        )
+                        ORDER BY l.UserName ASC, ba.Id ASC;";
                 }
                 else
                 {
@@ -732,11 +766,11 @@ if (!$conn->connect_error)
                         AND p.WorldId='$WorldId'
                         AND p.AllianceId='$AllianceId'
                         ORDER BY l.UserName ASC, ba.Id ASC;";
-                    $result = $conn->query($strQuery);
-                    while ($zeile = $result->fetch_assoc())
-                    {
-                        array_push($UserAnswer, $zeile);
-                    }
+                }
+                $result = $conn->query($strQuery);
+                while ($zeile = $result->fetch_assoc())
+                {
+                    array_push($UserAnswer, $zeile);
                 }
             }
             echo json_encode($UserAnswer);
