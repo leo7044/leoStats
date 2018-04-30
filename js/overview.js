@@ -1451,6 +1451,10 @@ function sortTable(_rowId, _tableId, _order)
                 dir = "desc";
                 switching = true;
             }
+            if (rows.length == 2)
+            {
+                break;
+            }
         }
     }
 }
