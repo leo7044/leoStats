@@ -19,7 +19,7 @@
 	max-width: 90%
 }
 
-a
+a, th
 {
 	cursor: pointer;
 }
