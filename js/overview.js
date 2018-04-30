@@ -528,7 +528,11 @@ function manageContentAllianceBase()
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var type = $('#DropDownAllianceBaseType')[0].value;
-    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId] || !ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId])
+    {
+        ObjectAllianceBaseData[WorldId + '_' + AllianceId] = {};
+    }
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
     {
         var data =
         {
@@ -541,7 +545,6 @@ function manageContentAllianceBase()
         $.post('php/manageBackend.php', data)
         .always(function(data)
         {
-            ObjectAllianceBaseData[WorldId + '_' + AllianceId] = {};
             ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = data;
         });
         $.ajaxSetup({async: true});
@@ -571,17 +574,6 @@ function manageContentAllianceBase()
         strHtml += '<th style="text-align: center;">Base ' + i + '</th>';
     }
     $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
-    strHtml = '';
-    for (var row = 0; row < nameCount; row++)
-    {
-        strHtml += '<tr><td></td>';
-        for (var col = 1; col <= maxBaseCount; col++)
-        {
-            strHtml += '<td style="text-align: right;"></td>';
-        }
-        strHtml += '</tr>';
-    }
-    $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
     lastName = '';
     curBaseCount = 1;
     var nameCount = -1;
@@ -594,13 +586,26 @@ function manageContentAllianceBase()
         '#CC6633', '#CC5533', '#CC4433', '#CC3333'
     ];
     var curColor = '';
+    strHtml = '';
     for (var key in curObjectAllianceBaseData)
     {
         if (curObjectAllianceBaseData[key]['UserName'] != lastName)
         {
-            nameCount++;
-            curBaseCount = 1;
-            $('#TableAllianceBaseTbody')[0].children[nameCount].children[0].innerHTML = curObjectAllianceBaseData[key]['UserName'];
+            if (key != 0)
+            {
+                nameCount++;
+                while (curBaseCount <= maxBaseCount)
+                {
+                    strHtml += '<td></td>';
+                    curBaseCount ++;
+                }
+                curBaseCount = 1;
+                strHtml += '</tr><tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+            }
+            else
+            {
+                strHtml += '<tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+            }
         }
         var procentLvLOff = parseFloat(curObjectAllianceBaseData[key][type]) / parseFloat(maxLvL);
         if (procentLvLOff >= 0.99){curColor = ArrayColors[0];}
@@ -623,11 +628,12 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
-        $('#TableAllianceBaseTbody')[0].children[nameCount].children[curBaseCount].style.backgroundColor = curColor;
-        $('#TableAllianceBaseTbody')[0].children[nameCount].children[curBaseCount].innerHTML = curObjectAllianceBaseData[key][type];
+        strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + curObjectAllianceBaseData[key][type] + '</td>';
         lastName = curObjectAllianceBaseData[key]['UserName'];
         curBaseCount++;
     }
+    strHtml += '</tr>';
+    $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
 }
 
 function manageContentPlayer()
