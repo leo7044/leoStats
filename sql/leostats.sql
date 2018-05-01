@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.8
+-- version 4.8.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 04. Mrz 2018 um 12:17
--- Server-Version: 10.2.13-MariaDB
--- PHP-Version: 7.2.3
+-- Erstellungszeit: 01. Mai 2018 um 17:19
+-- Server-Version: 10.2.14-MariaDB
+-- PHP-Version: 7.2.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -186,6 +186,7 @@ CREATE TABLE `relation_player` (
   `WorldId` int(11) NOT NULL,
   `AllianceId` int(11) NOT NULL,
   `AccountId` int(11) NOT NULL,
+  `Faction` int(11) NOT NULL,
   `MemberRole` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
