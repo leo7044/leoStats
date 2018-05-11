@@ -571,9 +571,9 @@ function manageContentAllianceBase()
     var strHtml =
         '<th onclick="sortTable(0, \'TableAllianceBase\', \'asc\')">PlayerName</th>' +
         '<th onclick="sortTable(1, \'TableAllianceBase\', \'asc\')">Faction</th>';
-    for (var i = 2; i <= maxBaseCount + 1; i++)
+    for (var i = 1; i <= maxBaseCount; i++)
     {
-        strHtml += '<th style="text-align: center;" onclick="sortTable(' + i + ', \'TableAllianceBase\', \'desc\')">Base ' + i + '</th>';
+        strHtml += '<th style="text-align: center;" onclick="sortTable(' + (i + 1) + ', \'TableAllianceBase\', \'desc\')">Base ' + i + '</th>';
     }
     $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
     lastName = '';
