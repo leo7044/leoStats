@@ -568,8 +568,10 @@ function manageContentAllianceBase()
             maxBaseCount = curBaseCount;
         }
     }
-    var strHtml = '<th onclick="sortTable(0, \'TableAllianceBase\', \'asc\')">PlayerName</th>';
-    for (var i = 1; i <= maxBaseCount; i++)
+    var strHtml =
+        '<th onclick="sortTable(0, \'TableAllianceBase\', \'asc\')">PlayerName</th>' +
+        '<th onclick="sortTable(1, \'TableAllianceBase\', \'asc\')">Faction</th>';
+    for (var i = 2; i <= maxBaseCount + 1; i++)
     {
         strHtml += '<th style="text-align: center;" onclick="sortTable(' + i + ', \'TableAllianceBase\', \'desc\')">Base ' + i + '</th>';
     }
@@ -600,11 +602,15 @@ function manageContentAllianceBase()
                     curBaseCount ++;
                 }
                 curBaseCount = 1;
-                strHtml += '</tr><tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+                strHtml += '</tr><tr>' +
+                    '<td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>' +
+                    '<td style="text-align: center;"><img src="img/faction_' + curObjectAllianceBaseData[key]['Faction'] + '.png" width="20px" height="20px"></td>';
             }
             else
             {
-                strHtml += '<tr><td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>';
+                strHtml +=
+                    '<td>' + curObjectAllianceBaseData[key]['UserName'] + '</td>' +
+                    '<td style="text-align: center;"><img src="img/faction_' + curObjectAllianceBaseData[key]['Faction'] + '.png" width="20px" height="20px"></td>';
             }
         }
         var procentLvLOff = parseFloat(curObjectAllianceBaseData[key][type]) / parseFloat(maxLvL);
