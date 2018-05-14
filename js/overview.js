@@ -17,7 +17,7 @@ var ObjectWorldOverviewData = {};
 // DiagramData
 var ObjectDiagramData = {};
 var indexWorldId = 0;
-var ArrayAdminLog = null;;
+var ArrayAdminLog = null;
 
 $(document).ready(function()
 {
@@ -634,7 +634,14 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
-        strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + curObjectAllianceBaseData[key][type] + '</td>';
+		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
+		{
+			strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + curObjectAllianceBaseData[key][type] + '</td>';
+		}
+		else
+		{
+			strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + Intl.NumberFormat('en-US').format(curObjectAllianceBaseData[key][type]) + '</td>';
+		}
         lastName = curObjectAllianceBaseData[key]['UserName'];
         curBaseCount++;
         if (key == curObjectAllianceBaseData.length -1)
@@ -1422,22 +1429,44 @@ function sortTable(_rowId, _tableId, _order)
             shouldSwitch = false;
             x = rows[i].getElementsByTagName("td")[_rowId];
             y = rows[i + 1].getElementsByTagName("td")[_rowId];
-            if (dir == "desc")
-            {
-                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
-                {
-                    shouldSwitch= true;
-                    break;
-                }
-            }
-            else if (dir == "asc")
-            {
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
-                {
-                    shouldSwitch= true;
-                    break;
-                }
-            }
+			if (isNaN(parseInt(x.innerHTML)) == false && isNaN(parseInt(y.innerHTML)) == false)
+			{
+				if (dir == "desc")
+				{
+					if (parseInt(x.innerHTML.replace(/,|\./g, '')) < parseInt(y.innerHTML.replace(/,|\./g, '')))
+					{
+						shouldSwitch= true;
+						break;
+					}
+				}
+				else if (dir == "asc")
+				{
+					if (parseInt(x.innerHTML.replace(/,|\./g, '')) > parseInt(y.innerHTML.replace(/,|\./g, '')))
+					{
+						shouldSwitch= true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				if (dir == "desc")
+				{
+					if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
+					{
+						shouldSwitch= true;
+						break;
+					}
+				}
+				else if (dir == "asc")
+				{
+					if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
+					{
+						shouldSwitch= true;
+						break;
+					}
+				}
+			}
         }
         if (shouldSwitch)
         {
