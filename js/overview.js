@@ -634,13 +634,14 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
+        strHtml += '<td style="text-align: right; background-color: ' + curColor + ';" onmouseover="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\');">';
 		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
 		{
-			strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + curObjectAllianceBaseData[key][type] + '</td>';
+			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
 		}
 		else
 		{
-			strHtml += '<td style="text-align: right; background-color: ' + curColor + ';">' + Intl.NumberFormat('en-US').format(curObjectAllianceBaseData[key][type]) + '</td>';
+			strHtml += Intl.NumberFormat('en-US').format(curObjectAllianceBaseData[key][type]) + '</td>';
 		}
         lastName = curObjectAllianceBaseData[key]['UserName'];
         curBaseCount++;
@@ -1492,6 +1493,36 @@ function sortTable(_rowId, _tableId, _order)
             }
         }
     }
+}
+
+function convertCncOptToArray(_strCncOpt)
+{
+    var arrayCncOpt = _strCncOpt.split('|');
+    var strBuildings = arrayCncOpt[4]
+    var arrayBuildings = $.grep(strBuildings.replace(/\./g, "|.|").replace(/([a-z])/g, function(n){return n + '|'}).replace(/\|\|/g, '|').split('|'), function(n){return n;});
+    var x = 0;
+    var y = 0;
+    var arrayBase = [[]];
+    for (var key in arrayBuildings)
+    {
+        arrayBase[y][x] = arrayBuildings[key].replace(/[a-z|\.]/g, function(n){return '|' + n}).split('|');
+        x++;
+        if (x % 9 == 0)
+        {
+            x = 0;
+            y++;
+            if (key != arrayBuildings.length - 1)
+            {
+                arrayBase[y] = [];
+            }
+        }
+    }
+    convertCncOptArrayToHtml(arrayBase)
+}
+
+function convertCncOptArrayToHtml(_arrayBase)
+{
+    // console.log(_arrayBase);
 }
 
 // Download

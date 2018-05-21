@@ -721,7 +721,7 @@ if (!$conn->connect_error)
                 if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $strQuery =
-                        "SELECT l.UserName, p.Faction, ba.$type FROM relation_player p
+                        "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
                         JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
                         JOIN login l ON l.AccountId=p.AccountId
                         JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
@@ -753,7 +753,7 @@ if (!$conn->connect_error)
                 {
                     $AllianceId = $_post['AllianceId'];
                     $strQuery =
-                        "SELECT l.UserName, p.Faction, ba.$type FROM relation_player p
+                        "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
                         JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
                         JOIN login l ON l.AccountId=p.AccountId
                         JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
