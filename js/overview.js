@@ -634,7 +634,7 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
-        strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ');">';
+        strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ', \'' + curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');">';
 		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
 		{
 			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
@@ -1495,7 +1495,7 @@ function sortTable(_rowId, _tableId, _order)
     }
 }
 
-function convertCncOptToArray(_strCncOpt, _faction)
+function convertCncOptToArray(_strCncOpt, _faction, _UserName, _curBaseCount)
 {
     var arrayCncOpt = _strCncOpt.split('|');
     var strBuildings = arrayCncOpt[4]
@@ -1517,7 +1517,8 @@ function convertCncOptToArray(_strCncOpt, _faction)
             }
         }
     }
-    convertCncOptArrayToHtml(arrayBase, _faction)
+    $('#HeaderCnCOptLink')[0].innerHTML = '<a href="' + _strCncOpt + '" target="_blank">CnCOpt (' + _UserName + ', Base ' + _curBaseCount + ')</a>';
+    convertCncOptArrayToHtml(arrayBase, _faction);
 }
 
 function convertCncOptArrayToHtml(_arrayBase, _faction)
@@ -1535,11 +1536,11 @@ function convertCncOptArrayToHtml(_arrayBase, _faction)
             {
                 if (_arrayBase[y][x][1] != '.')
                 {
-                    strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px"></td>';
+                    strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
                 }
                 else
                 {
-                    strHtml += '<td width="33px" height="33px"></td>';
+                    strHtml += '<td><div style="width: 30px; height: 30px;"></div></td>';
                 }
             }
             strHtml += '</tr>';
