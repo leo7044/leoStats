@@ -634,7 +634,7 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
-        strHtml += '<td style="text-align: right; background-color: ' + curColor + ';" onmouseover="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\');">';
+        strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ');">';
 		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
 		{
 			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
@@ -1495,7 +1495,7 @@ function sortTable(_rowId, _tableId, _order)
     }
 }
 
-function convertCncOptToArray(_strCncOpt)
+function convertCncOptToArray(_strCncOpt, _faction)
 {
     var arrayCncOpt = _strCncOpt.split('|');
     var strBuildings = arrayCncOpt[4]
@@ -1517,12 +1517,35 @@ function convertCncOptToArray(_strCncOpt)
             }
         }
     }
-    convertCncOptArrayToHtml(arrayBase)
+    convertCncOptArrayToHtml(arrayBase, _faction)
 }
 
-function convertCncOptArrayToHtml(_arrayBase)
+function convertCncOptArrayToHtml(_arrayBase, _faction)
 {
-    // console.log(_arrayBase);
+    var arrayTypeName = ['Build', 'Def', 'Off'];
+    var arrayTypeLength = [8, 8, 4];
+    for (var i = 0; i < 3; i++)
+    {
+        var strHtml = '';
+        var startY = 8 * i;
+        for (var y = startY; y < (startY + arrayTypeLength[i]); y++)
+        {
+            strHtml += '<tr>';
+            for (var x = 0; x < 9; x++)
+            {
+                if (_arrayBase[y][x][1] != '.')
+                {
+                    strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px"></td>';
+                }
+                else
+                {
+                    strHtml += '<td width="33px" height="33px"></td>';
+                }
+            }
+            strHtml += '</tr>';
+        }
+        $('#TableAllianceBase' + arrayTypeName[i] + 'CnCOptTbody')[0].innerHTML = strHtml;
+    }
 }
 
 // Download
