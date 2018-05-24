@@ -23,3 +23,13 @@ a, th
 {
 	cursor: pointer;
 }
+
+#MovableCnCOpt
+{
+	position: absolute
+}
+
+body
+{
+	overflow: scroll;
+}

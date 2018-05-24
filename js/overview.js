@@ -138,6 +138,43 @@ $(window).resize(function()
     }
 });
 
+$(document).on('mousemove', function(e)
+{
+    if($('#TabAllianceBase.active')[0])
+    {
+        if ((e.pageX + window.screenX + $('#MovableCnCOpt').width() - 50) > $(window).width())
+        {
+            $('#MovableCnCOpt').css(
+            {
+                left: '',
+                right: 0
+            });
+        }
+        else
+        {
+            $('#MovableCnCOpt').css(
+            {
+                left: e.pageX + 15,
+                right: ''
+            });
+        }
+        if ((e.clientY + 305) > $(window).height())
+        {
+            $('#MovableCnCOpt').css(
+            {
+                top: e.pageY - $('#MovableCnCOpt').height() - 20
+            });
+        }
+        else
+        {
+            $('#MovableCnCOpt').css(
+            {
+                top: e.pageY + 20
+            });
+        }
+    }
+});
+
 //==================================================
 // manage DropDownLists
 //==================================================
@@ -634,7 +671,7 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.10){curColor = ArrayColors[17];}
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
-        strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ', \'' + curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');">';
+        strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ', \'' + curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');" onmouseover="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', ' + curObjectAllianceBaseData[key]['Faction'] + ');" onmouseout="hideMovableCnCOpt();">';
 		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
 		{
 			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
@@ -656,6 +693,7 @@ function manageContentAllianceBase()
     }
     strHtml += '</tr>';
     $('#TableAllianceBaseTbody')[0].innerHTML = strHtml;
+    hideMovableCnCOpt();
 }
 
 function manageContentPlayer()
@@ -1497,6 +1535,7 @@ function sortTable(_rowId, _tableId, _order)
 
 function convertCncOptToArray(_strCncOpt, _faction, _UserName, _curBaseCount)
 {
+    $('#MovableCnCOpt').removeClass('d-none');
     var arrayCncOpt = _strCncOpt.split('|');
     var strBuildings = arrayCncOpt[4]
     var arrayBuildings = $.grep(strBuildings.replace(/\./g, "|.|").replace(/([a-z])/g, function(n){return n + '|'}).replace(/\|\|/g, '|').split('|'), function(n){return n;});
@@ -1517,11 +1556,14 @@ function convertCncOptToArray(_strCncOpt, _faction, _UserName, _curBaseCount)
             }
         }
     }
-    $('#HeaderCnCOptLink')[0].innerHTML = '<a href="' + _strCncOpt + '" target="_blank">CnCOpt (' + _UserName + ', Base ' + _curBaseCount + ')</a>';
-    convertCncOptArrayToHtml(arrayBase, _faction);
+    if (_UserName)
+    {
+        $('#HeaderCnCOptLink')[0].innerHTML = '<a href="' + _strCncOpt + '" target="_blank">CnCOpt (' + _UserName + ', Base ' + _curBaseCount + ')</a>';
+    }
+    convertCncOptArrayToHtml(arrayBase, _faction, _UserName);
 }
 
-function convertCncOptArrayToHtml(_arrayBase, _faction)
+function convertCncOptArrayToHtml(_arrayBase, _faction, _UserName)
 {
     var arrayTypeName = ['Build', 'Def', 'Off'];
     var arrayTypeLength = [8, 8, 4];
@@ -1545,8 +1587,20 @@ function convertCncOptArrayToHtml(_arrayBase, _faction)
             }
             strHtml += '</tr>';
         }
-        $('#TableAllianceBase' + arrayTypeName[i] + 'CnCOptTbody')[0].innerHTML = strHtml;
+        if (_UserName)
+        {
+            $('#Fixed' + arrayTypeName[i] + 'CnCOptTbody')[0].innerHTML = strHtml;
+        }
+        else
+        {
+            $('#Movable' + arrayTypeName[i] + 'CnCOptTbody')[0].innerHTML = strHtml;
+        }
     }
+}
+
+function hideMovableCnCOpt()
+{
+    $('#MovableCnCOpt').addClass('d-none');
 }
 
 // Download
@@ -1587,10 +1641,10 @@ function getCookie(_name)
     var returnValue = '';
     var name = _name + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
-    var ArrayDecodedCoocie = decodedCookie.split(';');
-    for (var i = 0; i < ArrayDecodedCoocie.length; i++)
+    var ArrayDecodedCookie = decodedCookie.split(';');
+    for (var i = 0; i < ArrayDecodedCookie.length; i++)
     {
-        var cookieCur = ArrayDecodedCoocie[i];
+        var cookieCur = ArrayDecodedCookie[i];
         while (cookieCur.charAt(0) == ' ')
         {
             cookieCur = cookieCur.substring(1);
