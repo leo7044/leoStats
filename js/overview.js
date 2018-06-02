@@ -18,6 +18,135 @@ var ObjectWorldOverviewData = {};
 var ObjectDiagramData = {};
 var indexWorldId = 0;
 var ArrayAdminLog = null;
+var ObjectCncOptPics =
+{ // Link: https://up.picr.de/*.png
+    "1":
+    { // GDI
+        "build":
+        {
+            "a": "32866348bw",
+            "b": "32866349ly",
+            "c": "32866350pb",
+            "d": "32866351oh",
+            "e": "32866352iq",
+            "f": "32866353ek",
+            "h": "32866354ag",
+            "i": "32866355px",
+            "n": "32866356tn",
+            "p": "32866357xs",
+            "q": "32866362lt",
+            "r": "32866363rm",
+            "s": "32866364sm",
+            "t": "32866365kx",
+            "w": "32866366rf",
+            "x": "32866367tc",
+            "y": "32866368kf",
+            "z": "32866369os"
+        },
+        "def":
+        {
+            "a": "32866410sq",
+            "b": "32866411jh",
+            "c": "32866412hw",
+            "d": "32866413lh",
+            "e": "32866414kw",
+            "f": "32866415dd",
+            "g": "32866416zn",
+            "h": "32866417ch",
+            "k": "32866418uw",
+            "j": "32866419sv",
+            "l": "32866428oe",
+            "m": "32866430qp",
+            "p": "32866431qd",
+            "q": "32866432ir",
+            "r": "32866433og",
+            "s": "32866434ju",
+            "t": "32866435hk",
+            "w": "32866436pc",
+            "z": "32866437iz"
+        },
+        "off":
+        {
+            "a": "32866447xg",
+            "c": "32866448at",
+            "d": "32866449ov",
+            "f": "32866450vo",
+            "g": "32866451fx",
+            "j": "32866452ps",
+            "k": "32866453ef",
+            "m": "32866454zd",
+            "o": "32866455kg",
+            "p": "32866456dh",
+            "q": "32866465rk",
+            "r": "32866466ja",
+            "s": "32866467bv",
+            "z": "32866468bw"
+        }
+    },
+    "2":
+    { // NOD
+        "build":
+        {
+            "a": "32866371wz",
+            "b": "32866372wi",
+            "c": "32866373oz",
+            "d": "32866374be",
+            "e": "32866375tx",
+            "f": "32866376fi",
+            "h": "32866377vl",
+            "i": "32866378pv",
+            "n": "32866379cp",
+            "p": "32866380zg",
+            "q": "32866385hz",
+            "r": "32866386pl",
+            "s": "32866387hg",
+            "t": "32866388cg",
+            "w": "32866389jy",
+            "x": "32866390gk",
+            "y": "32866391qi",
+            "z": "32866392pr"
+        },
+        "def":
+        {
+            "a": "32866483la",
+            "b": "32866484hd",
+            "c": "32866485hx",
+            "d": "32866486ox",
+            "e": "32866487fc",
+            "f": "32866488xi",
+            "g": "32866489ll",
+            "h": "32866490by",
+            "j": "32866491lg",
+            "k": "32866492ci",
+            "l": "32866512ay",
+            "m": "32866513cu",
+            "p": "32866514bn",
+            "q": "32866515fg",
+            "r": "32866516cy",
+            "s": "32866517tl",
+            "t": "32866518uy",
+            "w": "32866519hk",
+            "z": "32866520vs"
+        },
+        "off":
+        {
+            "a": "32866527aj",
+            "b": "32866528fo",
+            "c": "32866529jo",
+            "k": "32866530va",
+            "l": "32866531zn",
+            "m": "32866532fj",
+            "o": "32866533or",
+            "p": "32866534dj",
+            "q": "32866535el",
+            "r": "32866536og",
+            "s": "32866539xv",
+            "t": "32866540ut",
+            "v": "32866541gp",
+            "z": "32866542st"
+        }
+    }
+};
 
 $(document).ready(function()
 {
@@ -1555,7 +1684,8 @@ function convertCncOptArrayToHtml(_arrayBase, _faction)
             {
                 if (_arrayBase[y][x][1] != '.')
                 {
-                    strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
+                    //strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
+                    strHtml += '<td><img src="https://up.picr.de/' + ObjectCncOptPics[_faction][arrayTypeName[i].toLowerCase()][_arrayBase[y][x][1]] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
                 }
                 else
                 {
