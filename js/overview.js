@@ -19,131 +19,133 @@ var ObjectDiagramData = {};
 var indexWorldId = 0;
 var ArrayAdminLog = null;
 var ObjectCncOptPics =
-{ // Link: https://up.picr.de/*.png
+{ // Link:
+    // https://eaassets-a.akamaihd.net/cncalliancesgame/cdn/data/*.png
+    // https://up.picr.de/*.png
     "1":
     { // GDI
         "build":
         {
-            "a": "32866348bw",
-            "b": "32866349ly",
-            "c": "32866350pb",
-            "d": "32866351oh",
-            "e": "32866352iq",
-            "f": "32866353ek",
-            "h": "32866354ag",
-            "i": "32866355px",
-            "n": "32866356tn",
-            "p": "32866357xs",
-            "q": "32866362lt",
-            "r": "32866363rm",
-            "s": "32866364sm",
-            "t": "32866365kx",
-            "w": "32866366rf",
-            "x": "32866367tc",
-            "y": "32866368kf",
-            "z": "32866369os"
+            "a": "bed291af87f3df1debd710bceb93339b",
+            "b": "7fffa929ca0e9638af471e7a253a48f0",
+            "c": "5425f9b3b2c406e1517d1bf3daaa1b80",
+            "d": "5030a7b96710ace8403d93bc4be3cb0a",
+            "e": "ff511429bde455769635de5c8c0331ba",
+            "f": "63c4221b2884a410478e42ae891c9edf",
+            "h": "",
+            "i": "8a1f3c4733a038c05390deb2efb254f7",
+            "n": "",
+            "p": "45ee74e3da3af2cb20d3fa8507dddd77",
+            "q": "068e7c9d022c4760d9c14b7caa26b31f",
+            "r": "96a293c753b08a31f29cdd75691330d3",
+            "s": "a222bf5074076084bb930a242423c324",
+            "t": "4bc5605149c6f6330630e31706b2975d",
+            "w": "6445fff4b183a735ca5028eeade06dca",
+            "x": "48d1286bac495eb7fb1cee71a3c1a172",
+            "y": "064f39ada6c95ed8a60c12c0ee53032d",
+            "z": "e1cb3016a04055a51378f6bbbee09c06"
         },
         "def":
         {
-            "a": "32866410sq",
-            "b": "32866411jh",
-            "c": "32866412hw",
-            "d": "32866413lh",
-            "e": "32866414kw",
-            "f": "32866415dd",
-            "g": "32866416zn",
-            "h": "32866417ch",
-            "k": "32866418uw",
-            "j": "32866419sv",
-            "l": "32866428oe",
-            "m": "32866430qp",
-            "p": "32866431qd",
-            "q": "32866432ir",
-            "r": "32866433og",
-            "s": "32866434ju",
-            "t": "32866435hk",
-            "w": "32866436pc",
-            "z": "32866437iz"
+            "a": "c7747482bc35b977f4bc743f9f0e681f",
+            "b": "ac1a3216145582cb122ad0444305744a",
+            "c": "cc9b27f83c30256c4541f414d5a5eff9",
+            "d": "2efe3af60d7ad225a163338a13934eff",
+            "e": "ef3699386f7a1a8a189da12fde642bb5",
+            "f": "2ce93c21bf26af3eb040379291acfbe7",
+            "g": "004559af92de104d638c5e4187ab2f68",
+            "h": "d83af3ba4bd3c3cced272d16a714afeb",
+            "k": "b78f10062ea7d5e1b621165bc98f9aba",
+            "j": "7ecdf5416e6de57831e8e096e8445392",
+            "l": "af0f04fa7c5f45d7fe72cc14049c141f",
+            "m": "7ca2faeeb34e0bbe267ef985c5e7d47a",
+            "p": "af49b884f9b1bf86f6a74c6dba93f70e",
+            "q": "4c58dc7231d3db8bf162669b41471394",
+            "r": "bc9190a6a17aa8ea380ccf9c6d56270d",
+            "s": "c02ec23b12cdc627f2df0b50c7d1bcdd",
+            "t": "ac1a3216145582cb122ad0444305744a",
+            "w": "073528f52ec8cabaf5921a0d9a7da2eb",
+            "z": "0de460bca1916337a234fc05e9984b28"
         },
         "off":
         {
-            "a": "32866447xg",
-            "c": "32866448at",
-            "d": "32866449ov",
-            "f": "32866450vo",
-            "g": "32866451fx",
-            "j": "32866452ps",
-            "k": "32866453ef",
-            "m": "32866454zd",
-            "o": "32866455kg",
-            "p": "32866456dh",
-            "q": "32866465rk",
-            "r": "32866466ja",
-            "s": "32866467bv",
-            "z": "32866468bw"
+            "a": "3aec54985dcbf4b45ff84e1289d46a93",
+            "c": "9d0c409eb58a5fb8247cf6882fd31bfa",
+            "d": "fd4ffe3334d171c8d960d32fc9e05f80",
+            "f": "ecceb58e0ca3f150d85cb224bc345b9f",
+            "g": "004559af92de104d638c5e4187ab2f68",
+            "j": "aa4f4158569b0bd5255b1471f57a8a2c",
+            "k": "d96466153f645ba08707553b700869a2",
+            "m": "fe4e67d1d787bae0afb88625545f28a2",
+            "o": "42842f77387dbf0be9a0da05d09ea2e7",
+            "p": "3ca40f1ad54544ca6cc5b8053b09bfa3",
+            "q": "4c58dc7231d3db8bf162669b41471394",
+            "r": "b1c0d437f5be0deb9d8ec30d064596c5",
+            "s": "c02ec23b12cdc627f2df0b50c7d1bcdd",
+            "z": "0de460bca1916337a234fc05e9984b28"
         }
     },
     "2":
     { // NOD
         "build":
         {
-            "a": "32866371wz",
-            "b": "32866372wi",
-            "c": "32866373oz",
-            "d": "32866374be",
-            "e": "32866375tx",
-            "f": "32866376fi",
-            "h": "32866377vl",
-            "i": "32866378pv",
-            "n": "32866379cp",
-            "p": "32866380zg",
-            "q": "32866385hz",
-            "r": "32866386pl",
-            "s": "32866387hg",
-            "t": "32866388cg",
-            "w": "32866389jy",
-            "x": "32866390gk",
-            "y": "32866391qi",
-            "z": "32866392pr"
+            "a": "fd45303e6de92356ff2631f0d89b18c6",
+            "b": "1f57aad9607fd714d869d56a2dd06f21",
+            "c": "5425f9b3b2c406e1517d1bf3daaa1b80",
+            "d": "68689144e5d27c3f5bd9be5078bebce8",
+            "e": "7b6edd4d58121a564fd702d152f89011",
+            "f": "4451b3a877eeee0e5b1c2a7a5d357b7e",
+            "h": "",
+            "i": "a46088f246aaedde74f7e6c0dd902a7a",
+            "n": "",
+            "p": "30c77e68b4e50d9633f969835afc84ec",
+            "q": "a0f7eaeb290b20f4dcba75289f9ee429",
+            "r": "6c8ee0f7603c621bbaef0e4b6563313e",
+            "s": "1ab36789d1dfbf749ddf7ffd9b013dbf",
+            "t": "4bc5605149c6f6330630e31706b2975d",
+            "w": "f6a0bb2a70d8b05e4cb4db827d9050a4",
+            "x": "370675edbcf691b67e1ae874e6efb783",
+            "y": "1124d44ed88596a9bf3025250665c218",
+            "z": "1f06c9c71a46c1902ff6a91dffed99e0"
         },
         "def":
         {
-            "a": "32866483la",
-            "b": "32866484hd",
-            "c": "32866485hx",
-            "d": "32866486ox",
-            "e": "32866487fc",
-            "f": "32866488xi",
-            "g": "32866489ll",
-            "h": "32866490by",
-            "j": "32866491lg",
-            "k": "32866492ci",
-            "l": "32866512ay",
-            "m": "32866513cu",
-            "p": "32866514bn",
-            "q": "32866515fg",
-            "r": "32866516cy",
-            "s": "32866517tl",
-            "t": "32866518uy",
-            "w": "32866519hk",
-            "z": "32866520vs"
+            "a": "97d5f7a66d9baa65453c2b142eeae3a4",
+            "b": "c45676344ea89bc56b291fe6216579a2",
+            "c": "5393c7f1282d25cba597e13ad634f1f7",
+            "d": "b97c04e08be8d479d54b3ca8262b0e2a",
+            "e": "5ee5c7b61f713dbde4602c998ed5e473",
+            "f": "53a600e31563975d611a7b5049fe9827",
+            "g": "ac5b7596bab3d1b919d7ec9d569f3cb4",
+            "h": "d83af3ba4bd3c3cced272d16a714afeb",
+            "k": "b78f10062ea7d5e1b621165bc98f9aba",
+            "j": "7ecdf5416e6de57831e8e096e8445392",
+            "l": "af0f04fa7c5f45d7fe72cc14049c141f",
+            "m": "d437cd22189d1c676c016de17170d2e9",
+            "p": "e022847fb155ce802c1e38a4cc627ee7",
+            "q": "939e53aef324e39bb0048b2c3dfb7988",
+            "r": "fb872bf7567447e2ca99eb27c67db685",
+            "s": "32eacc57fb7197ec96058a39c8d10aa2",
+            "t": "0c7e2d6bf5410cd368020bfb5106a84c",
+            "w": "7b144c4394665390eff687baad9bd01a",
+            "z": "1d76141c36ce7fb5d9b058481e5265fc"
         },
         "off":
         {
-            "a": "32866527aj",
-            "b": "32866528fo",
-            "c": "32866529jo",
-            "k": "32866530va",
-            "l": "32866531zn",
-            "m": "32866532fj",
-            "o": "32866533or",
-            "p": "32866534dj",
-            "q": "32866535el",
-            "r": "32866536og",
-            "s": "32866539xv",
-            "t": "32866540ut",
-            "v": "32866541gp",
-            "z": "32866542st"
+            "a": "88cf8ac7cfb2fdddb9f2acf70f22f1c1",
+            "b": "e022847fb155ce802c1e38a4cc627ee7",
+            "c": "e1e461f40c3611626243a516ac420fdf",
+            "k": "ac5b7596bab3d1b919d7ec9d569f3cb4",
+            "l": "c95af3da04ac7a0a490090498c90630d",
+            "m": "0a5ea3cdf78d1b773fd97e827b34376e",
+            "o": "b97c04e08be8d479d54b3ca8262b0e2a",
+            "p": "9910093e404ebf00259ac356609a0943",
+            "q": "939e53aef324e39bb0048b2c3dfb7988",
+            "r": "7836069122aac3e22c5b7fba07761274",
+            "s": "32eacc57fb7197ec96058a39c8d10aa2",
+            "t": "77316566179c7cab19bb6546f1389deb",
+            "v": "2a9522cbdb67b87d96443ec38ee0cdb9",
+            "z": "1d76141c36ce7fb5d9b058481e5265fc"
         }
     }
 };
@@ -1684,8 +1686,14 @@ function convertCncOptArrayToHtml(_arrayBase, _faction)
             {
                 if (_arrayBase[y][x][1] != '.')
                 {
-                    //strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
-                    strHtml += '<td><img src="https://up.picr.de/' + ObjectCncOptPics[_faction][arrayTypeName[i].toLowerCase()][_arrayBase[y][x][1]] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
+                    if (_arrayBase[y][x][1] != 'h' && _arrayBase[y][x][1] != 'n')
+                    {
+                        strHtml += '<td><img src="https://eaassets-a.akamaihd.net/cncalliancesgame/cdn/data/' + ObjectCncOptPics[_faction][arrayTypeName[i].toLowerCase()][_arrayBase[y][x][1]] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
+                    }
+                    else
+                    {
+                        strHtml += '<td><img src="img/game/faction_' + _faction + '/' + arrayTypeName[i].toLowerCase() + '/' + _arrayBase[y][x][1] + '.png" width="30px" height="30px" title="' + _arrayBase[y][x][0] + '"></td>';
+                    }
                 }
                 else
                 {
