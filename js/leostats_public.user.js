@@ -1,11 +1,13 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2018.03.07
-// @author      leo7044
+// @version     2018.06.05
+// @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://leostats.000webhostapp.com/index.php
 // @downloadURL https://leostats.000webhostapp.com/leostats.min.user.js
+// @updateURL   https://leostats.000webhostapp.com/leostats.min.user.js
 // @description Dieses Script überträgt eure Werte.
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
+// @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @require		https://code.jquery.com/jquery-3.3.1.min.js
 // @icon        https://leostats.000webhostapp.com/img/icon_32.png
 // @grant       none
