@@ -353,6 +353,28 @@ if (!$conn->connect_error)
                         (
                             SELECT pl.Zeit FROM player pl WHERE pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId ORDER BY pl.Zeit DESC LIMIT 1
                         )
+                        AND
+                        pl.AccountId IN
+                        (
+                            SELECT DISTINCT p.AccountId FROM relation_player p
+                            JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+                            WHERE
+                            p.WorldId='$WorldId'
+                            AND
+                            a.AllianceId =
+                            (
+                                SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
+                            )
+                            AND
+                            (
+                                IF
+                                (
+                                    (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
+                                    true,
+                                    p.AccountId='$OwnAccountId'
+                                )
+                            )
+                        )
                         ORDER BY l.UserName;";
                 }
                 else
