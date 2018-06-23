@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.0.1
+-- version 4.8.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 01. Mai 2018 um 17:19
--- Server-Version: 10.2.14-MariaDB
--- PHP-Version: 7.2.5
+-- Erstellungszeit: 23. Jun 2018 um 21:34
+-- Server-Version: 10.2.15-MariaDB
+-- PHP-Version: 7.2.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,6 +21,272 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `leostats`
 --
+
+DELIMITER $$
+--
+-- Prozeduren
+--
+CREATE PROCEDURE `getAllianceDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT) READS SQL DATA
+SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
+JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE p.WorldId=WorldId
+AND p.AllianceId=AllianceId
+ORDER BY a.Zeit ASC$$
+
+CREATE PROCEDURE `getAllianceDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT) READS SQL DATA
+SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
+JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE
+p.WorldId=WorldId
+AND
+p.AllianceId=
+(
+    SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+)
+AND
+p.AccountId=OwnAccountId
+ORDER BY a.Zeit ASC$$
+
+CREATE PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT) READS SQL DATA
+SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+JOIN login l ON l.AccountId=p.AccountId
+JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+WHERE p.WorldId=WorldId
+AND p.AllianceId=AllianceId
+AND
+pl.Zeit=
+(
+	SELECT pl.Zeit FROM player pl WHERE pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId ORDER BY pl.Zeit DESC LIMIT 1
+)
+ORDER BY l.UserName$$
+
+CREATE PROCEDURE `getAlliancePlayerDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT) READS SQL DATA
+SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+JOIN login l ON l.AccountId=p.AccountId
+JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+WHERE
+p.WorldId=WorldId
+AND
+p.AllianceId=
+(
+	SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+)
+AND
+pl.Zeit=
+(
+	SELECT pl.Zeit FROM player pl WHERE pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId ORDER BY pl.Zeit DESC LIMIT 1
+)
+AND
+pl.AccountId IN
+(
+	SELECT DISTINCT p.AccountId FROM relation_player p
+	JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+	WHERE
+	p.WorldId=WorldId
+	AND
+	a.AllianceId =
+	(
+		SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+	)
+	AND
+	(
+		IF
+		(
+			(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
+			true,
+			p.AccountId=OwnAccountId
+		)
+	)
+)
+ORDER BY l.UserName$$
+
+CREATE PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT) READS SQL DATA
+SELECT ba.Zeit, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
+WHERE
+b.WorldId=WorldId
+AND
+b.BaseId=BaseId
+ORDER BY ba.Zeit ASC$$
+
+CREATE PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT) READS SQL DATA
+SELECT ba.Zeit, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
+WHERE
+b.WorldId=WorldId
+AND
+b.BaseId=BaseId
+AND
+BaseId IN
+(
+	SELECT b.BaseId FROM relation_bases b
+	JOIN relation_alliance a ON a.WorldId=b.WorldId
+	JOIN relation_player p ON p.WorldId=b.WorldId AND p.AllianceId=a.AllianceId
+	WHERE
+	b.WorldId IN
+	(
+		SELECT p.WorldId FROM relation_player p WHERE p.AccountId=OwnAccountId
+	)
+	AND
+	a.AllianceId =
+	(
+		SELECT p.AllianceId FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=b.WorldId
+	)
+	AND
+	(
+		IF
+		(
+			(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
+			true,
+			p.AccountId=OwnAccountId
+		)
+	)
+)
+ORDER BY ba.Zeit ASC$$
+
+CREATE PROCEDURE `getDropDownListDataAsAdmin` () READS SQL DATA
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+FROM relation_server s
+JOIN relation_alliance a ON a.WorldId=s.WorldId
+JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
+JOIN login l ON l.AccountId=p.AccountId
+JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
+ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
+
+CREATE PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT) READS SQL DATA
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+FROM relation_server s
+JOIN relation_alliance a ON a.WorldId=s.WorldId
+JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
+JOIN login l ON l.AccountId=p.AccountId
+JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
+WHERE
+s.WorldId IN
+(
+	SELECT p.WorldId FROM relation_player p WHERE p.AccountId=OwnAccountId
+)
+AND
+a.AllianceId =
+(
+	SELECT p.AllianceId FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=s.WorldId
+)
+AND
+(
+	IF
+	(
+		(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=s.WorldId)<=a.MemberRole,
+		true,
+		p.AccountId=OwnAccountId
+	)
+)
+ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
+
+CREATE PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT) READS SQL DATA
+SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE p.AccountId=OwnAccountId
+ORDER BY p.WorldId$$
+
+CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT) READS SQL DATA
+SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+WHERE b.WorldId=WorldId
+AND b.AccountId=AccountId
+AND
+ba.Zeit=
+(
+    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+)
+ORDER BY b.BaseId$$
+
+CREATE PROCEDURE `getPlayerBaseDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT) READS SQL DATA
+SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+WHERE
+b.WorldId=WorldId
+AND
+b.AccountId=AccountId
+AND
+AccountId IN
+(
+    SELECT DISTINCT p.AccountId FROM relation_player p
+    JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+    WHERE
+    p.WorldId=WorldId
+    AND
+    a.AllianceId =
+    (
+        SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+    )
+    AND
+    (
+        IF
+        (
+            (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
+            true,
+            p.AccountId=OwnAccountId
+        )
+    )
+)
+AND
+ba.Zeit=
+(
+    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+)
+ORDER BY b.BaseId$$
+
+CREATE PROCEDURE `getPlayerDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT) READS SQL DATA
+SELECT pl.Zeit, pl.ScorePoints,
+IFNULL(a.AverageScore, 0) AS AverageScore,
+pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
+WHERE pl.WorldId=WorldId
+AND pl.AccountId=AccountId
+ORDER BY pl.Zeit ASC$$
+
+CREATE PROCEDURE `getPlayerDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT) READS SQL DATA
+SELECT pl.Zeit, pl.ScorePoints,
+IFNULL(a.AverageScore, 0) AS AverageScore,
+pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
+WHERE
+pl.WorldId=WorldId
+AND
+p.AllianceId IN
+(
+	SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+)
+AND
+pl.AccountId=AccountId
+AND
+AccountId IN
+(
+	SELECT DISTINCT p.AccountId FROM relation_player p
+	JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+	WHERE
+	p.WorldId=WorldId
+	AND
+	a.AllianceId =
+	(
+		SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+	)
+	AND
+	(
+		IF
+		(
+			(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
+			true,
+			p.AccountId=OwnAccountId
+		)
+	)
+)
+ORDER BY pl.Zeit ASC$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
