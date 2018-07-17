@@ -165,6 +165,10 @@ function initializeStart()
     {
         $('#' + getCookie('TabId')).click();
     }
+    else
+    {
+        setCookie('TabId', 'TabPlayer');
+    }
 }
 
 function getSessionVariables()
@@ -541,6 +545,69 @@ function prepareTabSettings()
     $('#DivDropDownListBase').addClass('d-none');
     manageContentSettings();
     setCookie('TabId', 'TabSettings');
+}
+
+function updateCurrentDatasInView()
+{
+    var WorldId = $('#DropDownListWorld')[0].value;
+    var AllianceId = $('#DropDownListAlliance')[0].value;
+    var AccountId = $('#DropDownListPlayer')[0].value;
+    var BaseId = $('#DropDownListBase')[0].value;
+    switch(getCookie('TabId'))
+    {
+        case 'TabPlayer':
+        {
+            delete ObjectPlayerData[WorldId + '_' + AccountId];
+            manageContentPlayer();
+            break;
+        }
+        case 'TabPlayerBase':
+        {
+            delete ObjectPlayerBaseData[WorldId + '_' + AccountId];
+            manageContentPlayerBase();
+            break;
+        }
+        case 'TabAllianceMembers':
+        {
+            delete ObjectAlliancePlayerData[WorldId + '_' + AllianceId];
+            manageContentAllianceMembers();
+            break;
+        }
+        case 'TabAlliance':
+        {
+            delete ObjectAllianceData[WorldId + '_' + AllianceId];
+            manageContentAlliance();
+            break;
+        }
+        case 'TabAllianceBase':
+        {
+            delete ObjectAllianceBaseData[WorldId + '_' + AllianceId];
+            manageContentAllianceBase();
+            break;
+        }
+        case 'TabAllianceOverview':
+        {
+            delete ObjectAllianceOverviewData[WorldId + '_' + AllianceId];
+            manageContentAllianceOverview();
+            break;
+        }
+        case 'TabBase':
+        {
+            delete ObjectBaseData[WorldId + '_' + BaseId];
+            manageContentBase();
+            break;
+        }
+        case 'TabWorldOverview':
+        {
+            delete ObjectWorldOverviewData[WorldId.toString()];
+            manageContentWorldOverview();
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 //==================================================

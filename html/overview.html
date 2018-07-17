@@ -16,7 +16,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.6/alasql.min.js"></script> <!-- alasql -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.2/xlsx.core.min.js"></script> <!-- .xlsx-Export -->
         <script src="https://www.gstatic.com/charts/loader.js"></script> <!-- GoogleChart -->      
-		<script src="js/overview.js?20180603"></script> <!-- alles eigene -->
+		<script src="js/overview.js?20180717"></script> <!-- alles eigene -->
 
 		<!-- CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"> <!-- Bootstrap -->
@@ -67,6 +67,9 @@
                     <li class="nav-item">
                         <a id="TabSettings" class="nav-link" data-toggle="tab" href="#ContentSettings" onclick="prepareTabSettings();"><i class="fas fa-cogs"></i> Settings</a>
                     </li>
+                    <li class="nav-item">
+                        <a id="TabSettings" class="nav-link" onclick="updateCurrentDatasInView();"><i class="fas fa-sync"></i></a>
+                    </li>
                 </ul><br/>
                 <div class="row">
                     <div id="DivDropDownListWorld" class="col-md-3 form-group" onchange="prepareandFillDropDownListDataAlliance(true);">
@@ -78,7 +81,7 @@
                     <div id="DivDropDownListPlayer" class="col-md-3 form-group" onchange="prepareandFillDropDownListDataBase(true);">
                         <select class="form-control" id="DropDownListPlayer"></select>
                     </div>
-                    <div id="DivDropDownListBase" class="col-md-3 form-group d-none" onchange="HelpFunctionForChangedBase(true);">
+                    <div id="DivDropDownListBase" class="col-md form-group d-none" onchange="HelpFunctionForChangedBase(true);">
                         <select class="form-control" id="DropDownListBase"></select>
                     </div>
                 </div>
