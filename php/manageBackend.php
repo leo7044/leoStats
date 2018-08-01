@@ -230,7 +230,6 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 1;
                 $UserAnswer[1] = 'UserInDb';
-                $conn->query("UPDATE `login` SET `Password`='$Password' WHERE UserName='$UserName';");
             }
             else
             {
