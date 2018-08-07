@@ -176,7 +176,7 @@ if (!$conn->connect_error)
             {
                 $strQuery .= "INSERT INTO `substitution`(`WorldId`, `PlayerNameSet`, `PlayerNameGet`, `active`) VALUES ('$WorldId', '$PlayerName', '$NameOut', false);";
             }
-            if (count($ObjectSubstitution['incoming']))
+            if (isset($ObjectSubstitution['incoming']) && count($ObjectSubstitution['incoming']))
             {
                 $strQuery .= "INSERT INTO `substitution`(`WorldId`, `PlayerNameSet`, `PlayerNameGet`, `active`) VALUES ";
                 foreach ($ObjectSubstitution['incoming'] as $key => $NameIn)
@@ -191,7 +191,7 @@ if (!$conn->connect_error)
                     }
                 }
             }
-            if (count($ObjectSubstitution['active']))
+            if (isset($ObjectSubstitution['active']) && count($ObjectSubstitution['active']))
             {
                 $strQuery .= "INSERT INTO `substitution`(`WorldId`, `PlayerNameSet`, `PlayerNameGet`, `active`) VALUES ";
                 foreach ($ObjectSubstitution['active'] as $key => $NameIn)
