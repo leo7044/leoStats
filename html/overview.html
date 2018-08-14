@@ -19,6 +19,9 @@
         <script src="js/cookies.js?20180810"></script>
         <script src="js/languages.js?20180810"></script>
         <script src="js/backend.js?20180810"></script>
+        <script src="js/dropdowns.js?20180810"></script>
+        <script src="js/tabsNavigation.js?20180810"></script>
+        <script src="js/tabsContent.js?20180810"></script>
         <script src="js/overview.js?20180810"></script>
     </head>
     <body>
@@ -36,20 +39,20 @@
         </div>
         <div class="container-fluid own-container-text">
             <ul data-role="tabs" data-expand="lg">
-                <li><a href="#ContentPlayer"><span class="mif-user"></span> Player</a></li>
-                <li><a href="#ContentPlayerBase"><span class="fas fa-street-view"></span>&nbsp;Player - Bases</a></li>
-                <li><a href="#ContentAllianceMembers"><span class="mif-users"></span> Members</a></li>
-                <li><a href="#ContentAlliance"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
-                <li><a href="#ContentAllianceBases"><span class="mif-home"></span> Alliance - Bases</a></li>
-                <li><a href="#ContentAllianceOverview"><span class="mif-eye"></span> Alliance - Overview</a></li>
-                <li><a href="#ContentBase"><span class="mif-home"></span> Base</a></li>
-                <li><a href="#ContentWorldOverview"><span class="mif-vpn-publ"></span> World - Overview</a></li>
+                <li><a id="TabPlayer" href="#ContentPlayer" onclick="prepareTabPlayer();"><span class="mif-user"></span> Player</a></li>
+                <li><a id="TabPlayerBase" href="#ContentPlayerBase" onclick="prepareTabPlayerBase();"><span class="fas fa-street-view"></span>&nbsp;Player - Bases</a></li>
+                <li><a id="TabAllianceMembers" href="#ContentAllianceMembers" onclick="prepareTabAllianceMembers();"><span class="mif-users"></span> Members</a></li>
+                <li><a id="TabAlliance" href="#ContentAlliance" onclick="prepareTabAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                <li><a id="TabAllianceBases" href="#ContentAllianceBases" onclick="prepareTabAllianceBases();"><span class="mif-home"></span> Alliance - Bases</a></li>
+                <li><a id="TabAllianceOverview" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><span class="mif-eye"></span> Alliance - Overview</a></li>
+                <li><a id="TabBase" href="#ContentBase" onclick="prepareTabBase();"><span class="mif-home"></span> Base</a></li>
+                <li><a id="TabWorldOverview" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><span class="mif-vpn-publ"></span> World - Overview</a></li>
                 <li>
                     <a href="#" class="dropdown-toggle"><span class="mif-cogs"></span> Settings</a>
                     <ul class="d-menu" data-role="dropdown">
-                        <li><a href="#ContentSettingsPlayer"><span class="mif-user"></span> Player</a></li>
-                        <li><a href="#ContentSettingsAlliance"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
-                        <li><a href="#ContentSettingsServer"><span class="mif-vpn-publ"></span> Server</a></li>
+                        <li><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
+                        <li><a id="TabSettingsAlliance" href="#ContentSettingsAlliance" onclick="prepareTabSettingsAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                        <li><a id="TabSettingsServer" href="#ContentSettingsServer" onclick="prepareTabSettingsServer();"><span class="mif-vpn-publ"></span> Server</a></li>
                     </ul>
                 </li>
             </ul>
@@ -65,7 +68,7 @@
                         <div id="DivDropDownListPlayer" class="cell-lg m-2">
                             <select id="DropDownListPlayer" data-role="select" data-prepend="<span class='mif-user'></span>" data-on-change="prepareandFillDropDownListDataBase();"></select>
                         </div>
-                        <div id="DivDropDownListBase" class="cell-lg m-2">
+                        <div id="DivDropDownListBase" class="cell-lg m-2 no-visible">
                             <select id="DropDownListBase" data-role="select" data-prepend="<span class='mif-home'></span>" data-on-change="HelpFunctionForChangedBase();"></select>
                         </div>
                     </div>

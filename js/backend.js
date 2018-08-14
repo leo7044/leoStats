@@ -1,11 +1,11 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
-function getDropDownListData()
+function requestBackEnd(_nameOfRequest)
 {
     var returnData = null;
     var data =
     {
-        action: "getDropDownListData"
+        action: _nameOfRequest
     };
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
