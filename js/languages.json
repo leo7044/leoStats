@@ -1,0 +1,15 @@
+{
+    "LanguageShort": ["en", "de"],
+    "LanguageLong": ["English", "Deutsch"],
+    "HeaderOverview": ["leoStats - Overview", "leoStats - Übersicht"],
+    "UserName": ["UserName", "Benutzername"],
+    "Password": ["Password", "Passwort"],
+    "Login": ["Login", "Anmelden"],
+    "Logout": ["Logout", "Ausloggen"],
+    "HelpInfo": ["Help / Information", "Hilfe / Informationen"],
+    "Contact": ["Contact", "Kontakt"],
+    "Close": ["Close", "Schließen"],
+    "ErrorLoginFailedInnerHtml": ["<b>Login failed!</b> Wrong Username or Password.", "<b>Anmeldevorgang fehlgeschlagen!</b> Benutzername oder Passwort falsch."],
+    "ErrorDbInnerHtml": ["<b>Error!</b> Database is not available.", "<b>Fehler!</b> Datenbank ist nicht verfügbar."],
+    "CheckBoxDownloadScript": ["I read and accept the information above", "Ich habe die obigen Informationen gelesen bin damit einverstanden."]
+}

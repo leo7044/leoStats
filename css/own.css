@@ -1,25 +1,23 @@
-/* Developer: leo7044 */
+/* Developer: leo7044 (https://github.com/leo7044) */
 .own-jumbotron-bgcolor
 {
 	background-color: #F8F8FF;
 }
 
-.divGoogleChart
+.own-container
 {
-	height: 500px;
+	background-color: #E9ECEF;
+	padding: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	margin-bottom: 2rem;
 }
 
-.list-group
+.own-container-text
 {
-	margin-bottom: 20px !important;
-}
-
-.modal-xl
-{
-	max-width: 90%
-}
-
-a, th
-{
-	cursor: pointer;
+	background-color: #F8F8FF;
+	padding: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	margin-bottom: 2rem;
 }

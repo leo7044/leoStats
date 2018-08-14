@@ -1,5 +1,5 @@
 <?php
-/* Developer: leo7044 */
+/* Developer: leo7044 (https://github.com/leo7044) */
 header("Access-Control-Allow-Origin: *"); // von einer anderen Website drauf zugreifen
 header("Content-Type: application/json; charset=utf-8"); // JSON-Antwort
 include_once('config.php'); // Datenbankanbindung

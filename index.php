@@ -1,5 +1,5 @@
 <?php
-/* Developer: leo7044 */
+/* Developer: leo7044 (https://github.com/leo7044) */
 session_start();
 if (isset($_REQUEST['logout']))
 {
