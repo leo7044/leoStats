@@ -16,6 +16,9 @@
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="https://cdn.rawgit.com/olton/Metro-UI-CSS/6595247250e80f27c590e9ba89522f1676a8297d/build/js/metro.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.9/alasql.min.js"></script>
+        <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+        <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+        <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
         <script src="js/cookies.js?20180810"></script>
         <script src="js/languages.js?20180810"></script>
         <script src="js/backend.js?20180810"></script>
@@ -39,20 +42,20 @@
         </div>
         <div class="container-fluid own-container-text">
             <ul data-role="tabs" data-expand="lg">
-                <li><a id="TabPlayer" href="#ContentPlayer" onclick="prepareTabPlayer();"><span class="mif-user"></span> Player</a></li>
-                <li><a id="TabPlayerBase" href="#ContentPlayerBase" onclick="prepareTabPlayerBase();"><span class="fas fa-street-view"></span>&nbsp;Player - Bases</a></li>
-                <li><a id="TabAllianceMembers" href="#ContentAllianceMembers" onclick="prepareTabAllianceMembers();"><span class="mif-users"></span> Members</a></li>
-                <li><a id="TabAlliance" href="#ContentAlliance" onclick="prepareTabAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
-                <li><a id="TabAllianceBases" href="#ContentAllianceBases" onclick="prepareTabAllianceBases();"><span class="mif-home"></span> Alliance - Bases</a></li>
-                <li><a id="TabAllianceOverview" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><span class="mif-eye"></span> Alliance - Overview</a></li>
-                <li><a id="TabBase" href="#ContentBase" onclick="prepareTabBase();"><span class="mif-home"></span> Base</a></li>
-                <li><a id="TabWorldOverview" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><span class="mif-vpn-publ"></span> World - Overview</a></li>
+                <li id="LiPlayer"><a id="TabPlayer" href="#ContentPlayer" onclick="prepareTabPlayer();"><span class="mif-user"></span> Player</a></li>
+                <li id="LiPlayerBase"><a id="TabPlayerBase" href="#ContentPlayerBase" onclick="prepareTabPlayerBase();"><span class="fas fa-street-view"></span>&nbsp;Player - Bases</a></li>
+                <li id="LiAllianceMembers"><a id="TabAllianceMembers" href="#ContentAllianceMembers" onclick="prepareTabAllianceMembers();"><span class="mif-users"></span> Members</a></li>
+                <li id="LiAlliance"><a id="TabAlliance" href="#ContentAlliance" onclick="prepareTabAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                <li id="LiAllianceBases"><a id="TabAllianceBases" href="#ContentAllianceBases" onclick="prepareTabAllianceBases();"><span class="mif-home"></span> Alliance - Bases</a></li>
+                <li id="LiAllianceOverview"><a id="TabAllianceOverview" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><span class="mif-eye"></span> Alliance - Overview</a></li>
+                <li id="LiBase"><a id="TabBase" href="#ContentBase" onclick="prepareTabBase();"><span class="mif-home"></span> Base</a></li>
+                <li id="LiWorldOverview"><a id="TabWorldOverview" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><span class="mif-vpn-publ"></span> World - Overview</a></li>
                 <li>
                     <a href="#" class="dropdown-toggle"><span class="mif-cogs"></span> Settings</a>
                     <ul class="d-menu" data-role="dropdown">
-                        <li><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
-                        <li><a id="TabSettingsAlliance" href="#ContentSettingsAlliance" onclick="prepareTabSettingsAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
-                        <li><a id="TabSettingsServer" href="#ContentSettingsServer" onclick="prepareTabSettingsServer();"><span class="mif-vpn-publ"></span> Server</a></li>
+                        <li id="LiSettingsPlayer"><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
+                        <li id="LiSettingsAlliance"><a id="TabSettingsAlliance" href="#ContentSettingsAlliance" onclick="prepareTabSettingsAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                        <li id="LiSettingsServer"><a id="TabSettingsServer" href="#ContentSettingsServer" onclick="prepareTabSettingsServer();"><span class="mif-vpn-publ"></span> Server</a></li>
                     </ul>
                 </li>
             </ul>
@@ -74,7 +77,7 @@
                     </div>
                 </div>
                 <div id="ContentPlayer">
-                    A falsis, calceus altus racana.
+                    <div id="ChartPlayer-ScorePoints" class="own-chart"></div><br/>
                 </div>
             </div>
             <!-- for charts -->

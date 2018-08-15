@@ -91,14 +91,20 @@ function prepareandFillDropDownListDataBase()
     }
     var DropDownListBase = $('#DropDownListBase').data('select');
     DropDownListBase.data(objectSelectOptionsBase);
+    var isPageStart = false;
     if (StartBaseId)
     {
         DropDownListBase.val(StartBaseId);
         StartBaseId = null;
+        isPageStart = true;
     }
     else
     {
         HelpFunctionForChangedBase();
+    }
+    if($('#LiPlayer.active')[0] && !isPageStart)
+    {
+        manageContentPlayer();
     }
 }
 
