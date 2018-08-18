@@ -23,7 +23,7 @@ function setCookiesToGlobalVars()
 function initializeStart()
 {
     setCookiesToGlobalVars();
-    var ArrayDdl = requestBackEnd('getDropDownListData');
+    var ArrayDdl = requestBackEnd('getDropDownListData', null, null, null, null);
     ArrayDropDownListData = ArrayDdl[0];
     ArrayDropDownDefaultOwn = ArrayDdl[1];
     prepareandFillDropDownListDataWorld();
