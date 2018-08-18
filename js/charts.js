@@ -1,21 +1,21 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
-function prepareDataForChart(_curObjectToUse, ArrayNeededItems)
+function prepareDataForChart(_curObjectToUse, _ArrayNeededItems)
 {
     var returnData = [];
     for (var i = 0; i < _curObjectToUse.length; i++)
     {
         var tmpObjectWithNeededItems = {};
-        for (var j = 0; j < ArrayNeededItems.length; j++)
+        for (var j = 0; j < _ArrayNeededItems.length; j++)
         {
-            tmpObjectWithNeededItems[ArrayNeededItems[j]] = _curObjectToUse[i][ArrayNeededItems[j]];
+            tmpObjectWithNeededItems[_ArrayNeededItems[j]] = _curObjectToUse[i][_ArrayNeededItems[j]];
         }
         returnData.push(tmpObjectWithNeededItems);
     }
     return returnData;
 }
 
-function drawLineChart(_DataDiagram, _DivId)
+function drawLineChart(_DataDiagram, _DivId, _title)
 {
     var ArrayKeys = [];
     for (var key in _DataDiagram[0])
@@ -28,17 +28,14 @@ function drawLineChart(_DataDiagram, _DivId)
         var ObjectCurGraph =
         {
             "id": "g" + i,
-            "balloonText": "[[title]]<br/>[[value]]",
+            "balloonText": "[[title]]: [[value]]",
             "bullet": "round",
             "bulletBorderAlpha": 1,
             "bulletColor": "#FFFFFF",
             "hideBulletsCount": 50,
             "title": ArrayKeys[i],
             "valueField": ArrayKeys[i],
-            "useLineColorForBulletBorder": true,
-            "balloon":{
-                "drop":true
-            }
+            "useLineColorForBulletBorder": true
         };
         ArrayGraphs.push(ObjectCurGraph);
     }
@@ -61,9 +58,7 @@ function drawLineChart(_DataDiagram, _DivId)
             "graph": "g1",
             "scrollbarHeight": 40
         },
-        "chartCursor": {
-        "limitToGraph":"g1"
-        },
+        "chartCursor": {},
         "categoryField": ArrayKeys[0],
         "categoryAxis": {
             "parseDates": true,
@@ -74,8 +69,19 @@ function drawLineChart(_DataDiagram, _DivId)
         "legend": {
             "useGraphSettings": true,
             "forceWidth": true,
-            "labelWidth": 110
-        }
+            "labelWidth": 145
+        },
+        "titles": [{
+            "text": _title,
+            'size': 20
+        }],
+        "listeners":[{
+            "event": "rendered",
+            "method": function(e)
+            {
+                $('#LoadingSymbolPagePlayer').addClass('d-none');
+            }
+        }]
     });
 
     chart.addListener("rendered", zoomChart);

@@ -1,6 +1,6 @@
 <?php
 /* Developer: leo7044 (https://github.com/leo7044) */
-// error_reporting(0); // wenn es public geht
+error_reporting(0); // wenn es public geht
 $server = "localhost";
 $database = "leostats";
 $username = "leostats";
