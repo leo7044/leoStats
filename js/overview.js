@@ -1,5 +1,7 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
+// divide Normal-Server from Veteran-Server
+var ArraySeasonServerIds = null;
 // DropDown
 var ArrayDropDownListData = null;
 var ArrayDropDownDefaultOwn = null;
@@ -8,6 +10,7 @@ var StartAccountId = null;
 var StartBaseId = null;
 
 $(document).ready(function(){
+    ArraySeasonServerIds = requestBackEnd('getSeasonServerIds', null, null, null, null);
     prepareTranslation('overview');
     changeLanguage(getCookie('langIndex'), getCookie('langValue'), 'start', 'overview');
     initializeStart();
