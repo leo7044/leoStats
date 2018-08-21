@@ -1,9 +1,11 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
 var ObjectPlayerData = {};
+var ObjectPlayerBaseData = {};
 var ObjectLastIds =
 {
-    "Player": {}
+    "Player": {},
+    "PlayerBase": {}
 };
 
 function manageContentPlayer()
@@ -12,7 +14,7 @@ function manageContentPlayer()
     var AccountId = $('#DropDownListPlayer').val();
     if (!ObjectPlayerData[WorldId + '_' + AccountId] || ObjectLastIds.Player.WorldId != WorldId || ObjectLastIds.Player.AccountId != AccountId)
     {
-        $('#LoadingSymbolPagePlayer').removeClass('d-none');
+        $('#LoadingSymbolPage').removeClass('d-none');
         setTimeout(function()
         {
             if (!ObjectPlayerData[WorldId + '_' + AccountId])
@@ -80,7 +82,7 @@ function manageContentPlayer()
                 var DataDiagram = prepareDataForChart(ObjectPlayerData[WorldId + '_' + AccountId], ArrayNeededItems[i]);
                 drawLineChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1]);
             }
-        }, 50);
+        }, 1);
         ObjectLastIds.Player.WorldId = WorldId;
         ObjectLastIds.Player.AccountId = AccountId;
     }
@@ -88,7 +90,23 @@ function manageContentPlayer()
 
 function manageContentPlayerBase()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var AccountId = $('#DropDownListPlayer').val();
+    if (!ObjectPlayerBaseData[WorldId + '_' + AccountId] || ObjectLastIds.PlayerBase.WorldId != WorldId || ObjectLastIds.PlayerBase.AccountId != AccountId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectPlayerBaseData[WorldId + '_' + AccountId])
+            {
+                ObjectPlayerBaseData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerBaseData', WorldId, null, AccountId, null);
+            }
+            var ArrayNeededItems = ['Name', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'SupArt', 'Tib', 'Cry', 'Pow', 'Cre', 'Rep', 'CnCOpt'];
+            drawTable(ObjectPlayerBaseData[WorldId + '_' + AccountId], ArrayNeededItems, 'TablePlayerBase');
+        }, 1);
+        ObjectLastIds.PlayerBase.WorldId = WorldId;
+        ObjectLastIds.PlayerBase.AccountId = AccountId;
+    }
 }
 
 function manageContentAllianceMembers()

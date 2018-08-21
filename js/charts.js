@@ -79,7 +79,7 @@ function drawLineChart(_DataDiagram, _DivId, _title)
             "event": "rendered",
             "method": function(e)
             {
-                $('#LoadingSymbolPagePlayer').addClass('d-none');
+                $('#LoadingSymbolPage').addClass('d-none');
             }
         }]
     });

@@ -106,6 +106,10 @@ function prepareandFillDropDownListDataBase()
     {
         manageContentPlayer();
     }
+    else if($('#LiPlayerBase.active')[0] && !isPageStart)
+    {
+        manageContentPlayerBase();
+    }
 }
 
 function HelpFunctionForChangedBase()

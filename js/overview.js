@@ -39,3 +39,16 @@ function initializeStart()
         setCookie('TabId', 'TabPlayer');
     }
 }
+
+String.prototype.toTimeFormat = function()
+{
+    var secs = parseInt(this);
+    var hours   = Math.floor(secs / 3600);
+    var minutes = ((0).toString() + Math.floor((secs - (hours * 3600)) / 60)).slice(-2);
+    var seconds = ((0).toString() + (secs - (hours * 3600) - (minutes * 60))).slice(-2);
+    if (hours < 10)
+    {
+        hours = '0' + hours
+    }
+    return hours + ':' + minutes + ':' + seconds;
+}

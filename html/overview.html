@@ -10,7 +10,7 @@
         <!-- CSS -->
         <link rel="stylesheet" href="https://cdn.rawgit.com/olton/Metro-UI-CSS/6595247250e80f27c590e9ba89522f1676a8297d/build/css/metro-all.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
-        <link rel="stylesheet" href="css/own.css?20180819">
+        <link rel="stylesheet" href="css/own.css?20180821">
 
         <!-- JavaScript -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -19,14 +19,15 @@
         <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
         <script src="https://www.amcharts.com/lib/3/serial.js"></script>
         <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-        <script src="js/cookies.js?20180819"></script>
-        <script src="js/languages.js?20180819"></script>
-        <script src="js/backend.js?20180819"></script>
-        <script src="js/dropdowns.js?20180819"></script>
-        <script src="js/tabsNavigation.js?20180819"></script>
-        <script src="js/tabsContent.js?20180819"></script>
-        <script src="js/charts.js?20180819"></script>
-        <script src="js/overview.js?20180819"></script>
+        <script src="js/cookies.js?20180821"></script>
+        <script src="js/languages.js?20180821"></script>
+        <script src="js/backend.js?20180821"></script>
+        <script src="js/dropdowns.js?20180821"></script>
+        <script src="js/tabsNavigation.js?20180821"></script>
+        <script src="js/tabsContent.js?20180821"></script>
+        <script src="js/charts.js?20180821"></script>
+        <script src="js/tables.js?20180821"></script>
+        <script src="js/overview.js?20180821"></script>
     </head>
     <body>
         <div class="container-fluid text-center own-container">
@@ -77,8 +78,8 @@
                         </div>
                     </div>
                 </div>
+                <center><span id="LoadingSymbolPage" class="fas fa-sync fa-spin fa-6x"></span></center>
                 <div id="ContentPlayer">
-                    <center><span id="LoadingSymbolPagePlayer" class="fas fa-sync fa-spin fa-6x"></span></center>
                     <div id="ChartPlayerScorePoints" class="own-chart"></div><br/>
                     <div id="ChartPlayerRanking" class="own-chart"></div><br/>
                     <div id="ChartPlayerProduction" class="own-chart"></div><br/>
@@ -90,9 +91,30 @@
                     <div id="ChartPlayerLps" class="own-chart"></div><br/>
                     <div id="ChartPlayerFunds" class="own-chart"></div><br/>
                 </div>
+                <div id="ContentPlayerBase">
+                    <table id="TablePlayerBase" class="table row-hover table-border cell-border mt-4" data-role="table" data-show-rows-steps="false" data-rows="50" data-on-draw="$('#LoadingSymbolPage').addClass('d-none');">
+                        <thead>
+                            <tr>
+                                <th class="sortable-column text-center">Name</th>
+                                <th class="sortable-column text-center" data-format="number">LvLCY</th>
+                                <th class="sortable-column text-center" data-format="number">LvLBase</th>
+                                <th class="sortable-column text-center" data-format="number">LvLOff</th>
+                                <th class="sortable-column text-center" data-format="number">LvLDef</th>
+                                <th class="sortable-column text-center" data-format="number">LvLDF</th>
+                                <th class="sortable-column text-center" data-format="number">LvLSup</th>
+                                <th class="sortable-column text-center">SupArt</th>
+                                <th class="sortable-column text-center" data-format="number">Tib</th>
+                                <th class="sortable-column text-center" data-format="number">Cry</th>
+                                <th class="sortable-column text-center" data-format="number">Pow</th>
+                                <th class="sortable-column text-center" data-format="number">Cre</th>
+                                <th class="sortable-column text-center">Rep</th>
+                                <th class="sortable-column text-center">CnCOpt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TablePlayerBaseTbody"></tbody>
+                    </table>
+                </div>
             </div>
-            <!-- for charts -->
-            <!-- https://www.amcharts.com/demos/line-chart-with-scroll-and-zoom/ -->
         </div>
     </body>
 </html>
