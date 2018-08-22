@@ -9,7 +9,7 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="https://cdn.rawgit.com/olton/Metro-UI-CSS/6595247250e80f27c590e9ba89522f1676a8297d/build/css/metro-all.min.css">
-        <link rel="stylesheet" href="css/own.css?20180821">
+        <link rel="stylesheet" href="css/login.css?20180821">
 
         <!-- JavaScript -->
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -19,15 +19,14 @@
         <script src="js/login.js?20180821"></script>
     </head>
     <body>
-        <div class="container-fluid text-center own-container">
+        <div class="text-center own-container">
             <img height="100px" onclick="location.reload()" src="img/icon.png" style="cursor:pointer" width="100px">
-            <hr>
             <h2>leoStats - Login</h2>
-            <div class="inline-form float-right">
-                <select id="DropDownLanguage" data-role="select" data-filter="false" data-on-change="changeLanguage(this.selectedIndex, this.value, 'page', 'login');"></select>
+            <br/><hr><br/>
+            <div class="float-right">
+                <select id="DropDownLanguage" data-role="select" data-filter="false" data-prepend="<span class='mif-vpn-publ'></span>" data-on-change="changeLanguage(this.selectedIndex, this.value, 'page', 'login');"></select>
             </div>
-        </div>
-        <div class="container own-container">
+            <br/><br/><br/>
             <form method="post" action="" name="FormLogin" onsubmit="return login();">
                 <div class="form-group">
                     <input id="UserName" name="UserName" placeholder="UserName" data-prepend="<span class='mif-user'></span>" data-role="input" class="trans-placeholder" required autofocus>
@@ -40,12 +39,12 @@
                 </div>
                 <div class="form-group d-none" id="ErrorDb">
                     <div class="p-3 bg-red fg-white trans-innerHTML" id="ErrorDbInnerHtml"></div>
-                </div>
+                </div><br/>
                 <div class="form-group">
-                    <button type="submit" class="button success"><span class="mif-enter"></span> <span id="Login" class="trans-innerHTML"></span></button>
-                    <button type="button" class="button warning" onclick="Metro.dialog.open('#DialogInfoDownload');"><span class="mif-download2"></span> Script</button>
-                    <button type="button" class="button info" onclick="Metro.dialog.open('#DialogInfoDownload');"><span class="mif-question"></span> <span id="HelpInfo" class="trans-innerHTML"></span></button>
-                    <button type="button" class="button secondary" onclick="Metro.dialog.open('#DialogContact');"><span class="mif-mail"></span> <span id="Contact" class="trans-innerHTML"></span></button>
+                    <button type="submit" class="button btn-block success"><span class="mif-enter"></span> <span id="Login" class="trans-innerHTML"></span></button>
+                    <button type="button" class="button btn-block warning" onclick="Metro.dialog.open('#DialogInfoDownload');"><span class="mif-download2"></span> Script</button>
+                    <button type="button" class="button btn-block info" onclick="Metro.dialog.open('#DialogInfoDownload');"><span class="mif-question"></span> <span id="HelpInfo" class="trans-innerHTML"></span></button>
+                    <button type="button" class="button btn-block secondary" onclick="Metro.dialog.open('#DialogContact');"><span class="mif-mail"></span> <span id="Contact" class="trans-innerHTML"></span></button>
                 </div>
             </form>
         </div>
