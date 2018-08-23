@@ -31,7 +31,7 @@ function manageContentPlayer()
                     ['Zeit', 'ResearchPoints', 'Credits'],
                     ['Zeit', 'Shoot', 'PvP', 'PvE'],
                     ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD'],
-                    ['Zeit', 'CPMax', 'CPCur'],
+                    ['Zeit', 'CPCur', 'CPMax'],
                     ['Zeit', 'Funds']
                 ];
                 var ArrayDivsAndTitles =
@@ -59,7 +59,7 @@ function manageContentPlayer()
                     ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD'],
                     ['Zeit', 'VP'],
                     ['Zeit', 'LP'],
-                    ['Zeit', 'CPMax', 'CPCur'],
+                    ['Zeit', 'CPCur', 'CPMax'],
                     ['Zeit', 'Funds']
                 ];
                 var ArrayDivsAndTitles =
