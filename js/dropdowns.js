@@ -102,18 +102,28 @@ function prepareandFillDropDownListDataBase()
     {
         HelpFunctionForChangedBase();
     }
-    if($('#LiPlayer.active')[0] && !isPageStart)
-    {
-        manageContentPlayer();
-    }
-    else if($('#LiPlayerBase.active')[0] && !isPageStart)
-    {
-        manageContentPlayerBase();
-    }
+    manageContents(isPageStart);
 }
 
 function HelpFunctionForChangedBase()
 {
     var BaseId = $('#DropDownListBase').val();
     setCookie('BaseId', BaseId);
+}
+
+function manageContents(_isPageStart)
+{
+
+    if($('#LiPlayer.active')[0] && !_isPageStart)
+    {
+        manageContentPlayer();
+    }
+    else if($('#LiPlayerBase.active')[0] && !_isPageStart)
+    {
+        manageContentPlayerBase();
+    }
+    else if($('#LiAllianceMembers.active')[0] && !_isPageStart)
+    {
+        manageContentAllianceMembers();
+    }
 }

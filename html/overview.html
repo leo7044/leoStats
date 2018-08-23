@@ -78,7 +78,11 @@
                         </div>
                     </div>
                 </div>
-                <center><span id="LoadingSymbolPage" class="fas fa-sync fa-spin fa-6x"></span></center>
+                <center>
+                    <div class="own-front">
+                        <span id="LoadingSymbolPage" class="fas fa-sync fa-spin fa-6x"></span>
+                    </div>
+                </center>
                 <div id="ContentPlayer">
                     <div id="ChartPlayerScorePoints" class="own-chart"></div><br/>
                     <div id="ChartPlayerRanking" class="own-chart"></div><br/>
@@ -92,27 +96,126 @@
                     <div id="ChartPlayerFunds" class="own-chart"></div><br/>
                 </div>
                 <div id="ContentPlayerBase">
-                    <table id="TablePlayerBase" class="table row-hover table-border cell-border mt-4" data-role="table" data-show-rows-steps="false" data-rows="50" data-on-draw="$('#LoadingSymbolPage').addClass('d-none');">
-                        <thead>
-                            <tr>
-                                <th class="sortable-column text-center">Name</th>
-                                <th class="sortable-column text-center" data-format="number">LvLCY</th>
-                                <th class="sortable-column text-center" data-format="number">LvLBase</th>
+                    <div id="BoxViewColsPlayerBase" class="own-box">
+                        <label>Show columns:</label><br/>
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Name">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLCY">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLBase">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLOff">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLDef">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLDF">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLSup">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="SupArt">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Tib">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Cry">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Pow">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Cre">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Rep">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="CnCOpt">
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="TablePlayerBase"
+                            class="table row-hover table-border cell-border mt-4"
+                            data-role="table"
+                            data-show-search="false"
+                            data-show-rows-steps="false"
+                            data-show-pagination="false"
+                            data-show-table-info="false"
+                            data-rows="50"
+                            data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                            data-thousand-separator="."
+                            data-decimal-separator=",">
+                            <thead>
+                                <tr>
+                                    <th class="sortable-column text-center">Name</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLCY</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLBase</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLOff</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLDef</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLDF</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLSup</th>
+                                    <th class="sortable-column text-center">SupArt</th>
+                                    <th class="sortable-column text-center" data-format="number">Tib</th>
+                                    <th class="sortable-column text-center" data-format="number">Cry</th>
+                                    <th class="sortable-column text-center" data-format="number">Pow</th>
+                                    <th class="sortable-column text-center" data-format="number">Cre</th>
+                                    <th class="sortable-column text-center">Rep</th>
+                                    <th class="sortable-column text-center">CnCOpt</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div id="ContentAllianceMembers">
+                    <div id="BoxViewColsAllianceMembers" class="own-box">
+                        <label>Show columns:</label><br/>
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="UserName">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Zeit">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="ScorePoints">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CountBases">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CountSup">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="OverallRank">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtTiberium">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtCrystal">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtPower">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtCredits">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="ResearchPoints">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Credits">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Shoot">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="PvP">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="PvE">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="LvLOff">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="BaseD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="OffD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="DefD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="DFD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="SupD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="RepMax">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CPMax">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CPCur">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Funds">
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="TableAllianceMembers"
+                            class="table row-hover table-border cell-border mt-4"
+                            data-role="table"
+                            data-show-search="false"
+                            data-show-rows-steps="false"
+                            data-show-pagination="false"
+                            data-show-table-info="false"
+                            data-rows="50"
+                            data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                            data-thousand-separator="."
+                            data-decimal-separator=",">
+                            <thead>
+                                <th class="sortable-column text-center sort-asc">UserName</th>
+                                <th class="sortable-column text-center" data-format="date">Zeit</th>
+                                <th class="sortable-column text-center" data-format="number">ScorePoints</th>
+                                <th class="sortable-column text-center" data-format="number">CountBases</th>
+                                <th class="sortable-column text-center" data-format="number">CountSup</th>
+                                <th class="sortable-column text-center" data-format="number">OverallRank</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtTiberium</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtCrystal</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtPower</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtCredits</th>
+                                <th class="sortable-column text-center" data-format="number">ResearchPoints</th>
+                                <th class="sortable-column text-center" data-format="number">Credits</th>
+                                <th class="sortable-column text-center" data-format="number">Shoot</th>
+                                <th class="sortable-column text-center" data-format="number">PvP</th>
+                                <th class="sortable-column text-center" data-format="number">PvE</th>
                                 <th class="sortable-column text-center" data-format="number">LvLOff</th>
-                                <th class="sortable-column text-center" data-format="number">LvLDef</th>
-                                <th class="sortable-column text-center" data-format="number">LvLDF</th>
-                                <th class="sortable-column text-center" data-format="number">LvLSup</th>
-                                <th class="sortable-column text-center">SupArt</th>
-                                <th class="sortable-column text-center" data-format="number">Tib</th>
-                                <th class="sortable-column text-center" data-format="number">Cry</th>
-                                <th class="sortable-column text-center" data-format="number">Pow</th>
-                                <th class="sortable-column text-center" data-format="number">Cre</th>
-                                <th class="sortable-column text-center">Rep</th>
-                                <th class="sortable-column text-center">CnCOpt</th>
-                            </tr>
-                        </thead>
-                        <tbody id="TablePlayerBaseTbody"></tbody>
-                    </table>
+                                <th class="sortable-column text-center" data-format="number">BaseD</th>
+                                <th class="sortable-column text-center" data-format="number">OffD</th>
+                                <th class="sortable-column text-center" data-format="number">DefD</th>
+                                <th class="sortable-column text-center" data-format="number">DFD</th>
+                                <th class="sortable-column text-center" data-format="number">SupD</th>
+                                <th class="sortable-column text-center">RepMax</th>
+                                <th class="sortable-column text-center" data-format="number">CPMax</th>
+                                <th class="sortable-column text-center" data-format="number">CPCur</th>
+                                <th class="sortable-column text-center" data-format="number">Funds</th>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

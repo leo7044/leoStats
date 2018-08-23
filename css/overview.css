@@ -1,10 +1,5 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
-.own-jumbotron-bgcolor
-{
-	background-color: #F8F8FF;
-}
-
 .own-container
 {
 	background-color: #E9ECEF;
@@ -27,4 +22,17 @@
 {
 	width: 100%;
 	height: 700px;
+}
+
+.own-box
+{
+	border: 2px solid #eee;
+}
+
+.own-front
+{
+    z-index: 500;
+	position: absolute;
+    left: 0;
+    right: 0;
 }

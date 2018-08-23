@@ -5,7 +5,8 @@ var ObjectPlayerBaseData = {};
 var ObjectLastIds =
 {
     "Player": {},
-    "PlayerBase": {}
+    "PlayerBase": {},
+    "AllianceMembers": {}
 };
 
 function manageContentPlayer()
@@ -88,7 +89,7 @@ function manageContentPlayer()
     }
 }
 
-function manageContentPlayerBase()
+function manageContentPlayerBase(_forced)
 {
     var WorldId = $('#DropDownListWorld').val();
     var AccountId = $('#DropDownListPlayer').val();
@@ -102,16 +103,37 @@ function manageContentPlayerBase()
                 ObjectPlayerBaseData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerBaseData', WorldId, null, AccountId, null);
             }
             var ArrayNeededItems = ['Name', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'SupArt', 'Tib', 'Cry', 'Pow', 'Cre', 'Rep', 'CnCOpt'];
-            drawTable(ObjectPlayerBaseData[WorldId + '_' + AccountId], ArrayNeededItems, 'TablePlayerBase');
+            drawTable(ObjectPlayerBaseData[WorldId + '_' + AccountId], ArrayNeededItems, 'TablePlayerBase', 'BoxViewColsPlayerBase');
         }, 1);
         ObjectLastIds.PlayerBase.WorldId = WorldId;
         ObjectLastIds.PlayerBase.AccountId = AccountId;
     }
+    else if (_forced)
+    {
+        var ArrayNeededItems = ['Name', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'SupArt', 'Tib', 'Cry', 'Pow', 'Cre', 'Rep', 'CnCOpt'];
+        drawTable(ObjectPlayerBaseData[WorldId + '_' + AccountId], ArrayNeededItems, 'TablePlayerBase', 'BoxViewColsPlayerBase');
+    }
 }
 
-function manageContentAllianceMembers()
+function manageContentAllianceMembers(_forced)
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var AllianceId = $('#DropDownListAlliance').val();
+    if (!ObjectPlayerBaseData[WorldId + '_' + AllianceId] || ObjectLastIds.AllianceMembers.WorldId != WorldId || ObjectLastIds.AllianceMembers.AllianceId != AllianceId || _forced)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectPlayerBaseData[WorldId + '_' + AllianceId])
+            {
+                ObjectPlayerBaseData[WorldId + '_' + AllianceId] = requestBackEnd('getAlliancePlayerData', WorldId, AllianceId, null, null);
+            }
+            var ArrayNeededItems = ['UserName', 'Zeit', 'ScorePoints', 'CountBases', 'CountSup', 'OverallRank', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'ResearchPoints', 'Credits', 'Shoot', 'PvP', 'PvE', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD', 'RepMax', 'CPMax', 'CPCur', 'Funds'];
+            drawTable(ObjectPlayerBaseData[WorldId + '_' + AllianceId], ArrayNeededItems, 'TableAllianceMembers', 'BoxViewColsAllianceMembers');
+        }, 1);
+        ObjectLastIds.AllianceMembers.WorldId = WorldId;
+        ObjectLastIds.AllianceMembers.AllianceId = AllianceId;
+    }
 }
 
 function manageContentAlliance()
