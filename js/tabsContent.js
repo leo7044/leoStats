@@ -2,11 +2,14 @@
 
 var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
+var ObjectAllianceMembersData = {};
+var ObjectAllianceData = {};
 var ObjectLastIds =
 {
     "Player": {},
     "PlayerBase": {},
-    "AllianceMembers": {}
+    "AllianceMembers": {},
+    "Alliance": {}
 };
 
 function manageContentPlayer()
@@ -119,17 +122,17 @@ function manageContentAllianceMembers(_forced)
 {
     var WorldId = $('#DropDownListWorld').val();
     var AllianceId = $('#DropDownListAlliance').val();
-    if (!ObjectPlayerBaseData[WorldId + '_' + AllianceId] || ObjectLastIds.AllianceMembers.WorldId != WorldId || ObjectLastIds.AllianceMembers.AllianceId != AllianceId || _forced)
+    if (!ObjectAllianceMembersData[WorldId + '_' + AllianceId] || ObjectLastIds.AllianceMembers.WorldId != WorldId || ObjectLastIds.AllianceMembers.AllianceId != AllianceId || _forced)
     {
         $('#LoadingSymbolPage').removeClass('d-none');
         setTimeout(function()
         {
-            if (!ObjectPlayerBaseData[WorldId + '_' + AllianceId])
+            if (!ObjectAllianceMembersData[WorldId + '_' + AllianceId])
             {
-                ObjectPlayerBaseData[WorldId + '_' + AllianceId] = requestBackEnd('getAlliancePlayerData', WorldId, AllianceId, null, null);
+                ObjectAllianceMembersData[WorldId + '_' + AllianceId] = requestBackEnd('getAlliancePlayerData', WorldId, AllianceId, null, null);
             }
             var ArrayNeededItems = ['UserName', 'Zeit', 'ScorePoints', 'CountBases', 'CountSup', 'OverallRank', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'ResearchPoints', 'Credits', 'Shoot', 'PvP', 'PvE', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD', 'RepMax', 'CPMax', 'CPCur', 'Funds'];
-            drawTable(ObjectPlayerBaseData[WorldId + '_' + AllianceId], ArrayNeededItems, 'TableAllianceMembers', 'BoxViewColsAllianceMembers');
+            drawTable(ObjectAllianceMembersData[WorldId + '_' + AllianceId], ArrayNeededItems, 'TableAllianceMembers', 'BoxViewColsAllianceMembers');
         }, 1);
         ObjectLastIds.AllianceMembers.WorldId = WorldId;
         ObjectLastIds.AllianceMembers.AllianceId = AllianceId;
@@ -138,7 +141,53 @@ function manageContentAllianceMembers(_forced)
 
 function manageContentAlliance()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var AllianceId = $('#DropDownListAlliance').val();
+    if (!ObjectAllianceData[WorldId + '_' + AllianceId] || ObjectLastIds.Alliance.WorldId != WorldId || ObjectLastIds.Alliance.AllianceId != AllianceId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectAllianceData[WorldId + '_' + AllianceId])
+            {
+                ObjectAllianceData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceData', WorldId, AllianceId, null, null);
+            }
+            if (ArraySeasonServerIds.indexOf(WorldId) == -1)
+            {
+                var ArrayNeededItems =
+                [
+                    ['Zeit', 'AllianceRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'Rank Air', 'RankDef'],
+                    ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef'],
+                    ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower'],
+                    ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef']
+                ];
+            }
+            else
+            {
+                var ArrayNeededItems =
+                [
+                    ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'Rank Air', 'RankDef'],
+                    ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef'],
+                    ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower'],
+                    ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef']
+                ];
+            }
+            var ArrayDivsAndTitles =
+            [
+                ['ChartAllianceRank', 'Ranking'],
+                ['ChartAlliancePoints', 'Points'],
+                ['ChartAllianceBonusRess', 'Ressources'],
+                ['ChartAllianceBonusFight', 'Fight']
+            ];
+            for (var i = 0; i < ArrayNeededItems.length; i++)
+            {
+                var DataDiagram = prepareDataForChart(ObjectAllianceData[WorldId + '_' + AllianceId], ArrayNeededItems[i]);
+                drawLineChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1]);
+            }
+        }, 1);
+        ObjectLastIds.Alliance.WorldId = WorldId;
+        ObjectLastIds.Alliance.AllianceId = AllianceId;
+    }
 }
 
 function manageContentAllianceBase()

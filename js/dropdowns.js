@@ -126,4 +126,8 @@ function manageContents(_isPageStart)
     {
         manageContentAllianceMembers();
     }
+    else if($('#LiAlliance.active')[0] && !_isPageStart)
+    {
+        manageContentAlliance();
+    }
 }
