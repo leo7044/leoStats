@@ -64,7 +64,7 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
         }
         ArrayColsAlignRight = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
     }
-    else
+    /*else
     {
         for (var i = 0; i < _objectToUse.length; i++)
         {
@@ -75,7 +75,7 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             }
             ArrayItems.push(tmpArrayRow);
         }
-    }
+    }*/
     // begin: throw not wanted columns out
     ArrayBoxChecked = [];
     for (var i = 0; i < $('#' + _BoxId).children('.checkbox').length; i++)
