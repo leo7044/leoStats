@@ -47,7 +47,11 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
-                if (_columns[j] == 'RepMax')
+                if (_columns[j] == 'Faction')
+                {
+                    tmpArrayRow.push('<img src="img/faction_' + _objectToUse[i][_columns[j]] + '.png" width="20px" height="20px"></img>');
+                }
+                else if (_columns[j] == 'RepMax')
                 {
                     tmpArrayRow.push((_objectToUse[i][_columns[j]]).toTimeFormat());
                 }
@@ -62,7 +66,7 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             }
             ArrayItems.push(tmpArrayRow);
         }
-        ArrayColsAlignRight = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+        ArrayColsAlignRight = [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
     }
     /*else
     {
