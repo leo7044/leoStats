@@ -130,4 +130,8 @@ function manageContents(_isPageStart)
     {
         manageContentAlliance();
     }
+    else if($('#LiAllianceOverview.active')[0] && !_isPageStart)
+    {
+        manageContentAllianceOverview();
+    }
 }

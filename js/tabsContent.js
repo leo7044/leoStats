@@ -4,12 +4,14 @@ var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
 var ObjectAllianceMembersData = {};
 var ObjectAllianceData = {};
+var ObjectAllianceOverviewData = {};
 var ObjectLastIds =
 {
     "Player": {},
     "PlayerBase": {},
     "AllianceMembers": {},
-    "Alliance": {}
+    "Alliance": {},
+    "AllianceOverview": {}
 };
 
 function manageContentPlayer()
@@ -83,7 +85,7 @@ function manageContentPlayer()
             }
             for (var i = 0; i < ArrayNeededItems.length; i++)
             {
-                var DataDiagram = prepareDataForChart(ObjectPlayerData[WorldId + '_' + AccountId], ArrayNeededItems[i]);
+                var DataDiagram = prepareDataForLineChart(ObjectPlayerData[WorldId + '_' + AccountId], ArrayNeededItems[i]);
                 drawLineChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1]);
             }
         }, 1);
@@ -156,7 +158,7 @@ function manageContentAlliance()
             {
                 var ArrayNeededItems =
                 [
-                    ['Zeit', 'AllianceRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'Rank Air', 'RankDef'],
+                    ['Zeit', 'AllianceRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef'],
                     ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef'],
                     ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower'],
                     ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef']
@@ -166,7 +168,7 @@ function manageContentAlliance()
             {
                 var ArrayNeededItems =
                 [
-                    ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'Rank Air', 'RankDef'],
+                    ['Zeit', 'AllianceRank', 'EventRank', 'RankTib', 'RankCry', 'RankPow', 'RankInf', 'RankVeh', 'RankAir', 'RankDef'],
                     ['Zeit', 'ScoreTib', 'ScoreCry', 'ScorePow', 'ScoreInf', 'ScoreVeh', 'ScoreAir', 'ScoreDef'],
                     ['Zeit', 'BonusTiberium', 'BonusCrystal', 'BonusPower'],
                     ['Zeit', 'BonusInfantrie', 'BonusVehicle', 'BonusAir', 'BonusDef']
@@ -181,7 +183,7 @@ function manageContentAlliance()
             ];
             for (var i = 0; i < ArrayNeededItems.length; i++)
             {
-                var DataDiagram = prepareDataForChart(ObjectAllianceData[WorldId + '_' + AllianceId], ArrayNeededItems[i]);
+                var DataDiagram = prepareDataForLineChart(ObjectAllianceData[WorldId + '_' + AllianceId], ArrayNeededItems[i]);
                 drawLineChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1]);
             }
         }, 1);
@@ -197,7 +199,34 @@ function manageContentAllianceBase()
 
 function manageContentAllianceOverview()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var AllianceId = $('#DropDownListAlliance').val();
+    if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId] || ObjectLastIds.AllianceOverview.WorldId != WorldId || ObjectLastIds.AllianceOverview.AllianceId != AllianceId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId])
+            {
+                ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceOverviewData', WorldId, AllianceId, null, null);
+            }
+            var ArrayNeededItems = ['LvLOff', 'LvLDef', 'LvLSup'];
+            var ArrayDivsAndTitles =
+            [
+                ['ChartAllianceOverviewOffense', 'Amount Offenselevel'],
+                ['ChartAllianceOverviewDefense', 'Amount Defenselevel'],
+                ['ChartAllianceOverviewSupport', 'Amount Supportlevel']
+            ];
+            for (var i = 0; i < ArrayNeededItems.length; i++)
+            {
+                var DataDiagram = prepareDataForColumnChart(ObjectAllianceOverviewData[WorldId + '_' + AllianceId][i], ArrayNeededItems[i]);
+                console.log(DataDiagram);
+                drawColumnChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1], 'LvL', 'Amount', '<b>LvL: [[category]]<br/>Amount: [[value]]</b>');
+            }
+        }, 1);
+        ObjectLastIds.AllianceOverview.WorldId = WorldId;
+        ObjectLastIds.AllianceOverview.AllianceId = AllianceId;
+    }
 }
 
 function manageContentBase()
