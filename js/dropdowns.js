@@ -134,4 +134,8 @@ function manageContents(_isPageStart)
     {
         manageContentAllianceOverview();
     }
+    else if($('#LiWorldOverview.active')[0] && !_isPageStart)
+    {
+        manageContentWorldOverview();
+    }
 }

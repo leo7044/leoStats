@@ -1,7 +1,7 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
-// divide Normal-Server from Veteran-Server
-var ArraySeasonServerIds = null;
+var ObjectSessionVariables = null; // Information about current Session / User
+var ArraySeasonServerIds = null; // divide Normal-Server from Veteran-Server
 // DropDown
 var ArrayDropDownListData = null;
 var ArrayDropDownDefaultOwn = null;
@@ -10,6 +10,7 @@ var StartAccountId = null;
 var StartBaseId = null;
 
 $(document).ready(function(){
+    prepareAdminVsUserView();
     ArraySeasonServerIds = requestBackEnd('getSeasonServerIds', null, null, null, null);
     prepareTranslation('overview');
     changeLanguage(getCookie('langIndex'), getCookie('langValue'), 'start', 'overview');
@@ -21,6 +22,15 @@ function setCookiesToGlobalVars()
     StartAllianceId = getCookie('AllianceId');
     StartAccountId = getCookie('AccountId');
     StartBaseId = getCookie('BaseId');
+}
+
+function prepareAdminVsUserView()
+{
+    ObjectSessionVariables = requestBackEnd('getSessionVariables', null, null, null, null);
+    if (!ObjectSessionVariables.leoStats_IsAdmin)
+    {
+        $('#LiWorldOverview').addClass('d-none');
+    }
 }
 
 function initializeStart()

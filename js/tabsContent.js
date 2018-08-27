@@ -5,13 +5,15 @@ var ObjectPlayerBaseData = {};
 var ObjectAllianceMembersData = {};
 var ObjectAllianceData = {};
 var ObjectAllianceOverviewData = {};
+var ObjectWorldOverviewData = {};
 var ObjectLastIds =
 {
     "Player": {},
     "PlayerBase": {},
     "AllianceMembers": {},
     "Alliance": {},
-    "AllianceOverview": {}
+    "AllianceOverview": {},
+    "WorldOverview": {}
 };
 
 function manageContentPlayer()
@@ -220,7 +222,6 @@ function manageContentAllianceOverview()
             for (var i = 0; i < ArrayNeededItems.length; i++)
             {
                 var DataDiagram = prepareDataForColumnChart(ObjectAllianceOverviewData[WorldId + '_' + AllianceId][i], ArrayNeededItems[i]);
-                console.log(DataDiagram);
                 drawColumnChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1], 'LvL', 'Amount', '<b>LvL: [[category]]<br/>Amount: [[value]]</b>');
             }
         }, 1);
@@ -236,7 +237,31 @@ function manageContentBase()
 
 function manageContentWorldOverview()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    if (!ObjectWorldOverviewData[WorldId] || ObjectLastIds.WorldOverview.WorldId != WorldId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectWorldOverviewData[WorldId])
+            {
+                ObjectWorldOverviewData[WorldId] = requestBackEnd('getWorldOverviewData', WorldId, null, null, null);
+            }
+            var ArrayNeededItems = ['LvLOff', 'LvLDef', 'LvLSup'];
+            var ArrayDivsAndTitles =
+            [
+                ['ChartWorldOverviewOffense', 'Amount Offenselevel'],
+                ['ChartWorldOverviewDefense', 'Amount Defenselevel'],
+                ['ChartWorldOverviewSupport', 'Amount Supportlevel']
+            ];
+            for (var i = 0; i < ArrayNeededItems.length; i++)
+            {
+                var DataDiagram = prepareDataForColumnChart(ObjectWorldOverviewData[WorldId][i], ArrayNeededItems[i]);
+                drawColumnChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1], 'LvL', 'Amount', '<b>LvL: [[category]]<br/>Amount: [[value]]</b>');
+            }
+        }, 1);
+        ObjectLastIds.WorldOverview.WorldId = WorldId;
+    }
 }
 
 function manageContentSettingsPlayer()
