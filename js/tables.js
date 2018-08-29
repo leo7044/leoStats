@@ -47,7 +47,11 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
-                if (_columns[j] == 'Faction')
+                if (_columns[j] == 'UserName')
+                {
+                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentPlayerFromTable(' + _objectToUse[i]['AccountId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
+                }
+                else if (_columns[j] == 'Faction')
                 {
                     tmpArrayRow.push('<img src="img/faction_' + _objectToUse[i][_columns[j]] + '.png" width="20px" height="20px"></img>');
                 }
@@ -121,4 +125,11 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
     }
     table.heads = tmpObjectHeads;
     table.resetView();
+}
+
+function prepareContentPlayerFromTable(_AccountId)
+{
+    var DropDownListPlayer = $('#DropDownListPlayer').data('select');
+    DropDownListPlayer.val(_AccountId);
+    $('#TabPlayerBase').click();
 }

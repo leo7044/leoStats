@@ -36,3 +36,8 @@
     left: 0;
     right: 0;
 }
+
+.own-cursor-pointer
+{
+	cursor: pointer !important;
+}
