@@ -18,7 +18,11 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
-                if (_columns[j] == 'CnCOpt')
+                if (_columns[j] == 'Name')
+                {
+                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentBaseFromTablePlayer(' + _objectToUse[i]['BaseId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
+                }
+                else if (_columns[j] == 'CnCOpt')
                 {
                     tmpArrayRow.push('<a href="' + _objectToUse[i][_columns[j]] + '" target="_blank">' + _objectToUse[i]['Name'] + '</a>');
                 }
@@ -49,7 +53,7 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
             {
                 if (_columns[j] == 'UserName')
                 {
-                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentPlayerFromTable(' + _objectToUse[i]['AccountId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
+                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentPlayerFromTableAlliance(' + _objectToUse[i]['AccountId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
                 }
                 else if (_columns[j] == 'Faction')
                 {
@@ -127,9 +131,16 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
     table.resetView();
 }
 
-function prepareContentPlayerFromTable(_AccountId)
+function prepareContentPlayerFromTableAlliance(_AccountId)
 {
     var DropDownListPlayer = $('#DropDownListPlayer').data('select');
     DropDownListPlayer.val(_AccountId);
     $('#TabPlayerBase').click();
+}
+
+function prepareContentBaseFromTablePlayer(_BaseId)
+{
+    var DropDownListBase = $('#DropDownListBase').data('select');
+    DropDownListBase.val(_BaseId);
+    $('#TabBase').click();
 }

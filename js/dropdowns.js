@@ -91,50 +91,51 @@ function prepareandFillDropDownListDataBase()
     }
     var DropDownListBase = $('#DropDownListBase').data('select');
     DropDownListBase.data(objectSelectOptionsBase);
-    var isPageStart = false;
     if (StartBaseId)
     {
         DropDownListBase.val(StartBaseId);
         StartBaseId = null;
-        isPageStart = true;
     }
     else
     {
         HelpFunctionForChangedBase();
     }
-    manageContents(isPageStart);
 }
 
 function HelpFunctionForChangedBase()
 {
     var BaseId = $('#DropDownListBase').val();
     setCookie('BaseId', BaseId);
+    manageContents();
 }
 
-function manageContents(_isPageStart)
+function manageContents()
 {
-
-    if($('#LiPlayer.active')[0] && !_isPageStart)
+    if($('#LiPlayer.active')[0])
     {
         manageContentPlayer();
     }
-    else if($('#LiPlayerBase.active')[0] && !_isPageStart)
+    else if($('#LiPlayerBase.active')[0])
     {
         manageContentPlayerBase();
     }
-    else if($('#LiAllianceMembers.active')[0] && !_isPageStart)
+    else if($('#LiAllianceMembers.active')[0])
     {
         manageContentAllianceMembers();
     }
-    else if($('#LiAlliance.active')[0] && !_isPageStart)
+    else if($('#LiAlliance.active')[0])
     {
         manageContentAlliance();
     }
-    else if($('#LiAllianceOverview.active')[0] && !_isPageStart)
+    else if($('#LiAllianceOverview.active')[0])
     {
         manageContentAllianceOverview();
     }
-    else if($('#LiWorldOverview.active')[0] && !_isPageStart)
+    else if($('#LiBase.active')[0])
+    {
+        manageContentBase();
+    }
+    else if($('#LiWorldOverview.active')[0])
     {
         manageContentWorldOverview();
     }

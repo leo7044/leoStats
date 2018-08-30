@@ -5,6 +5,7 @@ var ObjectPlayerBaseData = {};
 var ObjectAllianceMembersData = {};
 var ObjectAllianceData = {};
 var ObjectAllianceOverviewData = {};
+var ObjectBaseData = {};
 var ObjectWorldOverviewData = {};
 var ObjectLastIds =
 {
@@ -13,6 +14,7 @@ var ObjectLastIds =
     "AllianceMembers": {},
     "Alliance": {},
     "AllianceOverview": {},
+    "Base": {},
     "WorldOverview": {}
 };
 
@@ -232,7 +234,39 @@ function manageContentAllianceOverview()
 
 function manageContentBase()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var BaseId = $('#DropDownListBase').val();
+    if (!ObjectBaseData[WorldId + '_' + BaseId] || ObjectLastIds.Base.WorldId != WorldId || ObjectLastIds.Base.BaseId != BaseId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            if (!ObjectBaseData[WorldId + '_' + BaseId])
+            {
+                ObjectBaseData[WorldId + '_' + BaseId] = requestBackEnd('getBaseData', WorldId, null, null, BaseId);
+            }
+            var ArrayNeededItems =
+            [
+                ['Zeit', 'Tib', 'Cry', 'Pow', 'Cre'],
+                ['Zeit', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup'],
+                ['Zeit', 'Rep', 'RepMax']
+            ];
+            var ArrayDivsAndTitles =
+            [
+                ['ChartBaseProduction', 'Production'],
+                ['ChartBaseValues', 'Values'],
+                ['ChartBaseRepairTime', 'Repair-Time in hours']
+            ];
+            for (var i = 0; i < ArrayNeededItems.length; i++)
+            {
+                var DataDiagram = prepareDataForLineChart(ObjectBaseData[WorldId + '_' + BaseId], ArrayNeededItems[i]);
+                drawLineChart(DataDiagram, ArrayDivsAndTitles[i][0], ArrayDivsAndTitles[i][1]);
+            }
+            $('#LinkCncOpt')[0].href = ObjectBaseData[WorldId + '_' + BaseId][ObjectBaseData[WorldId + '_' + BaseId].length - 1].CnCOpt;
+        }, 1);
+        ObjectLastIds.Base.WorldId = WorldId;
+        ObjectLastIds.Base.BaseId = BaseId;
+    }
 }
 
 function manageContentWorldOverview()

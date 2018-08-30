@@ -8,7 +8,14 @@ function prepareDataForLineChart(_curObjectToUse, _ArrayNeededItems)
         var tmpObjectWithNeededItems = {};
         for (var j = 0; j < _ArrayNeededItems.length; j++)
         {
-            tmpObjectWithNeededItems[_ArrayNeededItems[j]] = _curObjectToUse[i][_ArrayNeededItems[j]];
+            if (_ArrayNeededItems[j] == 'Rep' || _ArrayNeededItems[j] == 'RepMax')
+            {
+                tmpObjectWithNeededItems[_ArrayNeededItems[j]] = parseInt(parseInt(_curObjectToUse[i][_ArrayNeededItems[j]]) / 3600);
+            }
+            else
+            {
+                tmpObjectWithNeededItems[_ArrayNeededItems[j]] = _curObjectToUse[i][_ArrayNeededItems[j]];
+            }
         }
         returnData.push(tmpObjectWithNeededItems);
     }
