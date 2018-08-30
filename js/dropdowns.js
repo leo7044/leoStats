@@ -87,7 +87,7 @@ function prepareandFillDropDownListDataBase()
     var objectSelectOptionsBase = {};
     for (var i = 0; i < ArrayDropDownListBase.length; i++)
     {
-        objectSelectOptionsBase[ArrayDropDownListBase[i].BaseId] = ArrayDropDownListBase[i].Name;
+        objectSelectOptionsBase[ArrayDropDownListBase[i].BaseId] = ArrayDropDownListBase[i].Name.replace('.', '_');
     }
     var DropDownListBase = $('#DropDownListBase').data('select');
     DropDownListBase.data(objectSelectOptionsBase);
@@ -127,6 +127,10 @@ function manageContents()
     {
         manageContentAlliance();
     }
+    else if($('#LiAllianceBase.active')[0])
+    {
+        manageContentAllianceBase();
+    }
     else if($('#LiAllianceOverview.active')[0])
     {
         manageContentAllianceOverview();
@@ -138,5 +142,17 @@ function manageContents()
     else if($('#LiWorldOverview.active')[0])
     {
         manageContentWorldOverview();
+    }
+    else if($('#LiSettingsPlayer.active')[0])
+    {
+        ContentSettingsPlayer();
+    }
+    else if($('#LiSettingsAlliance.active')[0])
+    {
+        ContentSettingsAlliance();
+    }
+    else if($('#LiSettingsServer.active')[0])
+    {
+        ContentSettingsServer();
     }
 }

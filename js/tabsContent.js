@@ -1,9 +1,11 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
+var ArrayNotNeeded = ['shuffle', 'clone', 'unique'];
 var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
 var ObjectAllianceMembersData = {};
 var ObjectAllianceData = {};
+var ObjectAllianceBaseData = {};
 var ObjectAllianceOverviewData = {};
 var ObjectBaseData = {};
 var ObjectWorldOverviewData = {};
@@ -13,6 +15,7 @@ var ObjectLastIds =
     "PlayerBase": {},
     "AllianceMembers": {},
     "Alliance": {},
+    "AllianceBase": {},
     "AllianceOverview": {},
     "Base": {},
     "WorldOverview": {}
@@ -198,8 +201,22 @@ function manageContentAlliance()
 
 function manageContentAllianceBase()
 {
-
+    var WorldId = $('#DropDownListWorld').val();
+    var AllianceId = $('#DropDownListAlliance').val();
+    var type = $('#DropDownAllianceBaseType').val();
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId])
+    {
+        ObjectAllianceBaseData[WorldId + '_' + AllianceId] = {};
+    }
+    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
+    {
+        ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = requestBackEnd('getAllianceBaseData', WorldId, AllianceId, null, null, type);
+    }
+    var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
+    buildTableAllianceBase(curObjectAllianceBaseData, type);
 }
+
+
 
 function manageContentAllianceOverview()
 {

@@ -27,6 +27,7 @@
         <script src="js/tabsContent.js?20180830"></script>
         <script src="js/charts.js?20180830"></script>
         <script src="js/tables.js?20180830"></script>
+        <script src="js/TableAllianceBase.js?20180830"></script>
         <script src="js/overview.js?20180830"></script>
     </head>
     <body>
@@ -224,6 +225,56 @@
                     <div id="ChartAlliancePoints" class="own-chart"></div><br/>
                     <div id="ChartAllianceBonusRess" class="own-chart"></div><br/>
                     <div id="ChartAllianceBonusFight" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentAllianceBase">
+                    <div class="inline-form float-left">
+                        <select id="DropDownAllianceBaseType" data-role="select" data-on-change="manageContentAllianceBase();">
+                            <option id="LvLOff">LvLOff</option>
+                            <option id="LvLDef">LvLDef</option>
+                            <option id="LvLSup">LvLSup</option>
+                            <option id="Tib" value="Tib">Tiberium</option>
+                            <option id="Cry" value="Cry">Crystal</option>
+                            <option id="Pow" value="Pow">Power</option>
+                            <option id="Cre" value="Cre">Credits</option>
+                        </select>
+                    </div><br/><br/><br/>
+                    <div style="overflow-x: auto;">
+                        <table id="TableAllianceBase" class="m-1">
+                            <thead>
+                                <tr id="TableAllianceBaseTheadTr">
+                                    <th>tester</th>
+                                </tr>
+                            </thead>
+                            <tbody id="TableAllianceBaseTbody"></tbody>
+                        </table>
+                    </div><br/><br/>
+                    <div class="card m-0" style="max-width: 922px;">
+                        <div class="card-header">
+                            <span id="HeaderCnCOptLink"></span>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseBuildCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseBuildCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseDefCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseDefCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseOffCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseOffCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="ContentAllianceOverview">
                     <div id="ChartAllianceOverviewOffense" class="own-chart"></div><br/>
