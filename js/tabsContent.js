@@ -33,7 +33,7 @@ function manageContentPlayer()
         {
             if (!ObjectPlayerData[WorldId + '_' + AccountId])
             {
-                ObjectPlayerData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerData', WorldId, null, AccountId, null);
+                ObjectPlayerData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerData', WorldId, null, AccountId, null, null, null);
             }
             if (ArraySeasonServerIds.indexOf(WorldId) == -1)
             {
@@ -113,7 +113,7 @@ function manageContentPlayerBase(_forced)
         {
             if (!ObjectPlayerBaseData[WorldId + '_' + AccountId])
             {
-                ObjectPlayerBaseData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerBaseData', WorldId, null, AccountId, null);
+                ObjectPlayerBaseData[WorldId + '_' + AccountId] = requestBackEnd('getPlayerBaseData', WorldId, null, AccountId, null, null, null);
             }
             var ArrayNeededItems = ['Name', 'LvLCY', 'LvLBase', 'LvLOff', 'LvLDef', 'LvLDF', 'LvLSup', 'SupArt', 'Tib', 'Cry', 'Pow', 'Cre', 'Rep', 'CnCOpt'];
             drawTable(ObjectPlayerBaseData[WorldId + '_' + AccountId], ArrayNeededItems, 'TablePlayerBase', 'BoxViewColsPlayerBase');
@@ -139,7 +139,7 @@ function manageContentAllianceMembers(_forced)
         {
             if (!ObjectAllianceMembersData[WorldId + '_' + AllianceId])
             {
-                ObjectAllianceMembersData[WorldId + '_' + AllianceId] = requestBackEnd('getAlliancePlayerData', WorldId, AllianceId, null, null);
+                ObjectAllianceMembersData[WorldId + '_' + AllianceId] = requestBackEnd('getAlliancePlayerData', WorldId, AllianceId, null, null, null, null);
             }
             var ArrayNeededItems = ['UserName', 'Faction', 'Zeit', 'ScorePoints', 'CountBases', 'CountSup', 'OverallRank', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'ResearchPoints', 'Credits', 'Shoot', 'PvP', 'PvE', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD', 'RepMax', 'CPMax', 'CPCur', 'Funds'];
             drawTable(ObjectAllianceMembersData[WorldId + '_' + AllianceId], ArrayNeededItems, 'TableAllianceMembers', 'BoxViewColsAllianceMembers');
@@ -160,7 +160,7 @@ function manageContentAlliance()
         {
             if (!ObjectAllianceData[WorldId + '_' + AllianceId])
             {
-                ObjectAllianceData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceData', WorldId, AllianceId, null, null);
+                ObjectAllianceData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceData', WorldId, AllianceId, null, null, null, null);
             }
             if (ArraySeasonServerIds.indexOf(WorldId) == -1)
             {
@@ -212,7 +212,7 @@ function manageContentAllianceBase()
     if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
     {
         $('#LoadingSymbolPage').removeClass('d-none');
-        ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = requestBackEnd('getAllianceBaseData', WorldId, AllianceId, null, null, type);
+        ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = requestBackEnd('getAllianceBaseData', WorldId, AllianceId, null, null, type, null);
         if (type == 'Rep')
         {
             for (var i = 0; i < ObjectAllianceBaseData[WorldId + '_' + AllianceId][type].length; i++)
@@ -248,7 +248,7 @@ function manageContentAllianceOverview()
         {
             if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId])
             {
-                ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceOverviewData', WorldId, AllianceId, null, null);
+                ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = requestBackEnd('getAllianceOverviewData', WorldId, AllianceId, null, null, null, null);
             }
             var ArrayNeededItems = ['LvLOff', 'LvLDef', 'LvLSup'];
             var ArrayDivsAndTitles =
@@ -279,7 +279,7 @@ function manageContentBase()
         {
             if (!ObjectBaseData[WorldId + '_' + BaseId])
             {
-                ObjectBaseData[WorldId + '_' + BaseId] = requestBackEnd('getBaseData', WorldId, null, null, BaseId);
+                ObjectBaseData[WorldId + '_' + BaseId] = requestBackEnd('getBaseData', WorldId, null, null, BaseId, null, null);
             }
             var ArrayNeededItems =
             [
@@ -315,7 +315,7 @@ function manageContentWorldOverview()
         {
             if (!ObjectWorldOverviewData[WorldId])
             {
-                ObjectWorldOverviewData[WorldId] = requestBackEnd('getWorldOverviewData', WorldId, null, null, null);
+                ObjectWorldOverviewData[WorldId] = requestBackEnd('getWorldOverviewData', WorldId, null, null, null, null, null);
             }
             var ArrayNeededItems = ['LvLOff', 'LvLDef', 'LvLSup'];
             var ArrayDivsAndTitles =
@@ -351,7 +351,7 @@ function manageContentSettingsServer(_forced)
         $('#LoadingSymbolPage').removeClass('d-none');
         setTimeout(function()
         {
-            ArrayAdminLog = requestBackEnd('getAdminLog', null, null, null, null, null);
+            ArrayAdminLog = requestBackEnd('getAdminLog', null, null, null, null, null, null);
             var ArrayNeededItems = ['ID', 'Zeit', 'Initiator', 'Description', 'Delete'];
             drawTableAdminLog(ArrayAdminLog, ArrayNeededItems , 'TableAdminLog');
         }, 1);

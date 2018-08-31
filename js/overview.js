@@ -11,7 +11,7 @@ var StartBaseId = null;
 
 $(document).ready(function(){
     prepareAdminVsUserView();
-    ArraySeasonServerIds = requestBackEnd('getSeasonServerIds', null, null, null, null);
+    ArraySeasonServerIds = requestBackEnd('getSeasonServerIds', null, null, null, null, null, null);
     prepareTranslation('overview');
     changeLanguage(getCookie('langIndex'), getCookie('langValue'), 'start', 'overview');
     initializeStart();
@@ -19,17 +19,18 @@ $(document).ready(function(){
 
 function prepareAdminVsUserView()
 {
-    ObjectSessionVariables = requestBackEnd('getSessionVariables', null, null, null, null);
+    ObjectSessionVariables = requestBackEnd('getSessionVariables', null, null, null, null, null, null);
     if (!ObjectSessionVariables.leoStats_IsAdmin)
     {
         $('#LiWorldOverview').addClass('d-none');
+        $('#LiSettingsServer').addClass('d-none');
     }
 }
 
 function initializeStart()
 {
     setCookiesToGlobalVars();
-    var ArrayDdl = requestBackEnd('getDropDownListData', null, null, null, null);
+    var ArrayDdl = requestBackEnd('getDropDownListData', null, null, null, null, null, null);
     ArrayDropDownListData = ArrayDdl[0];
     ArrayDropDownDefaultOwn = ArrayDdl[1];
     prepareandFillDropDownListDataWorld();

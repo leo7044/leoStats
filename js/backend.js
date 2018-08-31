@@ -1,6 +1,6 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
-function requestBackEnd(_nameOfRequest, _WorldId, _AllianceId, _AccountId, _BaseId, _type, _Id)
+function requestBackEnd(_nameOfRequest, _WorldId, _AllianceId, _AccountId, _BaseId, _type, _DeleteId)
 {
     var returnData = null;
     var data =
@@ -11,7 +11,7 @@ function requestBackEnd(_nameOfRequest, _WorldId, _AllianceId, _AccountId, _Base
         AccountId: _AccountId,
         BaseId: _BaseId,
         type: _type,
-        Id: _Id
+        DeleteId: _DeleteId
     };
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
