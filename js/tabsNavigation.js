@@ -84,6 +84,8 @@ function prepareTabSettingsPlayer()
     if (!ObjectSessionVariables.leoStats_IsAdmin)
     {
         $('#DivDropDownListPlayer').children('div').addClass('disabled');
+        var DropDownListPlayer = $('#DropDownListPlayer').data('select')
+        DropDownListPlayer.val(ObjectSessionVariables.leoStats_AccountId);
     }
     manageContentSettingsPlayer();
     setCookie('TabId', 'TabSettingsPlayer');

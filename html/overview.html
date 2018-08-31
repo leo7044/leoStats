@@ -28,6 +28,7 @@
         <script src="js/charts.js?20180830"></script>
         <script src="js/tables.js?20180830"></script>
         <script src="js/tableAllianceBase.js?20180830"></script>
+        <script src="js/settings.js?20180830"></script>
         <script src="js/overview.js?20180830"></script>
     </head>
     <body>
@@ -229,13 +230,17 @@
                 <div id="ContentAllianceBase">
                     <div class="inline-form float-left">
                         <select id="DropDownAllianceBaseType" data-role="select" data-on-change="manageContentAllianceBase();">
-                            <option id="LvLOff">LvLOff</option>
+                            <option id="LvLCY">LvLCY</option>
+                            <option id="LvLBase">LvLBase</option>
+                            <option id="LvLOff" selected>LvLOff</option>
                             <option id="LvLDef">LvLDef</option>
+                            <option id="LvLDF">LvLDF</option>
                             <option id="LvLSup">LvLSup</option>
                             <option id="Tib" value="Tib">Tiberium</option>
                             <option id="Cry" value="Cry">Crystal</option>
                             <option id="Pow" value="Pow">Power</option>
                             <option id="Cre" value="Cre">Credits</option>
+                            <option id="Rep" value="Rep">RepairTime</option>
                         </select>
                     </div><br/><br/><br/>
                     <div style="overflow-x: auto;">
@@ -289,6 +294,32 @@
                     <div id="ChartWorldOverviewOffense" class="own-chart"></div><br/>
                     <div id="ChartWorldOverviewDefense" class="own-chart"></div><br/>
                     <div id="ChartWorldOverviewSupport" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentSettingsServer">
+                    <button id="ButtonOptimizeAllTables" class="button primary" onclick="optimizeAllTables();"><span class="mif-table"></span> <span id="OptimizeAllTables" class="trans-innerHTML"></span></button>
+                    <button id="ButtonDeleteServer" class="button alert" onclick="deleteServer();"><span class="mif-cross"></span> <span id="DeleteServer" class="trans-innerHTML"></span></button>
+                    <br/><br/>
+                    <table id="TableAdminLog"
+                        class="table striped row-hover table-border cell-border mt-4"
+                        data-role="table"
+                        data-cls-table-top="row flex-nowrap"
+                        data-cls-search="cell-md-8"
+                        data-cls-rows-count="cell-md-4"
+                        data-rows="10"
+                        data-rows-steps="10, 20, 50, 100"
+                        data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                        data-thousand-separator="."
+                        data-decimal-separator=",">
+                        <thead>
+                            <tr>
+                                <th class="sortable-column text-center sort-desc" data-format="number">Id</th>
+                                <th class="sortable-column text-center">DateTime</th>
+                                <th class="sortable-column text-center">Initiator</th>
+                                <th class="sortable-column text-center">Description</th>
+                                <th class="sortable-column text-center">Delete</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>

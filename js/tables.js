@@ -6,37 +6,37 @@ var OriginalHeads =
     "TableAllianceMembers": null
 };
 
-function drawTable(_objectToUse, _columns, _TableId, _BoxId)
+function drawTable(_arrayToUse, _columns, _TableId, _BoxId)
 {
     var ArrayItems = [];
     var ArrayColsAlignRight = [];
     if (_TableId == 'TablePlayerBase')
     {
         var ArrayNumbers = ['Tib', 'Cry', 'Pow', 'Cre'];
-        for (var i = 0; i < _objectToUse.length; i++)
+        for (var i = 0; i < _arrayToUse.length; i++)
         {
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
                 if (_columns[j] == 'Name')
                 {
-                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentBaseFromTablePlayer(' + _objectToUse[i]['BaseId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
+                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentBaseFromTablePlayer(' + _arrayToUse[i]['BaseId'] + ')">' + _arrayToUse[i][_columns[j]] + '</a>');
                 }
                 else if (_columns[j] == 'CnCOpt')
                 {
-                    tmpArrayRow.push('<a href="' + _objectToUse[i][_columns[j]] + '" target="_blank">' + _objectToUse[i]['Name'] + '</a>');
+                    tmpArrayRow.push('<a href="' + _arrayToUse[i][_columns[j]] + '" target="_blank">' + _arrayToUse[i]['Name'] + '</a>');
                 }
                 else if (_columns[j] == 'Rep')
                 {
-                    tmpArrayRow.push((_objectToUse[i][_columns[j]]).toTimeFormat());
+                    tmpArrayRow.push((_arrayToUse[i][_columns[j]]).toTimeFormat());
                 }
                 else if (ArrayNumbers.indexOf(_columns[j]) != -1)
                 {
-                    tmpArrayRow.push(parseInt(_objectToUse[i][_columns[j]]).toLocaleString());
+                    tmpArrayRow.push(parseInt(_arrayToUse[i][_columns[j]]).toLocaleString('de-DE'));
                 }
                 else
                 {
-                    tmpArrayRow.push(_objectToUse[i][_columns[j]]);
+                    tmpArrayRow.push(_arrayToUse[i][_columns[j]]);
                 }
             }
             ArrayItems.push(tmpArrayRow);
@@ -46,30 +46,30 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
     else if (_TableId == 'TableAllianceMembers')
     {
         var ArrayNumbers = ['ScorePoints', 'OverallRank', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'ResearchPoints', 'Credits', 'Shoot', 'PvP', 'PvE', 'CPMax', 'CPCur', 'Funds'];
-        for (var i = 0; i < _objectToUse.length; i++)
+        for (var i = 0; i < _arrayToUse.length; i++)
         {
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
                 if (_columns[j] == 'UserName')
                 {
-                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentPlayerFromTableAlliance(' + _objectToUse[i]['AccountId'] + ')">' + _objectToUse[i][_columns[j]] + '</a>');
+                    tmpArrayRow.push('<a class="own-cursor-pointer" onclick="prepareContentPlayerFromTableAlliance(' + _arrayToUse[i]['AccountId'] + ')">' + _arrayToUse[i][_columns[j]] + '</a>');
                 }
                 else if (_columns[j] == 'Faction')
                 {
-                    tmpArrayRow.push('<img src="img/faction_' + _objectToUse[i][_columns[j]] + '.png" width="20px" height="20px"></img>');
+                    tmpArrayRow.push('<img src="img/faction_' + _arrayToUse[i][_columns[j]] + '.png" width="20px" height="20px"></img>');
                 }
                 else if (_columns[j] == 'RepMax')
                 {
-                    tmpArrayRow.push((_objectToUse[i][_columns[j]]).toTimeFormat());
+                    tmpArrayRow.push((_arrayToUse[i][_columns[j]]).toTimeFormat());
                 }
                 else if (ArrayNumbers.indexOf(_columns[j]) != -1)
                 {
-                    tmpArrayRow.push(parseInt(_objectToUse[i][_columns[j]]).toLocaleString('de-DE'));
+                    tmpArrayRow.push(parseInt(_arrayToUse[i][_columns[j]]).toLocaleString('de-DE'));
                 }
                 else
                 {
-                    tmpArrayRow.push(_objectToUse[i][_columns[j]]);
+                    tmpArrayRow.push(_arrayToUse[i][_columns[j]]);
                 }
             }
             ArrayItems.push(tmpArrayRow);
@@ -78,12 +78,12 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
     }
     /*else
     {
-        for (var i = 0; i < _objectToUse.length; i++)
+        for (var i = 0; i < _arrayToUse.length; i++)
         {
             var tmpArrayRow = [];
             for (var j = 0; j < _columns.length; j++)
             {
-                tmpArrayRow.push(_objectToUse[i][_columns[j]]);
+                tmpArrayRow.push(_arrayToUse[i][_columns[j]]);
             }
             ArrayItems.push(tmpArrayRow);
         }
@@ -129,6 +129,45 @@ function drawTable(_objectToUse, _columns, _TableId, _BoxId)
     }
     table.heads = tmpObjectHeads;
     table.resetView();
+}
+
+function drawTableAdminLog(_arrayToUse, _columns, _TableId)
+{
+    var ArrayColsAlignRight = [0, 4];
+    var ArrayItems = [];
+    var table = $('#' + _TableId).data('table');
+    for (var i = 0; i < _arrayToUse.length; i++)
+    {
+        var tmpArrayRow = [];
+        for (var j = 0; j < _columns.length; j++)
+        {
+            if (_columns[j] == 'ID')
+            {
+                tmpArrayRow.push(parseInt(_arrayToUse[i][_columns[j]]).toLocaleString('de-DE'));
+            }
+            else if (_columns[j] == 'Delete')
+            {
+                tmpArrayRow.push(
+                    '<button class="button light" onclick="deleteElementAdminLog(\'' + _arrayToUse[i].ID + '\')">' +
+                        '<font color="#FF0000;">' +
+                            '<i class="fas fa-times"></i>' +
+                        '</font>' +
+                    '</button>'
+                );
+            }
+            else
+            {
+                tmpArrayRow.push(_arrayToUse[i][_columns[j]]);
+            }
+        }
+        ArrayItems.push(tmpArrayRow);
+    }
+    for (var i = 0; i < ArrayColsAlignRight.length; i++)
+    {
+        table.heads[ArrayColsAlignRight[i]].clsColumn = 'text-right';
+    }
+    table.items = ArrayItems;
+    table.draw();
 }
 
 function prepareContentPlayerFromTableAlliance(_AccountId)

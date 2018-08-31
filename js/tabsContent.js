@@ -1,6 +1,7 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
 var ArrayNotNeeded = ['shuffle', 'clone', 'unique'];
+var ArrayAdminLog = null;
 var ObjectPlayerData = {};
 var ObjectPlayerBaseData = {};
 var ObjectAllianceMembersData = {};
@@ -210,13 +211,31 @@ function manageContentAllianceBase()
     }
     if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
     {
+        $('#LoadingSymbolPage').removeClass('d-none');
         ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = requestBackEnd('getAllianceBaseData', WorldId, AllianceId, null, null, type);
+        if (type == 'Rep')
+        {
+            for (var i = 0; i < ObjectAllianceBaseData[WorldId + '_' + AllianceId][type].length; i++)
+            {
+                ObjectAllianceBaseData[WorldId + '_' + AllianceId][type][i].Rep = parseInt(parseInt(ObjectAllianceBaseData[WorldId + '_' + AllianceId][type][i].Rep) / 3600);
+            }
+        }
     }
-    var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
-    buildTableAllianceBase(curObjectAllianceBaseData, type);
+    if (ObjectLastIds.AllianceBase.WorldId != WorldId || ObjectLastIds.AllianceBase.AllianceId != AllianceId || ObjectLastIds.AllianceBase.type != type)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
+            buildTableAllianceBase(curObjectAllianceBaseData, type);
+            ObjectLastIds.AllianceBase.WorldId = WorldId;
+            ObjectLastIds.AllianceBase.AllianceId = AllianceId;
+            ObjectLastIds.AllianceBase.type = type;
+            sortTable(0, 'TableAllianceBase', 'asc');
+            $('#LoadingSymbolPage').addClass('d-none');
+        }, 1);
+    }
 }
-
-
 
 function manageContentAllianceOverview()
 {
@@ -325,7 +344,16 @@ function manageContentSettingsAlliance()
 
 }
 
-function manageContentSettingsServer()
+function manageContentSettingsServer(_forced)
 {
-
+    if (_forced || ArrayAdminLog == null)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            ArrayAdminLog = requestBackEnd('getAdminLog', null, null, null, null, null);
+            var ArrayNeededItems = ['ID', 'Zeit', 'Initiator', 'Description', 'Delete'];
+            drawTableAdminLog(ArrayAdminLog, ArrayNeededItems , 'TableAdminLog');
+        }, 1);
+    }
 }

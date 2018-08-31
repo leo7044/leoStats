@@ -17,13 +17,6 @@ $(document).ready(function(){
     initializeStart();
 });
 
-function setCookiesToGlobalVars()
-{
-    StartAllianceId = getCookie('AllianceId');
-    StartAccountId = getCookie('AccountId');
-    StartBaseId = getCookie('BaseId');
-}
-
 function prepareAdminVsUserView()
 {
     ObjectSessionVariables = requestBackEnd('getSessionVariables', null, null, null, null);
@@ -48,6 +41,13 @@ function initializeStart()
     {
         setCookie('TabId', 'TabPlayer');
     }
+}
+
+function setCookiesToGlobalVars()
+{
+    StartAllianceId = getCookie('AllianceId');
+    StartAccountId = getCookie('AccountId');
+    StartBaseId = getCookie('BaseId');
 }
 
 String.prototype.toTimeFormat = function()
