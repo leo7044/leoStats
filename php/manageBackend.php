@@ -766,8 +766,8 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
-                    $conn->query("DELETE FROM `relation_server` WHERE WorldId='$Id';");
+                    $DeleteId = $_post['DeleteId'];
+                    $conn->query("DELETE FROM `relation_server` WHERE WorldId='$DeleteId';");
                 }
             }
             break;
@@ -809,8 +809,8 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
-                    $conn->query("UPDATE adminlog SET `Show`=FALSE WHERE ID='$Id';");
+                    $DeleteId = $_post['DeleteId'];
+                    $conn->query("UPDATE adminlog SET `Show`=FALSE WHERE ID='$DeleteId';");
                 }
             }
             break;
