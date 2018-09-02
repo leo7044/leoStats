@@ -217,7 +217,7 @@ function buildTableAllianceBase(_curObjectAllianceBaseData, _type)
             else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
             else {curColor = '';}
             strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + _curObjectAllianceBaseData[key]['CnCOpt'] + '\', \'' + _curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');">';
-            if (_type == 'LvLOff' || _type == 'LvLDef' || _type == 'LvLSup')
+            if (_type == 'LvLBase' || _type == 'LvLOff' || _type == 'LvLDef' || _type == 'LvLSup')
             {
                 strHtml += _curObjectAllianceBaseData[key][_type] + '</td>';
             }
