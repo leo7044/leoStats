@@ -54,7 +54,7 @@
                 <li id="LiAllianceOverview"><a id="TabAllianceOverview" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><span class="mif-eye"></span> Alliance - Overview</a></li>
                 <li id="LiBase"><a id="TabBase" href="#ContentBase" onclick="prepareTabBase();"><span class="mif-home"></span> Base</a></li>
                 <li id="LiWorldOverview"><a id="TabWorldOverview" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><span class="mif-vpn-publ"></span> World - Overview</a></li>
-                <li>
+                <li id="LiSettings">
                     <a href="#" class="dropdown-toggle"><span class="mif-cogs"></span> Settings</a>
                     <ul class="d-menu" data-role="dropdown">
                         <li id="LiSettingsPlayer"><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
@@ -294,6 +294,41 @@
                     <div id="ChartWorldOverviewOffense" class="own-chart"></div><br/>
                     <div id="ChartWorldOverviewDefense" class="own-chart"></div><br/>
                     <div id="ChartWorldOverviewSupport" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentSettingsPlayer">
+                    <h3>Change Password</h3>
+                    <form action="" method="post" id="FormChangePassword" onsubmit="return changePassword();">
+                        <div class="form-group">
+                            <input type="text" id="InputUserName" name="InputUserName" placeholder="UserName" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputOldPassword" name="InputOldPassword" placeholder="Old Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputNewPassword" name="InputNewPassword" placeholder="New Password" onchange="validatePassword();" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputConfirmNewPassword" name="InputConfirmNewPassword" placeholder="Confirm new password" onkeyup="validatePassword();" required>
+                            <span class="invalid_feedback">
+                                Your Passwords have to be equal.
+                            </span>
+                        </div>
+                        <br/>
+                        <div class="form-group">
+                            <button type="button" class="button alert" id="ButtonCancelChangePassword" onclick="resetFormChangePassword(true);"><span class="mif-cross"></span> Cancel</button>
+                            <button type="submit" class="button success" id="ButtonConfirmhangePassword"><span class="fas fa-check"></span> Confirm</button>
+                        </div>
+                        <div class="form-group d-none" id="PasswordChangeFail">
+                            <div class="p-3 bg-red fg-white">
+                                <b>Error!</b> Your password was not successfully changed.
+                            </div>
+                        </div>
+                        <div class="form-group d-none" id="PasswordChangeSuccess">
+                            <div class="p-3 bg-green fg-white">
+                                <b>Success!</b> Your password was successfully changed.
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div id="ContentSettingsServer">
                     <button id="ButtonOptimizeAllTables" class="button primary" onclick="optimizeAllTables();"><span class="mif-table"></span> <span id="OptimizeAllTables" class="trans-innerHTML"></span></button>

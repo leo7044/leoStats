@@ -1,5 +1,52 @@
 /* Developer: leo7044 (https://github.com/leo7044) */
 
+function validatePassword()
+{
+    if ($('#InputNewPassword')[0].value != $('#InputConfirmNewPassword')[0].value)
+    {
+        $('#InputConfirmNewPassword')[0].setCustomValidity("Passwords do not match");
+    }
+    else
+    {
+        $('#InputConfirmNewPassword')[0].setCustomValidity('');
+    }
+}
+
+function changePassword()
+{
+    var ownAccountId = ObjectSessionVariables.leoStats_AccountId;
+    var dataUrl = 'action=changePassword&AccountId=' + ownAccountId + '&' + $('#FormChangePassword').serialize();
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', dataUrl)
+    .always(function(data)
+    {
+        if (data[0])
+        {
+            $('#PasswordChangeFail').addClass('d-none');
+            $('#PasswordChangeSuccess').removeClass('d-none');
+            resetFormChangePassword();
+        }
+        else
+        {
+            $('#PasswordChangeFail').removeClass('d-none');
+            $('#PasswordChangeSuccess').addClass('d-none');
+        }
+    });
+    $.ajaxSetup({async: true});
+    return false;
+}
+
+function resetFormChangePassword(_forced)
+{
+    document.forms.FormChangePassword.reset();
+    if (_forced)
+    {
+        $('#PasswordChangeFail').addClass('d-none');
+        $('#PasswordChangeSuccess').addClass('d-none');
+    }
+    $('#InputUserName')[0].value = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML;
+}
+
 function optimizeAllTables()
 {
     $('#LoadingSymbolPage').removeClass('d-none');

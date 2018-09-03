@@ -19,7 +19,8 @@ var ObjectLastIds =
     "AllianceBase": {},
     "AllianceOverview": {},
     "Base": {},
-    "WorldOverview": {}
+    "WorldOverview": {},
+    "SettingsPlayer": {}
 };
 
 function manageContentPlayer()
@@ -336,7 +337,17 @@ function manageContentWorldOverview()
 
 function manageContentSettingsPlayer()
 {
-
+    var AccountId = $('#DropDownListPlayer').val();
+    if (ObjectLastIds.SettingsPlayer.AccountId != AccountId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            resetFormChangePassword(true);
+            $('#LoadingSymbolPage').addClass('d-none');
+        }, 1);
+        ObjectLastIds.SettingsPlayer.AccountId = AccountId;
+    }
 }
 
 function manageContentSettingsAlliance()
@@ -354,6 +365,7 @@ function manageContentSettingsServer(_forced)
             ArrayAdminLog = requestBackEnd('getAdminLog', null, null, null, null, null, null);
             var ArrayNeededItems = ['ID', 'Zeit', 'Initiator', 'Description', 'Delete'];
             drawTableAdminLog(ArrayAdminLog, ArrayNeededItems , 'TableAdminLog');
+            $('#LoadingSymbolPage').addClass('d-none');
         }, 1);
     }
 }

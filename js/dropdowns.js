@@ -143,16 +143,10 @@ function manageContents()
     {
         manageContentWorldOverview();
     }
-    else if($('#LiSettingsPlayer.active')[0])
+    else if($('#LiSettings.active')[0])
     {
-        ContentSettingsPlayer();
-    }
-    else if($('#LiSettingsAlliance.active')[0])
-    {
-        ContentSettingsAlliance();
-    }
-    else if($('#LiSettingsServer.active')[0])
-    {
-        ContentSettingsServer();
+        manageContentSettingsPlayer();
+        manageContentSettingsAlliance();
+        manageContentSettingsServer();
     }
 }
