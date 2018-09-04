@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 26. Aug 2018 um 18:10
--- Server-Version: 10.1.34-MariaDB
+-- Erstellungszeit: 04. Sep 2018 um 09:35
+-- Server-Version: 10.3.9-MariaDB
 -- PHP-Version: 7.2.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -426,7 +426,7 @@ CREATE TABLE `relation_alliance` (
   `WorldId` int(11) NOT NULL,
   `AllianceId` int(11) NOT NULL,
   `AllianceName` text COLLATE utf8_bin NOT NULL,
-  `MemberRole` int(11) NOT NULL DEFAULT '3'
+  `MemberRole` int(11) NOT NULL DEFAULT 3
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -583,7 +583,7 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `player`
   ADD CONSTRAINT `player_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`);
+  ADD CONSTRAINT `player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_alliance`

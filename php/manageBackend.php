@@ -605,10 +605,10 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
+                    $AccountId = $_post['AccountId'];
                     $PlayerName = $_post['PlayerName'];
-                    $password = hash('sha512', $PlayerName . '_' . $Id);
-                    $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$Id';");
+                    $password = hash('sha512', $PlayerName . '_' . $AccountId);
+                    $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$AccountId';");
                 }
             }
             break;
@@ -620,8 +620,9 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
-                    $conn->query("DELETE FROM `login` WHERE AccountId='$Id';");
+                    $DeleteId = $_post['DeleteId'];
+                    $conn->query("DELETE FROM `login` WHERE AccountId='$DeleteId';");
+                    echo "DELETE FROM `login` WHERE AccountId='$DeleteId';";
                 }
             }
             break;

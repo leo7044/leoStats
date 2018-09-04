@@ -47,12 +47,43 @@ function resetFormChangePassword(_forced)
     $('#InputUserName')[0].value = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML;
 }
 
+function resetPlayer()
+{
+    $('#LoadingSymbolPage').removeClass('d-none');
+    setTimeout(function()
+    {
+        var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+        if (confirm('Do you want reset player ' + playerName + '?'))
+        {
+            var AccountId = $('#DropDownListPlayer').val();
+            requestBackEnd('resetPlayer', null, null, AccountId, null, null, null, playerName);
+        }
+        $('#LoadingSymbolPage').addClass('d-none');
+    }, 1);
+}
+
+function deletePlayer()
+{
+    $('#LoadingSymbolPage').removeClass('d-none');
+    setTimeout(function()
+    {
+        var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
+        if (confirm('Do you want to delete player ' + playerName + ' from database?'))
+        {
+            var AccountId = $('#DropDownListPlayer').val();
+            requestBackEnd('deletePlayer', null, null, null, null, null, AccountId, null);
+            initializeStart();
+        }
+        $('#LoadingSymbolPage').addClass('d-none');
+    }, 1);
+}
+
 function optimizeAllTables()
 {
     $('#LoadingSymbolPage').removeClass('d-none');
     setTimeout(function()
     {
-        requestBackEnd('optimizeAllTables', null, null, null, null, null, null);
+        requestBackEnd('optimizeAllTables', null, null, null, null, null, null, null);
         $('#LoadingSymbolPage').addClass('d-none');
     }, 1);
 }
@@ -66,7 +97,7 @@ function deleteServer()
         setTimeout(function()
         {
             var WorldId = $('#DropDownListWorld').val();
-            requestBackEnd('deleteServer', null, null, null, null, null, WorldId);
+            requestBackEnd('deleteServer', null, null, null, null, null, WorldId, null);
             initializeStart();
             $('#LoadingSymbolPage').addClass('d-none');
         }, 1);
@@ -75,6 +106,6 @@ function deleteServer()
 
 function deleteElementAdminLog(_DeleteId)
 {
-    requestBackEnd('deleteElementAdminLog', null, null, null, null, null, _DeleteId);
+    requestBackEnd('deleteElementAdminLog', null, null, null, null, null, _DeleteId, null);
     manageContentSettingsServer(true);
 }

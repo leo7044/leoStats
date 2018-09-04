@@ -328,7 +328,14 @@
                                 <b>Success!</b> Your password was successfully changed.
                             </div>
                         </div>
-                    </form>
+                    </form><br/>
+                    <div id="AdminButtonsPlayer">
+                        <h3>Admin-Settings</h3>
+                        <div class="form-group">
+                            <button id="ButtonResetPlayer" class="button yellow" onclick="resetPlayer();"><i class="fas fa-sync"></i> reset Player</button>
+                            <button id="ButtonDeletePlayer" class="button alert" onclick="deletePlayer();"><i class="fas fa-user-times"></i> delete Player</button>
+                        </div>
+                    </div>
                 </div>
                 <div id="ContentSettingsServer">
                     <button id="ButtonOptimizeAllTables" class="button primary" onclick="optimizeAllTables();"><span class="mif-table"></span> <span id="OptimizeAllTables" class="trans-innerHTML"></span></button>
