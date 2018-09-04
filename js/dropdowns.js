@@ -32,7 +32,7 @@ function prepareandFillDropDownListDataAlliance()
     }
     var DropDownListAlliance = $('#DropDownListAlliance').data('select');
     DropDownListAlliance.data(objectSelectOptionsAlliance);
-    var AllianceValue = alasql('SELECT DISTINCT AllianceId FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownDefaultOwn])[0];
+    var AllianceValue = alasql('SELECT DISTINCT AllianceId FROM ? WHERE WorldId="' + WorldId + '" AND AccountId="' + ObjectSessionVariables.leoStats_AccountId + '"' ,[ArrayDropDownListData])[0];
     if (StartAllianceId)
     {
         DropDownListAlliance.val(StartAllianceId);
@@ -61,7 +61,7 @@ function prepareandFillDropDownListDataPlayer()
     }
     var DropDownListPlayer = $('#DropDownListPlayer').data('select');
     DropDownListPlayer.data(objectSelectOptionsPlayer);
-    var PlayerValue = alasql('SELECT DISTINCT AccountId FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId +'"' ,[ArrayDropDownDefaultOwn])[0];
+    var PlayerValue = alasql('SELECT DISTINCT AccountId FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId +'" AND AccountId="' + ObjectSessionVariables.leoStats_AccountId + '"' ,[ArrayDropDownListData])[0];
     if (StartAccountId)
     {
         DropDownListPlayer.val(StartAccountId);

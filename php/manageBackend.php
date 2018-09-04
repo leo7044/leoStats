@@ -273,18 +273,9 @@ if (!$conn->connect_error)
                     $strQuery .= "CALL getDropDownListDataAsAdmin();";
                 }
                 $result = $conn->query($strQuery);
-                $UserAnswer[0] = [];
-                $UserAnswer[1] = [];
                 while ($zeile = $result->fetch_assoc())
                 {
-                    array_push($UserAnswer[0], $zeile);
-                }
-                mysqli_next_result($conn);
-                $strQuery = "CALL getDropDownListDataMemberRoles('$OwnAccountId');";
-                $result = $conn->query($strQuery);
-                while ($zeile = $result->fetch_assoc())
-                {
-                    array_push($UserAnswer[1], $zeile);
+                    array_push($UserAnswer, $zeile);
                 }
             }
             echo json_encode($UserAnswer);
@@ -633,15 +624,32 @@ if (!$conn->connect_error)
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $WorldId = $_post['WorldId'];
                     $AllianceId = $_post['AllianceId'];
-                    $result = $conn->query("SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a WHERE WorldId='$WorldId' AND AllianceId='$AllianceId';");
-                    while ($zeile = $result->fetch_assoc())
-                    {
-                        array_push($UserAnswer, $zeile);
-                    }
+                    $strQuery =
+                        "SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a
+                        WHERE WorldId='$WorldId'
+                        AND AllianceId='$AllianceId'
+                        AND AllianceId IN
+                        (
+                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=$OwnAccountId
+                        )
+                        ;";
+                }
+                else
+                {
+                    $WorldId = $_post['WorldId'];
+                    $AllianceId = $_post['AllianceId'];
+                    $strQuery = "SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a
+                        WHERE WorldId='$WorldId'
+                        AND AllianceId='$AllianceId';";
+                }
+                $result = $conn->query($strQuery);
+                while ($zeile = $result->fetch_assoc())
+                {
+                    array_push($UserAnswer, $zeile);
                 }
             }
             echo json_encode($UserAnswer[0]);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 04. Sep 2018 um 09:35
+-- Erstellungszeit: 04. Sep 2018 um 15:36
 -- Server-Version: 10.3.9-MariaDB
 -- PHP-Version: 7.2.9
 
@@ -182,12 +182,6 @@ AND
 	)
 )
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
-
-CREATE PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT)  READS SQL DATA
-SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
-JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE p.AccountId=OwnAccountId
-ORDER BY p.WorldId$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b

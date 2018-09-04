@@ -332,8 +332,37 @@
                     <div id="AdminButtonsPlayer">
                         <h3>Admin-Settings</h3>
                         <div class="form-group">
-                            <button id="ButtonResetPlayer" class="button yellow" onclick="resetPlayer();"><i class="fas fa-sync"></i> reset Player</button>
-                            <button id="ButtonDeletePlayer" class="button alert" onclick="deletePlayer();"><i class="fas fa-user-times"></i> delete Player</button>
+                            <button id="ButtonResetPlayer" class="button yellow" onclick="resetPlayer();"><span class="fas fa-sync"></span> reset Player</button>
+                            <button id="ButtonDeletePlayer" class="button alert" onclick="deletePlayer();"><span class="fas fa-user-times"></span> delete Player</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="ContentSettingsAlliance">
+                    <h3>Alliance-Settings</h3>
+                    <div class="card form-group">
+                        <div class="card-header">Needed MemberRole to view other AllianceMember</div>
+                        <div class="card-content p-2">
+                            <div class="form-group">
+                                <select id="DropDownListMemberRole" data-role="select" data-filter="false">
+                                    <option value="1">Commander-in-chief</option>
+                                    <option value="2">Second Commander</option>
+                                    <option value="3">Officer</option>
+                                    <option value="4">Veteran</option>
+                                    <option value="5">Member</option>
+                                    <option value="6">Trial</option>
+                                    <option value="7">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button id="ButtonCancelChangeNeededMemberRole" class="button alert" onclick="manageContentSettingsAlliance();"><i class="fas fa-times"></i> Cancel</button>
+                                <button id="ButtonSaveChangeNeededMemberRole" class="button success" onclick="saveChangeNeededMemberRole();"><i class="fas fa-check"></i> Save</button>
+                            </div>
+                            <div class="form-group p-3 bg-red fg-white d-none" id="MemberRoleChangeFail">
+                                <span><b>Error!</b> The MemberRole was not successfully changed</span>
+                            </div>
+                            <div class="form-group p-3 bg-green fg-white d-none" id="MemberRoleChangeSuccess">
+                                <span><b>Success!</b> You changed the needed MemberRole</span>
+                            </div>
                         </div>
                     </div>
                 </div>
