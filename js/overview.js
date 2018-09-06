@@ -23,6 +23,7 @@ function prepareAdminVsUserView()
     {
         $('#LiWorldOverview').addClass('d-none');
         $('#LiSettingsServer').addClass('d-none');
+        $('#LiSearchPlayer').addClass('d-none');
         $('#AdminButtonsPlayer').addClass('d-none');
     }
 }

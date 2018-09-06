@@ -256,9 +256,38 @@ function updateCurrentDatasInView()
             manageContentSettingsServer(true);
             break;
         }
+        case 'TabSearchPlayer':
+        {
+            manageContentSearchPlayer();
+            break;
+        }
         default:
         {
             break;
         }
+    }
+}
+
+// Search player
+function searchPlayer(_PlayerName)
+{
+    if (_PlayerName)
+    {
+        var MemberWorldAllianceList = requestBackEnd('getWorldsAndAlliancesByPlayerName', null, null, null, null, null, null, _PlayerName, null);
+        var strHtml = '';
+        for (var i = 0; i < MemberWorldAllianceList.length; i++)
+        {
+            strHtml +=
+                '<tr>' +
+                    '<td>' + MemberWorldAllianceList[i].UserName + '</td>' +
+                    '<td>' + MemberWorldAllianceList[i].ServerName + '</td>' +
+                    '<td>' + MemberWorldAllianceList[i].AllianceName + '</td>' +
+                '</tr>';
+        }
+        $('#InputPlayerSearchTbody')[0].innerHTML = strHtml;
+    }
+    else
+    {
+        $('#InputPlayerSearchTbody')[0].innerHTML = '';
     }
 }

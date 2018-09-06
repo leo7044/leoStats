@@ -403,3 +403,8 @@ function manageContentSettingsServer(_forced)
         }, 1);
     }
 }
+
+function manageContentSearchPlayer()
+{
+    FormPlayerSearch.reset();
+}

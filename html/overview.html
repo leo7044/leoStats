@@ -61,6 +61,7 @@
                         <li id="LiSettingsPlayer"><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
                         <li id="LiSettingsAlliance"><a id="TabSettingsAlliance" href="#ContentSettingsAlliance" onclick="prepareTabSettingsAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
                         <li id="LiSettingsServer"><a id="TabSettingsServer" href="#ContentSettingsServer" onclick="prepareTabSettingsServer();"><span class="mif-vpn-publ"></span> Server</a></li>
+                        <li id="LiSearchPlayer"><a id="TabSearchPlayer" href="#ContentSearchPlayer" onclick="prepareTabSearchPlayer();"><span class="fas fa-user-tag"></span>&nbsp;Search Player</a></li>
                     </ul>
                 </li>
             </ul>
@@ -473,6 +474,23 @@
                                 <th class="sortable-column text-center">Delete</th>
                             </tr>
                         </thead>
+                    </table>
+                </div>
+                <div id="ContentSearchPlayer">
+                    <h3>Search Player</h3>
+                    <form id="FormPlayerSearch">
+                        <input data-role="input" onkeyup="searchPlayer(this.value);" id="InputPlayerSearch" required>
+                    </form>
+                    <br/>
+                    <table class="table tabl-border cell-border">
+                        <thead>
+                            <tr>
+                                <th>PlayerName</th>
+                                <th>ServerName</th>
+                                <th>AllianceName</th>
+                            </tr>
+                        </thead>
+                        <tbody id="InputPlayerSearchTbody"></tbody>
                     </table>
                 </div>
             </div>

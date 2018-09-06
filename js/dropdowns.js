@@ -148,5 +148,6 @@ function manageContents()
         manageContentSettingsPlayer();
         manageContentSettingsAlliance();
         manageContentSettingsServer();
+        manageContentSearchPlayer();
     }
 }

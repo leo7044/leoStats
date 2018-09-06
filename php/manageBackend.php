@@ -7,13 +7,13 @@ session_start(); // starten der PHP-Session
 $_post = filter_input_array(INPUT_POST); // es werden nur POST-Variablen akzeptiert, damit nicht mittels Link (get-vars) Anderungen an DB vorgenommen werden können
 $_post = replaceChars($_post);
 $action = $_post['action'];
+$UserAnswer = [];
 if (!$conn->connect_error)
 {
 	switch ($action)
 	{
 		case 'sendDataFromInGame':
 		{
-            $UserAnswer = [];
             $ObjectData = $_post['ObjectData'];
             $ObjectServer = $ObjectData['server'];
             $ObjectAlliance = $ObjectData['alliance'];
@@ -207,12 +207,10 @@ if (!$conn->connect_error)
                 }
             }
             $conn->multi_query($strQuery);
-            echo json_encode($UserAnswer);
 			break;
         }
         case 'login':
         {
-            $UserAnswer = [];
             $UserName = $_post['UserName'];
             $Password = hash('sha512', $_post['Password']);
             $AccountId = 0;
@@ -238,7 +236,6 @@ if (!$conn->connect_error)
                 $Time = date("Y-m-d H:i:s");
                 $conn->query("INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$UserName', 'Login fehlgeschlagen', true);");
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getSessionVariables':
@@ -248,18 +245,15 @@ if (!$conn->connect_error)
         }
         case 'getSeasonServerIds':
         {
-            $UserAnswer = [];
             $result = $conn->query("SELECT WorldId FROM relation_server WHERE SeasonServer='1';");
             while ($zeile = $result->fetch_assoc())
             {
                 array_push($UserAnswer, $zeile['WorldId']);
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getDropDownListData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
@@ -278,12 +272,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getAlliancePlayerData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -304,12 +296,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getAllianceData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -331,12 +321,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getPlayerBaseData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -357,12 +345,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getPlayerData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -383,12 +369,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getBaseData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -409,12 +393,10 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getAllianceOverviewData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -457,12 +439,10 @@ if (!$conn->connect_error)
                     }
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getWorldOverviewData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -486,12 +466,10 @@ if (!$conn->connect_error)
                     }
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'getAllianceBaseData':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -553,13 +531,11 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         // Administration & settings
         case 'changePassword':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
@@ -586,7 +562,6 @@ if (!$conn->connect_error)
                     $UserAnswer[1] = 'Fail';
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'resetPlayer':
@@ -620,7 +595,6 @@ if (!$conn->connect_error)
         }
         case 'getNeededMemberRoles':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
@@ -657,7 +631,6 @@ if (!$conn->connect_error)
         }
         case 'changeNeededMemberRole':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
@@ -713,7 +686,6 @@ if (!$conn->connect_error)
                     $UserAnswer[1] = 'Fail';
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'deletePlayerFromAlliance':
@@ -795,7 +767,6 @@ if (!$conn->connect_error)
         }
         case 'getAdminLog':
         {
-            $UserAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
@@ -808,7 +779,6 @@ if (!$conn->connect_error)
                     }
                 }
             }
-            echo json_encode($UserAnswer);
             break;
         }
         case 'deleteElementAdminLog':
@@ -824,20 +794,44 @@ if (!$conn->connect_error)
             }
             break;
         }
+        case 'getWorldsAndAlliancesByPlayerName':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $OwnAccountId = $_SESSION['leoStats_AccountId'];
+                if (in_array($OwnAccountId, $ArrayAdminAccounts))
+                {
+                    $PlayerName = $_post['PlayerName'];
+                    $strQuery =
+                        "SELECT l.UserName, s.ServerName, a.AllianceName FROM login l
+                        JOIN relation_player p ON p.AccountId=l.AccountId
+                        JOIN relation_server s ON s.WorldId=p.WorldId
+                        JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+                        WHERE l.UserName LIKE '%$PlayerName%'
+                        ORDER BY l.UserName, s.ServerName;";
+                    $result = $conn->query($strQuery);
+                    while ($zeile = $result->fetch_assoc())
+                    {
+                        array_push($UserAnswer, $zeile);
+                    }
+                }
+            }
+            break;
+        }
 		default:
 		{
-			echo 'no Action';
+            $UserAnswer[0] = 0;
+            $UserAnswer[1] = 'no Action';
 			break;
 		}
 	}
 }
 else
 {
-    $UserAnswer = [];
     $UserAnswer[0] = 0;
     $UserAnswer[1] = 'noDb';
-    echo json_encode($UserAnswer);
 }
+echo json_encode($UserAnswer);
 
 function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAccountId)
 {

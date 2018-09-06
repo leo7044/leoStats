@@ -110,3 +110,13 @@ function prepareTabSettingsServer()
     manageContentSettingsServer();
     setCookie('TabId', 'TabSettingsServer');
 }
+
+function prepareTabSearchPlayer()
+{
+    $('#DivDropDownListAlliance').addClass('no-visible');
+    $('#DivDropDownListPlayer').addClass('no-visible');
+    $('#DivDropDownListBase').addClass('no-visible');
+    $('#DivDropDownListPlayer').children('div').removeClass('disabled');
+    manageContentSearchPlayer();
+    setCookie('TabId', 'TabSearchPlayer');
+}
