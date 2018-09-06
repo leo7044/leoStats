@@ -37,6 +37,7 @@
             <hr>
             <h2 id="HeaderOverview" class="trans-innerHTML">leoStats</h2>
             <div class="inline-form float-right">
+                <button class="button yellow" onclick="updateCurrentDatasInView();"><span class="fas fa-sync"></span> Refresh view</button>
                 <select id="DropDownLanguage" data-role="select" data-filter="false" data-on-change="changeLanguage(this.selectedIndex, this.value, 'page', 'overview');"></select>
                 <form method="post" action="">
                     <input type="hidden" name="logout"/>
@@ -445,7 +446,7 @@
                         </div>
                     </div>
                     <div class="form-group p-3 bg-red fg-white d-none" id="ErrorPermissionPage">
-                        <span><b>Error!</b> You do not have permission to view that page.</span>
+                        <span><b>Error!</b> You have to be Commander-in-chief to view that page.</span>
                     </div>
                 </div>
                 <div id="ContentSettingsServer">

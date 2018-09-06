@@ -173,3 +173,92 @@ function deleteElementAdminLog(_DeleteId)
     requestBackEnd('deleteElementAdminLog', null, null, null, null, null, _DeleteId, null, null);
     manageContentSettingsServer(true);
 }
+
+// refresh datas
+function updateCurrentDatasInView()
+{
+    var WorldId = $('#DropDownListWorld').val();
+    var AllianceId = $('#DropDownListAlliance').val();
+    var AccountId = $('#DropDownListPlayer').val();
+    var BaseId = $('#DropDownListBase').val();
+    switch(getCookie('TabId'))
+    {
+        case 'TabPlayer':
+        {
+            ObjectLastIds.Player = {};
+            delete ObjectPlayerData[WorldId + '_' + AccountId];
+            manageContentPlayer();
+            break;
+        }
+        case 'TabPlayerBase':
+        {
+            ObjectLastIds.PlayerBase = {};
+            delete ObjectPlayerBaseData[WorldId + '_' + AccountId];
+            manageContentPlayerBase(_forced);
+            break;
+        }
+        case 'TabAllianceMembers':
+        {
+            ObjectLastIds.AllianceMembers = {};
+            delete ObjectAlliancePlayerData[WorldId + '_' + AllianceId];
+            manageContentAllianceMembers(_forced)
+            break;
+        }
+        case 'TabAlliance':
+        {
+            ObjectLastIds.Alliance = {};
+            delete ObjectAllianceData[WorldId + '_' + AllianceId];
+            manageContentAlliance();
+            break;
+        }
+        case 'TabAllianceBase':
+        {
+            ObjectLastIds.AllianceBase = {};
+            delete ObjectAllianceBaseData[WorldId + '_' + AllianceId];
+            manageContentAllianceBase();
+            break;
+        }
+        case 'TabAllianceOverview':
+        {
+            ObjectLastIds.AllianceOverview = {};
+            delete ObjectAllianceOverviewData[WorldId + '_' + AllianceId];
+            manageContentAllianceOverview();
+            break;
+        }
+        case 'TabBase':
+        {
+            ObjectLastIds.Base = {};
+            delete ObjectBaseData[WorldId + '_' + BaseId];
+            manageContentBase();
+            break;
+        }
+        case 'TabWorldOverview':
+        {
+            ObjectLastIds.WorldOverview = {};
+            delete ObjectWorldOverviewData[WorldId.toString()];
+            manageContentWorldOverview();
+            break;
+        }
+        case 'TabSettingsPlayer':
+        {
+            ObjectLastIds.SettingsPlayer = {};
+            manageContentSettingsPlayer();
+            break;
+        }
+        case 'TabSettingsAlliance':
+        {
+            ObjectLastIds.SettingsAlliance = {};
+            manageContentSettingsAlliance(true);
+            break;
+        }
+        case 'TabSettingsServer':
+        {
+            manageContentSettingsServer(true);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
