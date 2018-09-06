@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 04. Sep 2018 um 15:36
+-- Erstellungszeit: 06. Sep 2018 um 14:02
 -- Server-Version: 10.3.9-MariaDB
 -- PHP-Version: 7.2.9
 
@@ -147,7 +147,7 @@ BaseId IN
 ORDER BY ba.Zeit ASC$$
 
 CREATE PROCEDURE `getDropDownListDataAsAdmin` ()  READS SQL DATA
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name, p.MemberRole
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
 JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
@@ -156,7 +156,7 @@ JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
 
 CREATE PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT)  READS SQL DATA
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name, p.MemberRole
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
 JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId

@@ -351,11 +351,11 @@ function manageContentSettingsPlayer()
     }
 }
 
-function manageContentSettingsAlliance()
+function manageContentSettingsAlliance(_forced)
 {
     var WorldId = $('#DropDownListWorld').val();
     var AllianceId = $('#DropDownListAlliance').val();
-    if (ObjectLastIds.SettingsAlliance.WorldId != WorldId || ObjectLastIds.SettingsAlliance.AllianceId != AllianceId)
+    if (ObjectLastIds.SettingsAlliance.WorldId != WorldId || ObjectLastIds.SettingsAlliance.AllianceId != AllianceId || _forced)
     {
         $('#LoadingSymbolPage').removeClass('d-none');
         setTimeout(function()
@@ -370,6 +370,22 @@ function manageContentSettingsAlliance()
         }, 1);
         ObjectLastIds.SettingsAlliance.WorldId = WorldId;
         ObjectLastIds.SettingsAlliance.AllianceId = AllianceId;
+    }
+    if (!ObjectSessionVariables.leoStats_IsAdmin)
+    {
+        var MemberRole = alasql('SELECT DISTINCT MemberRole FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '" AND AccountId="' + ObjectSessionVariables.leoStats_AccountId + '"' ,[ArrayDropDownListData])[0].MemberRole;
+        if (MemberRole == 1)
+        {
+            $('#DivChangeNeededMemberRole').removeClass('d-none');
+            $('#DivTableMemberInAlliance').removeClass('d-none');
+            $('#ErrorPermissionPage').addClass('d-none');
+        }
+        else
+        {
+            $('#DivChangeNeededMemberRole').addClass('d-none');
+            $('#DivTableMemberInAlliance').addClass('d-none');
+            $('#ErrorPermissionPage').removeClass('d-none');
+        }
     }
 }
 
