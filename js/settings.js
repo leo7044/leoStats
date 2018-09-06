@@ -110,6 +110,37 @@ function saveChangeNeededMemberRole()
     }
 }
 
+function writeMemberNamesInTable(_WorldId, _AllianceId)
+{
+    var ArrayPlayerNames = alasql('SELECT DISTINCT AccountId, UserName FROM ? WHERE WorldId="' + _WorldId + '" AND AllianceId="' + _AllianceId + '" ORDER BY UserName' ,[ArrayDropDownListData]);
+    for (var i = 0; i < 50; i++)
+    {
+        if (ArrayPlayerNames[i])
+        {
+            $('#MemberName' + i)[0].innerHTML = ArrayPlayerNames[i].UserName + '<button class="button light float-right" onclick="deletePlayerFromAlliance(' + _WorldId + ', ' + _AllianceId + ', ' + ArrayPlayerNames[i].AccountId + ', \'' + ArrayPlayerNames[i].UserName + '\');"><font color="#FF0000;"><i class="fas fa-times"></i></font></button>';
+        }
+        else
+        {
+            $('#MemberName' + i)[0].innerHTML = '&nbsp;';
+        }
+    }
+}
+
+function deletePlayerFromAlliance(_WorldId, _AllianceId, _AccountId, _PlayerName)
+{
+    if (confirm('Do you want to remove ' + _PlayerName + ' from alliance?'))
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            requestBackEnd('deletePlayerFromAlliance', _WorldId, _AllianceId, _AccountId, null, null, null, null, null);
+            initializeStart();
+            writeMemberNamesInTable(_WorldId, _AllianceId);
+            $('#LoadingSymbolPage').addClass('d-none');
+        }, 1);
+    }
+}
+
 // Server
 function optimizeAllTables()
 {

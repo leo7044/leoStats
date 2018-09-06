@@ -20,7 +20,8 @@ var ObjectLastIds =
     "AllianceOverview": {},
     "Base": {},
     "WorldOverview": {},
-    "SettingsPlayer": {}
+    "SettingsPlayer": {},
+    "SettingsAlliance": {}
 };
 
 function manageContentPlayer()
@@ -354,11 +355,22 @@ function manageContentSettingsAlliance()
 {
     var WorldId = $('#DropDownListWorld').val();
     var AllianceId = $('#DropDownListAlliance').val();
-    var role = getNeededMemberRoles(WorldId, AllianceId);
-    var DropDownListMemberRole = $('#DropDownListMemberRole').data('select');
-    DropDownListMemberRole.val(role);
-    $('#MemberRoleChangeFail').addClass('d-none');
-    $('#MemberRoleChangeSuccess').addClass('d-none');
+    if (ObjectLastIds.SettingsAlliance.WorldId != WorldId || ObjectLastIds.SettingsAlliance.AllianceId != AllianceId)
+    {
+        $('#LoadingSymbolPage').removeClass('d-none');
+        setTimeout(function()
+        {
+            var role = getNeededMemberRoles(WorldId, AllianceId);
+            var DropDownListMemberRole = $('#DropDownListMemberRole').data('select');
+            DropDownListMemberRole.val(role);
+            $('#MemberRoleChangeFail').addClass('d-none');
+            $('#MemberRoleChangeSuccess').addClass('d-none');
+            writeMemberNamesInTable(WorldId, AllianceId);
+            $('#LoadingSymbolPage').addClass('d-none');
+        }, 1);
+        ObjectLastIds.SettingsAlliance.WorldId = WorldId;
+        ObjectLastIds.SettingsAlliance.AllianceId = AllianceId;
+    }
 }
 
 function manageContentSettingsServer(_forced)
