@@ -240,7 +240,7 @@ if (!$conn->connect_error)
         }
         case 'getSessionVariables':
         {
-            echo json_encode($_SESSION);
+            $UserAnswer = $_SESSION;
             break;
         }
         case 'getSeasonServerIds':
@@ -626,7 +626,6 @@ if (!$conn->connect_error)
                     array_push($UserAnswer, $zeile);
                 }
             }
-            echo json_encode($UserAnswer[0]);
             break;
         }
         case 'changeNeededMemberRole':

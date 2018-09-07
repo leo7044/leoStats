@@ -86,7 +86,7 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
 {
     if (!ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId])
     {
-        ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = requestBackEnd('getNeededMemberRoles', _WorldId, _AllianceId, null, null, null, null, null, null);
+        ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = requestBackEnd('getNeededMemberRoles', _WorldId, _AllianceId, null, null, null, null, null, null)[0];
     }
     return ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId].MemberRole;
 }
