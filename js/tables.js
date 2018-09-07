@@ -63,6 +63,21 @@ function drawTable(_arrayToUse, _columns, _TableId, _BoxId)
                 {
                     tmpArrayRow.push((_arrayToUse[i][_columns[j]]).toTimeFormat());
                 }
+                else if (_columns[j] == 'PlayerNameGet')
+                {
+                    if (_arrayToUse[i]['PlayerNameGet'] && parseInt(_arrayToUse[i]['active']))
+                    {
+                        tmpArrayRow.push('<b><font color="#009900">' + _arrayToUse[i][_columns[j]] + '</font></b>');
+                    }
+                    else if (_arrayToUse[i]['PlayerNameGet'])
+                    {
+                        tmpArrayRow.push('<b>' + _arrayToUse[i][_columns[j]] + '</b>');
+                    }
+                    else
+                    {
+                        tmpArrayRow.push('<b><font color="red">None</font></b>');
+                    }
+                }
                 else if (ArrayNumbers.indexOf(_columns[j]) != -1)
                 {
                     tmpArrayRow.push(parseInt(_arrayToUse[i][_columns[j]]).toLocaleString('de-DE'));

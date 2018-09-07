@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 06. Sep 2018 um 14:02
+-- Erstellungszeit: 07. Sep 2018 um 12:39
 -- Server-Version: 10.3.9-MariaDB
 -- PHP-Version: 7.2.9
 
@@ -48,9 +48,10 @@ p.AccountId=OwnAccountId
 ORDER BY a.Zeit ASC$$
 
 CREATE PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
-SELECT l.AccountId, l.UserName, p.Faction, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+SELECT l.AccountId, l.UserName, p.Faction, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, s.PlayerNameGet, s.active FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+LEFT JOIN substitution s ON s.WorldId=p.WorldId AND s.PlayerNameSet=l.UserName
 WHERE p.WorldId=WorldId
 AND p.AllianceId=AllianceId
 AND
@@ -61,9 +62,10 @@ pl.Zeit=
 ORDER BY l.UserName$$
 
 CREATE PROCEDURE `getAlliancePlayerDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT l.AccountId, l.UserName, p.Faction, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+SELECT l.AccountId, l.UserName, p.Faction, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, s.PlayerNameGet, s.active FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+LEFT JOIN substitution s ON s.WorldId=p.WorldId AND s.PlayerNameSet=l.UserName
 WHERE
 p.WorldId=WorldId
 AND
