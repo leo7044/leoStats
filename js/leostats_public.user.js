@@ -1,10 +1,10 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name        leoStats
-// @version     2018.06.05
+// @version     2019.01.23
 // @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://leostats.000webhostapp.com/index.php
-// @downloadURL https://leostats.000webhostapp.com/leostats.min.user.js
-// @updateURL   https://leostats.000webhostapp.com/leostats.min.user.js
+// @downloadURL https://leostats.000webhostapp.com/js/leostats.min.user.js
+// @updateURL   https://leostats.000webhostapp.com/js/leostats.min.user.js
 // @description Dieses Script überträgt eure Werte.
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
@@ -15,7 +15,6 @@
 
 
 // Hinweise:
-// Dieses Script befindet sich in der Beta-Phase
 // Dieses Script ist für alle Welten freigeschaltet.
 // Wenn ihr mit mir Kontakt aufnehmen wollt, schreibt mir eine Email: cc.ta.leo7044@gmail.com
 // Das Script ist verschlüsselt, da ich Scriptmanipulationen ausschließen möchte. Wer der Sache misstraut: Es steht euch frei, mit mir Kontakt aufzunehmen.
@@ -787,7 +786,7 @@
 				if (ObjectData.player.Shoot != undefined)
 				{
 					var ObjectSend = {action:"sendDataFromInGame", ObjectData:ObjectData};
-					$.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
+					jQuery.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
 					.always(function(data)
 					{
 						if (sendChatInfoStatus)
