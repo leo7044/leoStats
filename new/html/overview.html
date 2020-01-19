@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <title id="HeaderOverview" class="trans-innerHTML">leoStats</title>
+		<meta charset="utf-8">
+		<meta name="author" content="leo7044">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="shortcut icon" type="image/x-icon" href="img/icon_32.png">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://cdn.rawgit.com/olton/Metro-UI-CSS/6595247250e80f27c590e9ba89522f1676a8297d/build/css/metro-all.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+        <link rel="stylesheet" href="css/overview.css?20180830">
+
+        <!-- JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdn.rawgit.com/olton/Metro-UI-CSS/6595247250e80f27c590e9ba89522f1676a8297d/build/js/metro.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.4.9/alasql.min.js"></script>
+        <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+        <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+        <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+        <script src="js/cookies.js?20180830"></script>
+        <script src="js/languages.js?20180830"></script>
+        <script src="js/backend.js?20180830"></script>
+        <script src="js/dropdowns.js?20180830"></script>
+        <script src="js/tabsNavigation.js?20180830"></script>
+        <script src="js/tabsContent.js?20180830"></script>
+        <script src="js/charts.js?20180830"></script>
+        <script src="js/tables.js?20180830"></script>
+        <script src="js/tableAllianceBase.js?20180830"></script>
+        <script src="js/settings.js?20180830"></script>
+        <script src="js/overview.js?20180830"></script>
+    </head>
+    <body>
+        <div class="container-fluid text-center own-container">
+            <img height="100px" onclick="location.reload();" src="img/icon.png" style="cursor:pointer" width="100px">
+            <hr>
+            <h2 id="HeaderOverview" class="trans-innerHTML">leoStats</h2>
+            <div class="inline-form float-right">
+                <button class="button yellow" onclick="updateCurrentDatasInView();"><span class="fas fa-sync"></span> Refresh view</button>
+                <select id="DropDownLanguage" data-role="select" data-filter="false" data-on-change="changeLanguage(this.selectedIndex, this.value, 'page', 'overview');"></select>
+                <form method="post" action="">
+                    <input type="hidden" name="logout"/>
+                    <button type="submit" class="button alert"><span class="mif-exit"></span> <span id="Logout" class="trans-innerHTML"></span></button>
+                </form>
+            </div>
+        </div>
+        <div class="container-fluid own-container-text">
+            <ul data-role="tabs" data-expand="lg">
+                <li id="LiPlayer"><a id="TabPlayer" href="#ContentPlayer" onclick="prepareTabPlayer();"><span class="mif-user"></span> Player</a></li>
+                <li id="LiPlayerBase"><a id="TabPlayerBase" href="#ContentPlayerBase" onclick="prepareTabPlayerBase();"><span class="fas fa-street-view"></span>&nbsp;Player - Bases</a></li>
+                <li id="LiAllianceMembers"><a id="TabAllianceMembers" href="#ContentAllianceMembers" onclick="prepareTabAllianceMembers();"><span class="mif-users"></span> Members</a></li>
+                <li id="LiAlliance"><a id="TabAlliance" href="#ContentAlliance" onclick="prepareTabAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                <li id="LiAllianceBase"><a id="TabAllianceBase" href="#ContentAllianceBase" onclick="prepareTabAllianceBase();"><span class="mif-home"></span> Alliance - Bases</a></li>
+                <li id="LiAllianceOverview"><a id="TabAllianceOverview" href="#ContentAllianceOverview" onclick="prepareTabAllianceOverview();"><span class="mif-eye"></span> Alliance - Overview</a></li>
+                <li id="LiBase"><a id="TabBase" href="#ContentBase" onclick="prepareTabBase();"><span class="mif-home"></span> Base</a></li>
+                <li id="LiWorldOverview"><a id="TabWorldOverview" href="#ContentWorldOverview" onclick="prepareTabWorldOverview();"><span class="mif-vpn-publ"></span> World - Overview</a></li>
+                <li id="LiSettings">
+                    <a href="#" class="dropdown-toggle"><span class="mif-cogs"></span> Settings</a>
+                    <ul class="d-menu" data-role="dropdown">
+                        <li id="LiSettingsPlayer"><a id="TabSettingsPlayer" href="#ContentSettingsPlayer" onclick="prepareTabSettingsPlayer();"><span class="mif-user"></span> Player</a></li>
+                        <li id="LiSettingsAlliance"><a id="TabSettingsAlliance" href="#ContentSettingsAlliance" onclick="prepareTabSettingsAlliance();"><span class="fas fa-users"></span>&nbsp;Alliance</a></li>
+                        <li id="LiSettingsServer"><a id="TabSettingsServer" href="#ContentSettingsServer" onclick="prepareTabSettingsServer();"><span class="mif-vpn-publ"></span> Server</a></li>
+                        <li id="LiSearchPlayer"><a id="TabSearchPlayer" href="#ContentSearchPlayer" onclick="prepareTabSearchPlayer();"><span class="fas fa-user-tag"></span>&nbsp;Search Player</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="border bd-default no-border-top p-2">
+                <div class="grid">
+                    <div class="row p-2">
+                        <div id="DivDropDownListWorld" class="cell-lg m-2">
+                            <select id="DropDownListWorld" data-role="select" data-prepend="<span class='mif-vpn-publ'></span>" data-on-change="prepareandFillDropDownListDataAlliance();"></select>
+                        </div>
+                        <div id="DivDropDownListAlliance" class="cell-lg m-2">
+                            <select id="DropDownListAlliance" data-role="select" data-prepend="<span class='fas fa-users'></span>" data-on-change="prepareandFillDropDownListDataPlayer();"></select>
+                        </div>
+                        <div id="DivDropDownListPlayer" class="cell-lg m-2">
+                            <select id="DropDownListPlayer" data-role="select" data-prepend="<span class='mif-user'></span>" data-on-change="prepareandFillDropDownListDataBase();"></select>
+                        </div>
+                        <div id="DivDropDownListBase" class="cell-lg m-2 no-visible">
+                            <select id="DropDownListBase" data-role="select" data-prepend="<span class='mif-home'></span>" data-on-change="HelpFunctionForChangedBase();"></select>
+                        </div>
+                    </div>
+                </div>
+                <center>
+                    <div class="own-front">
+                        <span id="LoadingSymbolPage" class="fas fa-sync fa-spin fa-6x"></span>
+                    </div>
+                </center>
+                <div id="ContentPlayer">
+                    <div id="ChartPlayerScorePoints" class="own-chart"></div><br/>
+                    <div id="ChartPlayerRanking" class="own-chart"></div><br/>
+                    <div id="ChartPlayerProduction" class="own-chart"></div><br/>
+                    <div id="ChartPlayerRpsCredits" class="own-chart"></div><br/>
+                    <div id="ChartPlayerShoots" class="own-chart"></div><br/>
+                    <div id="ChartPlayerValues" class="own-chart"></div><br/>
+                    <div id="ChartPlayerCps" class="own-chart"></div><br/>
+                    <div id="ChartPlayerVps" class="own-chart"></div><br/>
+                    <div id="ChartPlayerLps" class="own-chart"></div><br/>
+                    <div id="ChartPlayerFunds" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentPlayerBase">
+                    <div id="BoxViewColsPlayerBase" class="own-box">
+                        <label>Show columns:</label><br/>
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Name">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLCY">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLBase">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLOff">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLDef">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLDF">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="LvLSup">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="SupArt">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Tib">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Cry">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Pow">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Cre">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="Rep">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentPlayerBase(true)" data-caption="CnCOpt">
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="TablePlayerBase"
+                            class="table striped row-hover table-border cell-border mt-4"
+                            data-role="table"
+                            data-show-search="false"
+                            data-show-rows-steps="false"
+                            data-show-pagination="false"
+                            data-show-table-info="false"
+                            data-rows="50"
+                            data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                            data-thousand-separator="."
+                            data-decimal-separator=",">
+                            <thead>
+                                <tr>
+                                    <th class="sortable-column text-center">Name</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLCY</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLBase</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLOff</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLDef</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLDF</th>
+                                    <th class="sortable-column text-center" data-format="number">LvLSup</th>
+                                    <th class="sortable-column text-center">SupArt</th>
+                                    <th class="sortable-column text-center" data-format="number">Tib</th>
+                                    <th class="sortable-column text-center" data-format="number">Cry</th>
+                                    <th class="sortable-column text-center" data-format="number">Pow</th>
+                                    <th class="sortable-column text-center" data-format="number">Cre</th>
+                                    <th class="sortable-column text-center">Rep</th>
+                                    <th class="sortable-column text-center">CnCOpt</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div id="ContentAllianceMembers">
+                    <div id="BoxViewColsAllianceMembers" class="own-box">
+                        <label>Show columns:</label><br/>
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="UserName">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Faction">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Zeit">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="ScorePoints">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CountBases">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CountSup">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="OverallRank">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtTiberium">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtCrystal">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtPower">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="GesamtCredits">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="ResearchPoints">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Credits">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Shoot">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="PvP">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="PvE">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="LvLOff">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="BaseD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="OffD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="DefD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="DFD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="SupD">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="RepMax">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CPMax">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="CPCur">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Funds">
+                        <input type="checkbox" data-role="checkbox" checked onchange="manageContentAllianceMembers(true)" data-caption="Substitution">
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table id="TableAllianceMembers"
+                            class="table striped row-hover table-border cell-border mt-4"
+                            data-role="table"
+                            data-show-search="false"
+                            data-show-rows-steps="false"
+                            data-show-pagination="false"
+                            data-show-table-info="false"
+                            data-rows="50"
+                            data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                            data-thousand-separator="."
+                            data-decimal-separator=",">
+                            <thead>
+                                <th class="sortable-column text-center sort-asc">UserName</th>
+                                <th class="sortable-column text-center">Faction</th>
+                                <th class="sortable-column text-center" data-format="date">Zeit</th>
+                                <th class="sortable-column text-center" data-format="number">ScorePoints</th>
+                                <th class="sortable-column text-center" data-format="number">CountBases</th>
+                                <th class="sortable-column text-center" data-format="number">CountSup</th>
+                                <th class="sortable-column text-center" data-format="number">OverallRank</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtTiberium</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtCrystal</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtPower</th>
+                                <th class="sortable-column text-center" data-format="number">GesamtCredits</th>
+                                <th class="sortable-column text-center" data-format="number">ResearchPoints</th>
+                                <th class="sortable-column text-center" data-format="number">Credits</th>
+                                <th class="sortable-column text-center" data-format="number">Shoot</th>
+                                <th class="sortable-column text-center" data-format="number">PvP</th>
+                                <th class="sortable-column text-center" data-format="number">PvE</th>
+                                <th class="sortable-column text-center" data-format="number">LvLOff</th>
+                                <th class="sortable-column text-center" data-format="number">BaseD</th>
+                                <th class="sortable-column text-center" data-format="number">OffD</th>
+                                <th class="sortable-column text-center" data-format="number">DefD</th>
+                                <th class="sortable-column text-center" data-format="number">DFD</th>
+                                <th class="sortable-column text-center" data-format="number">SupD</th>
+                                <th class="sortable-column text-center">RepMax</th>
+                                <th class="sortable-column text-center" data-format="number">CPMax</th>
+                                <th class="sortable-column text-center" data-format="number">CPCur</th>
+                                <th class="sortable-column text-center" data-format="number">Funds</th>
+                                <th class="sortable-column">Substitution</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div id="ContentAlliance">
+                    <div id="ChartAllianceRank" class="own-chart"></div><br/>
+                    <div id="ChartAlliancePoints" class="own-chart"></div><br/>
+                    <div id="ChartAllianceBonusRess" class="own-chart"></div><br/>
+                    <div id="ChartAllianceBonusFight" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentAllianceBase">
+                    <div class="inline-form float-left">
+                        <select id="DropDownAllianceBaseType" data-role="select" data-on-change="manageContentAllianceBase();">
+                            <option id="LvLCY">LvLCY</option>
+                            <option id="LvLBase">LvLBase</option>
+                            <option id="LvLOff" selected>LvLOff</option>
+                            <option id="LvLDef">LvLDef</option>
+                            <option id="LvLDF">LvLDF</option>
+                            <option id="LvLSup">LvLSup</option>
+                            <option id="Tib" value="Tib">Tiberium</option>
+                            <option id="Cry" value="Cry">Crystal</option>
+                            <option id="Pow" value="Pow">Power</option>
+                            <option id="Cre" value="Cre">Credits</option>
+                            <option id="Rep" value="Rep">RepairTime</option>
+                        </select>
+                    </div><br/><br/><br/>
+                    <div style="overflow-x: auto;">
+                        <table id="TableAllianceBase" class="m-1">
+                            <thead>
+                                <tr id="TableAllianceBaseTheadTr"></tr>
+                            </thead>
+                            <tbody id="TableAllianceBaseTbody"></tbody>
+                        </table>
+                    </div><br/><br/>
+                    <div class="card m-0" style="max-width: 922px;">
+                        <div class="card-header">
+                            <span id="HeaderCnCOptLink"></span>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseBuildCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseBuildCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseDefCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseDefCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                                <div class="cell-lg">
+                                    <table id="TableAllianceBaseOffCnCOpt">
+                                        <thead></thead>
+                                        <tbody id="TableAllianceBaseOffCnCOptTbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ContentAllianceOverview">
+                    <div id="ChartAllianceOverviewOffense" class="own-chart"></div><br/>
+                    <div id="ChartAllianceOverviewDefense" class="own-chart"></div><br/>
+                    <div id="ChartAllianceOverviewSupport" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentBase">
+                    <h5 class="text-center"><a href="" target="_blank" id="LinkCncOpt">CnCOpt</a></h5><br/>
+                    <div id="ChartBaseProduction" class="own-chart"></div><br/>
+                    <div id="ChartBaseValues" class="own-chart"></div><br/>
+                    <div id="ChartBaseRepairTime" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentWorldOverview">
+                    <div id="ChartWorldOverviewOffense" class="own-chart"></div><br/>
+                    <div id="ChartWorldOverviewDefense" class="own-chart"></div><br/>
+                    <div id="ChartWorldOverviewSupport" class="own-chart"></div><br/>
+                </div>
+                <div id="ContentSettingsPlayer">
+                    <h3>Change Password</h3>
+                    <form action="" method="post" id="FormChangePassword" onsubmit="return changePassword();">
+                        <div class="form-group">
+                            <input type="text" id="InputUserName" name="InputUserName" placeholder="UserName" required disabled>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputOldPassword" name="InputOldPassword" placeholder="Old Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputNewPassword" name="InputNewPassword" placeholder="New Password" onchange="validatePassword();" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="InputConfirmNewPassword" name="InputConfirmNewPassword" placeholder="Confirm new password" onkeyup="validatePassword();" required>
+                            <span class="invalid_feedback">
+                                Your Passwords have to be equal.
+                            </span>
+                        </div>
+                        <br/>
+                        <div class="form-group">
+                            <button type="button" class="button alert" id="ButtonCancelChangePassword" onclick="resetFormChangePassword(true);"><span class="mif-cross"></span> Cancel</button>
+                            <button type="submit" class="button success" id="ButtonConfirmhangePassword"><span class="fas fa-check"></span> Confirm</button>
+                        </div>
+                        <div class="form-group d-none" id="PasswordChangeFail">
+                            <div class="p-3 bg-red fg-white">
+                                <b>Error!</b> Your password was not successfully changed.
+                            </div>
+                        </div>
+                        <div class="form-group d-none" id="PasswordChangeSuccess">
+                            <div class="p-3 bg-green fg-white">
+                                <b>Success!</b> Your password was successfully changed.
+                            </div>
+                        </div>
+                    </form><br/>
+                    <div id="AdminButtonsPlayer">
+                        <h3>Admin-Settings</h3>
+                        <div class="form-group">
+                            <button id="ButtonResetPlayer" class="button yellow" onclick="resetPlayer();"><span class="fas fa-sync"></span> reset Player</button>
+                            <button id="ButtonDeletePlayer" class="button alert" onclick="deletePlayer();"><span class="fas fa-user-times"></span> delete Player</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="ContentSettingsAlliance">
+                    <h3>Alliance-Settings</h3>
+                    <div class="card form-group" id="DivChangeNeededMemberRole">
+                        <div class="card-header">Needed MemberRole to view other AllianceMember</div>
+                        <div class="card-content p-2">
+                            <div class="form-group">
+                                <select id="DropDownListMemberRole" data-role="select" data-filter="false">
+                                    <option value="1">Commander-in-chief</option>
+                                    <option value="2">Second Commander</option>
+                                    <option value="3">Officer</option>
+                                    <option value="4">Veteran</option>
+                                    <option value="5">Member</option>
+                                    <option value="6">Trial</option>
+                                    <option value="7">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button id="ButtonCancelChangeNeededMemberRole" class="button alert" onclick="manageContentSettingsAlliance(true);"><i class="fas fa-times"></i> Cancel</button>
+                                <button id="ButtonSaveChangeNeededMemberRole" class="button success" onclick="saveChangeNeededMemberRole();"><i class="fas fa-check"></i> Save</button>
+                            </div>
+                            <div class="form-group p-3 bg-red fg-white d-none" id="MemberRoleChangeFail">
+                                <span><b>Error!</b> The MemberRole was not successfully changed</span>
+                            </div>
+                            <div class="form-group p-3 bg-green fg-white d-none" id="MemberRoleChangeSuccess">
+                                <span><b>Success!</b> You changed the needed MemberRole</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card form-group" id="DivTableMemberInAlliance">
+                        <div class="card-header">Member in alliance</div>
+                        <div class="card-content p-2">
+                            <table class="table table-border cell-border">
+                                <tbody>
+                                    <tr>
+                                        <td id="MemberName0">&nbsp;</td>
+                                        <td id="MemberName1">&nbsp;</td>
+                                        <td id="MemberName2">&nbsp;</td>
+                                        <td id="MemberName3">&nbsp;</td>
+                                        <td id="MemberName4">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName5">&nbsp;</td>
+                                        <td id="MemberName6">&nbsp;</td>
+                                        <td id="MemberName7">&nbsp;</td>
+                                        <td id="MemberName8">&nbsp;</td>
+                                        <td id="MemberName9">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName10">&nbsp;</td>
+                                        <td id="MemberName11">&nbsp;</td>
+                                        <td id="MemberName12">&nbsp;</td>
+                                        <td id="MemberName13">&nbsp;</td>
+                                        <td id="MemberName14">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName15">&nbsp;</td>
+                                        <td id="MemberName16">&nbsp;</td>
+                                        <td id="MemberName17">&nbsp;</td>
+                                        <td id="MemberName18">&nbsp;</td>
+                                        <td id="MemberName19">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName20">&nbsp;</td>
+                                        <td id="MemberName21">&nbsp;</td>
+                                        <td id="MemberName22">&nbsp;</td>
+                                        <td id="MemberName23">&nbsp;</td>
+                                        <td id="MemberName24">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName25">&nbsp;</td>
+                                        <td id="MemberName26">&nbsp;</td>
+                                        <td id="MemberName27">&nbsp;</td>
+                                        <td id="MemberName28">&nbsp;</td>
+                                        <td id="MemberName29">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName30">&nbsp;</td>
+                                        <td id="MemberName31">&nbsp;</td>
+                                        <td id="MemberName32">&nbsp;</td>
+                                        <td id="MemberName33">&nbsp;</td>
+                                        <td id="MemberName34">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName35">&nbsp;</td>
+                                        <td id="MemberName36">&nbsp;</td>
+                                        <td id="MemberName37">&nbsp;</td>
+                                        <td id="MemberName38">&nbsp;</td>
+                                        <td id="MemberName39">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName40">&nbsp;</td>
+                                        <td id="MemberName41">&nbsp;</td>
+                                        <td id="MemberName42">&nbsp;</td>
+                                        <td id="MemberName43">&nbsp;</td>
+                                        <td id="MemberName44">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td id="MemberName45">&nbsp;</td>
+                                        <td id="MemberName46">&nbsp;</td>
+                                        <td id="MemberName47">&nbsp;</td>
+                                        <td id="MemberName48">&nbsp;</td>
+                                        <td id="MemberName49">&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group p-3 bg-red fg-white d-none" id="ErrorPermissionPage">
+                        <span><b>Error!</b> You have to be Commander-in-chief to view that page.</span>
+                    </div>
+                </div>
+                <div id="ContentSettingsServer">
+                    <button id="ButtonOptimizeAllTables" class="button primary" onclick="optimizeAllTables();"><span class="mif-table"></span> <span id="OptimizeAllTables" class="trans-innerHTML"></span></button>
+                    <button id="ButtonDeleteServer" class="button alert" onclick="deleteServer();"><span class="mif-cross"></span> <span id="DeleteServer" class="trans-innerHTML"></span></button>
+                    <br/><br/>
+                    <table id="TableAdminLog"
+                        class="table striped row-hover table-border cell-border mt-4"
+                        data-role="table"
+                        data-cls-table-top="row flex-nowrap"
+                        data-cls-search="cell-md-8"
+                        data-cls-rows-count="cell-md-4"
+                        data-rows="10"
+                        data-rows-steps="10, 20, 50, 100"
+                        data-on-draw="$('#LoadingSymbolPage').addClass('d-none');"
+                        data-thousand-separator="."
+                        data-decimal-separator=",">
+                        <thead>
+                            <tr>
+                                <th class="sortable-column text-center sort-desc" data-format="number">Id</th>
+                                <th class="sortable-column text-center">DateTime</th>
+                                <th class="sortable-column text-center">Initiator</th>
+                                <th class="sortable-column text-center">Description</th>
+                                <th class="sortable-column text-center">Delete</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="ContentSearchPlayer">
+                    <h3>Search Player</h3>
+                    <form id="FormPlayerSearch">
+                        <input data-role="input" onkeyup="searchPlayer(this.value);" id="InputPlayerSearch" required>
+                    </form>
+                    <br/>
+                    <table class="table tabl-border cell-border">
+                        <thead>
+                            <tr>
+                                <th>PlayerName</th>
+                                <th>ServerName</th>
+                                <th>AllianceName</th>
+                            </tr>
+                        </thead>
+                        <tbody id="InputPlayerSearchTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

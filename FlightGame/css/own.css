@@ -1,0 +1,86 @@
+/* Developer: leo7044 (https://github.com/leo7044) */
+body
+{
+    overflow: hidden;
+}
+
+#DivImgPlane, #DivImgPlane2
+{
+    width: 80px;
+    height: 80px;
+    position: absolute;
+}
+
+#DivImgHeart
+{
+    position: absolute;
+}
+
+#DivTacho
+{
+    position: fixed;
+    width: 150px;
+    border: solid black 1px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    margin: auto;
+}
+
+#DivOptions
+{
+    position: fixed;
+    width: 210px;
+    height: 100px;
+    border: solid black 1px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+}
+
+#DivCrashMessage
+{
+    position: fixed;
+    width: 400px;
+    height: 185px;
+    border: solid black 1px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+}
+
+#DivHelp
+{
+    position: fixed;
+    width: 490px;
+    height: 500px;
+    border: solid black 1px;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+}
+
+#ButtonHelp
+{
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.divLeft
+{
+    float: left;
+    margin-bottom: 10px;
+}
+
+.divRight
+{
+    float: right;
+    margin-bottom: 10px;
+}

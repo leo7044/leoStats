@@ -13,7 +13,6 @@
 // @grant       none
 // ==/UserScript==
 
-
 // Hinweise:
 // Dieses Script befindet sich in der Beta-Phase
 // Dieses Script ist für alle Welten freigeschaltet.

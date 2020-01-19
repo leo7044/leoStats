@@ -1,20 +1,20 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        leoStats
-// @version     2019.01.23
+// @version     2020.01.19
 // @author      leo7044 (https://github.com/leo7044)
-// @homepage    https://leostats.000webhostapp.com/index.php
-// @downloadURL https://leostats.000webhostapp.com/js/leostats.min.user.js
-// @updateURL   https://leostats.000webhostapp.com/js/leostats.min.user.js
+// @homepage    https://cnc.indyserver.info/index.php
+// @downloadURL https://cnc.indyserver.info/js/leostats.min.user.js
+// @updateURL   https://cnc.indyserver.info/js/leostats.min.user.js
 // @description Dieses Script überträgt eure Werte.
 // @include     http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @include     http*://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @require		https://code.jquery.com/jquery-3.3.1.min.js
-// @icon        https://leostats.000webhostapp.com/img/icon_32.png
+// @icon        https://cnc.indyserver.info/img/icon_32.png
 // @grant       none
 // ==/UserScript==
 
-
 // Hinweise:
+// Dieses Script befindet sich in der Beta-Phase
 // Dieses Script ist für alle Welten freigeschaltet.
 // Wenn ihr mit mir Kontakt aufnehmen wollt, schreibt mir eine Email: cc.ta.leo7044@gmail.com
 // Das Script ist verschlüsselt, da ich Scriptmanipulationen ausschließen möchte. Wer der Sache misstraut: Es steht euch frei, mit mir Kontakt aufzunehmen.
@@ -26,7 +26,7 @@
         function leoStatsCreate()
 		{
 			// globale Variablen
-			var linkToRoot = "https://leostats.000webhostapp.com/";
+			var linkToRoot = "https://cnc.indyserver.info/";
 			var ObjectData = {};
 			ObjectData.server = {};
 			ObjectData.alliance = {};
@@ -786,7 +786,7 @@
 				if (ObjectData.player.Shoot != undefined)
 				{
 					var ObjectSend = {action:"sendDataFromInGame", ObjectData:ObjectData};
-					jQuery.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
+					$.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
 					.always(function(data)
 					{
 						if (sendChatInfoStatus)

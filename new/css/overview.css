@@ -1,0 +1,42 @@
+/* Developer: leo7044 (https://github.com/leo7044) */
+.own-container
+{
+	background-color: #E9ECEF;
+	padding: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	margin-bottom: 2rem;
+}
+
+.own-container-text
+{
+	background-color: #F8F8FF;
+	padding: 2rem;
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+	margin-bottom: 2rem;
+}
+
+.own-chart
+{
+	width: 100%;
+	height: 700px;
+}
+
+.own-box
+{
+	border: 2px solid #eee;
+}
+
+.own-front
+{
+    z-index: 500;
+	position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.own-cursor-pointer
+{
+	cursor: pointer;
+}

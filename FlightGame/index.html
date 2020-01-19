@@ -1,0 +1,188 @@
+<!-- Developer: leo7044 (https://github.com/leo7044) -->
+<html>
+    <head>
+        <title>FlightGame</title>
+        <meta charset="utf-8">
+
+        <!-- JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="js/own.min.js"></script>
+        
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/own.min.css">
+    </head>
+    <body>
+        <div id="DivImgHeart">
+            <img id="ImgHeart" src="img/heart.png" width="50px">
+        </div>
+        <div id="DivImgPlane">
+            <img id="ImgPlane" src="img/plane_black.png" width="80px">
+        </div>
+        <div id="DivImgPlane2" class="d-none">
+            <img id="ImgPlane2" src="img/plane_red.png" width="80px">
+        </div>
+        <div id="DivTacho">
+            <table width="300px">
+                <tr>
+                    <td width="150px">
+                        <div id="DivPlayerNameOutput">
+                            <b><span id="SpanPlayerName" onclick="changePlayerName(this.id);">Plane1</span>:</b><br/>
+                        </div>
+                        <div id="DivPlayerNameInput" class="d-none">
+                            <input id="InputPlayerName" size="13"><br/>
+                        </div>
+                        Left:&nbsp;<span id="PositionLeftOfPlane"></span>, Top:&nbsp;<span id="PositionTopOfPlane"></span><br/>
+                        Speed:&nbsp;<span id="SpeedOfPlane"></span><br/>
+                        Direction:&nbsp;<span id="DirectionOfPlane"></span><br/>
+                        <span id="SpanPoints">Points:&nbsp;<span id="PointsOfPlane">0</span><br/></span>
+                        <span id="SpanWins" class="d-none">Wins:&nbsp;<span id="WinsOfPlane">0</span><br/></span>
+                    </td>
+                    <td id="TableTdTachoPlane2" class="d-none" width="150px;">
+                        <div id="DivPlayerNameOutput2">
+                            <b><span id="SpanPlayerName2" onclick="changePlayerName(this.id);">Plane2</span>:</b><br/>
+                        </div>
+                        <div id="DivPlayerNameInput2" class="d-none">
+                            <input id="InputPlayerName2" size="13"><br/>
+                        </div>
+                        Left:&nbsp;<span id="PositionLeftOfPlane2"></span>, Top:&nbsp;<span id="PositionTopOfPlane2"></span><br/>
+                        Speed:&nbsp;<span id="SpeedOfPlane2"></span><br/>
+                        Direction:&nbsp;<span id="DirectionOfPlane2"></span><br/>
+                        <span id="SpanPoints2">Points:&nbsp;<span id="PointsOfPlane2">0</span><br/></span>
+                        Wins:&nbsp;<span id="WinsOfPlane2">0</span><br/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- <div id="DivOptionButton">
+            <button id="ButtonOptions" onclick="showHideDivOptions();">Options</button>
+        </div> -->
+        <div id="DivCrashMessage" class="d-none">
+            Die Flugzeuge sind zusammengestoßen.<br/>
+            <div id="DivWinnerHeartMode">
+                <div id="DivWinnerExistsHeartMode">
+                    Gemäß Punktestand ist der Gewinner:<br/>
+                    <h1><span id="SpanWinnerHeartMode"></span></h1>
+                    Ich gratuliere ganz 💓lich !
+                </div>
+                <div id="DivWinnerNotExistsHeartMode">
+                    Gemäß Punktestand gibt es keinen Gewinner.<br/>
+                    Daher einen 💓lichen Glückwunsch an beide !
+                </div>
+            </div>
+            <div id="DivWinnerCrashMode">
+                <div id="DivWinnerExistsCrashMode">
+                    Gemäß Crashwinkel ist der Gewinner:<br/>
+                    <h1><span id="SpanWinnerCrashMode"></span></h1>
+                    Ich gratuliere ganz 💓lich !
+                </div>
+                <div id="DivWinnerNotExistsCrashMode">
+                    Gemäß Crashwinkel gibt es keinen Gewinner.<br/>
+                    Daher einen 💓lichen Glückwunsch an beide !
+                </div>
+            </div>
+        </div>
+        <div id="DivOptions" class="d-none">
+            <b>Options</b><br/>
+            <input type="radio" id="SinglePlayer" name="PlayerMode" value="Singleplayer" onclick="manageOptions(this.id);" checked>
+			<label for="SinglePlayer"> Singleplayer</label>
+            <input type="radio" id="MultiPlayer" name="PlayerMode" value="Multiplayer"  onclick="manageOptions(this.id);">
+            <label for="MultiPlayer"> Multiplayer</label><br/>
+            <div id="DivGameMode" class="d-none">
+                <input type="radio" id="HeartMode" name="GameMode" value="HeartMode" onclick="manageOptions(this.id);" checked>
+                <label for="HeartMode"> HeartMode</label>
+                <input type="radio" id="CrashMode" name="GameMode" value="CrashMode"  onclick="manageOptions(this.id);">
+                <label for="CrashMode"> CrashMode</label><br/>
+            </div>
+			<!--<input type="radio" id="TypePlane" name="ObjectType" value="TypePlane" checked>
+			<label for="TypePlane"> Plane</label>
+			<input type="radio" id="TypeCar" name="ObjectType" value="TypeCar">
+            <label for="TypeCar"> Car</label><br/>
+            <input type="radio" id="ColorBlack" name="ObjectColor" value="ColorBlack" onclick="manageOptions(this.id);" checked>
+            <label for="ColorBlack"> Black</label>
+            <input type="radio" id="ColorRed" name="ObjectColor" value="ColorRed" onclick="manageOptions(this.id);">
+            <label for="ColorRed"> Red</label>-->
+        </div>
+        <div id="DivHelp">
+            <center><h1>Hilfe</h1></center>
+            <h3>Steuerung</h3>
+            <div class="divLeft">
+                <center><b>Erster Spieler</b></center>
+                <table border="1px">
+                    <tr>
+                        <td>Beschleunigen</td>
+                        <td>Pfeiltaste oben</td>
+                    </tr>
+                    <tr>
+                        <td>Bremsen</td>
+                        <td>Pfeiltaste unten</td>
+                    </tr>
+                    <tr>
+                        <td>Links</td>
+                        <td>Pfeiltaste links</td>
+                    </tr>
+                    <tr>
+                        <td>Rechts</td>
+                        <td>Pfeiltaste rechts</td>
+                    </tr>
+                    <tr>
+                        <td>sofortiger Stop</td>
+                        <td>Leertaste</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="divRight">
+                <center><b>Zweiter Spieler</b></center>
+                <table border="1px">
+                    <tr>
+                        <td>Beschleunigen</td>
+                        <td>w</td>
+                    </tr>
+                    <tr>
+                        <td>Bremsen</td>
+                        <td>s</td>
+                    </tr>
+                    <tr>
+                        <td>Links</td>
+                        <td>a</td>
+                    </tr>
+                    <tr>
+                        <td>Rechts</td>
+                        <td>d</td>
+                    </tr>
+                    <tr>
+                        <td>sofortiger Stop</td>
+                        <td>Leertaste</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="divLeft">
+                <h3>Allgemeingültig</h3>
+                <table border="1px">
+                    <tr>
+                        <td>Hilfe</td>
+                        <td>Punkt + h</td>
+                    </tr>
+                    <tr>
+                        <td>Optionen</td>
+                        <td>Punkt + o</td>
+                    </tr>
+                    <tr>
+                        <td>Flugzeuge auf Startposition</td>
+                        <td>Punkt + r</td>
+                    </tr>
+                    <tr>
+                        <td>Flugzeuge auf Startposition und Punkte zurücksetzen</td>
+                        <td>Punkt + n</td>
+                    </tr>
+                    <tr>
+                        <td>Popups bestätigen</td>
+                        <td>Enter</td>
+                    </tr>
+                </table>
+            </div>
+            <button id="ButtonHelp" onclick="showHideDivHelp();">Schließen</button>
+        </div>
+    </body>
+</html>

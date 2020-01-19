@@ -1,0 +1,47 @@
+/* Developer: leo7044 (https://github.com/leo7044) */
+.TableOneLayout
+{
+    margin-right: 10px;
+    background-color: white;
+}
+
+.TableOneLayout, td
+{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.DivOneLayout
+{
+    float: left;
+    margin-bottom: 10px;
+    border-collapse: collapse;
+}
+
+.DivContent
+{
+    float: left;
+    border: 1px solid black;
+}
+
+td
+{
+    width: 16px;
+    height: 18px;
+}
+
+img
+{
+    width: 14px;
+    height: 14px;
+}
+
+body
+{
+    background-color: bisque;
+}
+
+.bg-red
+{
+    background-color: red;
+}

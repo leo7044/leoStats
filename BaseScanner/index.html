@@ -1,0 +1,34 @@
+<!-- Developer: leo7044 (https://github.com/leo7044) -->
+<html>
+    <head>
+        <title>BaseScanner</title>
+		<meta charset="utf-8">
+		<meta name="author" content="leo7044">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/own.min.css">
+
+        <!-- JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="js/own.min.js"></script>
+    </head>
+    <body>
+        <button onclick="getLayoutsOrderByType('Tiberium');">Tiberium</button>
+        <button onclick="getLayoutsOrderByType('Crystal');">Crystal</button>
+        <button onclick="getLayoutsOrderByType('Mixed');">Mixed</button>
+        <button onclick="getLayoutsOrderByType('Power');">Power</button>
+        <button onclick="getLayoutsOrderByType('Date');">Date</button>
+        <label>WorldId:</label><input id="WorldId" value="320" size="4">
+        <label>MinX:</label><input id="MinX" size="4">
+        <label>MaxX:</label><input id="MaxX" size="4">
+        <label>MinY:</label><input id="MinY" size="4">
+        <label>MaxY:</label><input id="MaxY" size="4">
+        <label>MinDate:</label><input id="MinDate" size="8">
+        <label>PlayerName:</label><input id="PlayerName" size="15">
+        <!--<label>AllianceName:</label><select id="SelectionAllianceName"></select>-->
+        <br/>
+        <label id="LoginState"></label><br/>
+        <div id="Scans"></div>
+    </body>
+</html>
