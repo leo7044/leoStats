@@ -2,7 +2,7 @@
 
 ## English
 
-### Online-Version: https://leostats.000webhostapp.com
+### Online-Version: https://cnc.indyserver.info/
 
 ### Install script
 To install the script, all information must be read and accepted. Only by ticking ticking the checkbox (see below) the download will be approved. The basic requirement for installation in both Google Chrome and Firefox is Tampermonkey.
@@ -62,7 +62,7 @@ The values are stored in a database where only the hoster and I have access - no
 
 ## Deutsch
 
-### Online-Version: https://leostats.000webhostapp.com
+### Online-Version: https://cnc.indyserver.info/
 
 ### Script installieren
 Um das Script zu installieren müssen alle Informationen durchgelesen und akzeptiert werden. Erst durch die Bestätigung in Form des Anhakens der Checkbox (siehe unten) wird der Download freigegeben. Grundvoraussetzung für die Installation sowohl in Google Chrome als auch in Firefox ist Tampermonkey.
