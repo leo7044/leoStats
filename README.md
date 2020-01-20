@@ -102,7 +102,7 @@ Die Werte sind in einer Datenbank gespeichert, wo ausschließlich der Hoster und
 - Veteran- und Legacy-Punkte (betrifft Veteranen-Server)
 - KPs (Speicher und aktuell)
 - Repzeit-Speicher
-- eingehende, ausgehende UV's
+- eingehende, ausgehende Urlaubsvertretungen
 - Funds
 #### Basen
 - BasisId (zur eindeutigen Identifizierung)
