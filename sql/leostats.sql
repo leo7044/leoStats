@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 21. Jan 2020 um 08:34
+-- Erstellungszeit: 21. Jan 2020 um 08:49
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -26,15 +26,26 @@ DELIMITER $$
 --
 -- Prozeduren
 --
-CREATE PROCEDURE `compareTwoPlayers` (IN `WorldId` INT, IN `AccountIdOne` INT, IN `AccountIdTwo` INT)  NO SQL
+CREATE PROCEDURE `compareTwoAlliances` (IN `WorldId` INT, IN `AllianceId1` INT, IN `AllianceId2` INT)  NO SQL
+SELECT al1.Zeit, al1.TotalScore AS 'Data1', al2.TotalScore AS 'Data2',
+IF (al1.TotalScore >= al2.TotalScore, al1.TotalScore - al2.TotalScore, al2.TotalScore - al1.TotalScore) AS 'Difference'
+FROM relation_alliance a
+JOIN alliance al1 ON al1.WorldId=a.WorldId AND al1.AllianceId=a.AllianceId
+JOIN alliance al2 ON al2.WorldId=a.WorldId AND al2.Zeit=al1.Zeit
+WHERE a.WorldId=WorldId
+AND al1.AllianceId=AllianceId1
+AND al2.AllianceId=AllianceId2
+ORDER BY al1.Zeit ASC$$
+
+CREATE PROCEDURE `compareTwoPlayers` (IN `WorldId` INT, IN `AccountId1` INT, IN `AccountId2` INT)  NO SQL
 SELECT pl1.Zeit, pl1.ScorePoints AS 'Data1', pl2.ScorePoints AS 'Data2',
 IF (pl1.ScorePoints >= pl2.ScorePoints, pl1.ScorePoints - pl2.ScorePoints, pl2.ScorePoints - pl1.ScorePoints) AS 'Difference'
 FROM relation_player p
 JOIN player pl1 ON pl1.WorldId=p.WorldId AND pl1.AccountId=p.AccountId
 JOIN player pl2 ON pl2.WorldId=p.WorldId AND pl2.Zeit=pl1.Zeit
-WHERE p.WorldId=320
-AND pl1.AccountId=2906176
-AND pl2.AccountId=169693
+WHERE p.WorldId=WorldId
+AND pl1.AccountId=AccountId1
+AND pl2.AccountId=AccountId2
 ORDER BY pl1.Zeit ASC$$
 
 CREATE PROCEDURE `getAlianceNamesByWorldId` (IN `WorldId` INT)  NO SQL
