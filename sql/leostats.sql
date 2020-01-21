@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 19. Jan 2020 um 18:24
+-- Erstellungszeit: 21. Jan 2020 um 08:34
 -- Server-Version: 10.2.30-MariaDB
--- PHP-Version: 7.2.7
+-- PHP-Version: 7.3.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -26,6 +26,17 @@ DELIMITER $$
 --
 -- Prozeduren
 --
+CREATE PROCEDURE `compareTwoPlayers` (IN `WorldId` INT, IN `AccountIdOne` INT, IN `AccountIdTwo` INT)  NO SQL
+SELECT pl1.Zeit, pl1.ScorePoints AS 'Data1', pl2.ScorePoints AS 'Data2',
+IF (pl1.ScorePoints >= pl2.ScorePoints, pl1.ScorePoints - pl2.ScorePoints, pl2.ScorePoints - pl1.ScorePoints) AS 'Difference'
+FROM relation_player p
+JOIN player pl1 ON pl1.WorldId=p.WorldId AND pl1.AccountId=p.AccountId
+JOIN player pl2 ON pl2.WorldId=p.WorldId AND pl2.Zeit=pl1.Zeit
+WHERE p.WorldId=320
+AND pl1.AccountId=2906176
+AND pl2.AccountId=169693
+ORDER BY pl1.Zeit ASC$$
+
 CREATE PROCEDURE `getAlianceNamesByWorldId` (IN `WorldId` INT)  NO SQL
 SELECT a.AllianceName FROM layouts l
 join login lo ON lo.UserName=l.PlayerName
