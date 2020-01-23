@@ -15,7 +15,10 @@ else
 }
 function logout()
 {
-	unset($_SESSION['leoStats_AccountId']);
+	/*unset($_SESSION['leoStats_AccountId']);
+	unset($_SESSION['leoStats_UserName']);
+	unset($_SESSION['leoStats_IsAdmin']);*/
+	session_unset();
 	include_once('html/login.html');
 }
 ?>
