@@ -247,6 +247,8 @@ if (!$conn->connect_error)
             {
                 $UserAnswer[0] = 1;
                 $UserAnswer[1] = 'UserInDb';
+                $Time = date("Y-m-d H:i:s");
+                $conn->query("INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$UserName', 'Login erfolgreich', true);");
             }
             else
             {
