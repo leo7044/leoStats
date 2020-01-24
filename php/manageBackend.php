@@ -834,6 +834,13 @@ if (!$conn->connect_error)
             }
             break;
         }
+        case 'getCurrentVersionOfLeoStats':
+        {
+            $UserAnswer[0] = 1;
+            $UserAnswer[1] = '2020.01.24';
+            echo json_encode($UserAnswer);
+            break;
+        }
 		default:
 		{
 			echo 'no Action';
