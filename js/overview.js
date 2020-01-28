@@ -311,6 +311,7 @@ function prepareandFillDropDownListDataWorld()
 function prepareandFillDropDownListDataAlliance(_activeChanged)
 {
     var WorldId = $('#DropDownListWorld')[0].value;
+    $('#TabBaseScanner')[0].href = 'BaseScanner/?WorldId=' + WorldId;
     setCookie('WorldId', WorldId);
     var ArrayDropDownListAlliance = alasql('SELECT DISTINCT AllianceId, AllianceName FROM ? WHERE WorldId="' + WorldId + '"' ,[ArrayDropDownListData]);
     var strHtml = '';
