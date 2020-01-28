@@ -121,13 +121,23 @@ function drawLayouts()
                             strHtml += 'WorldId: ' + worldId + '<br/>';
                         }
                         strHtml += 'Zeit: ' + zeit + '<br/>' +
-                        'Coords: <a href="' + cncOpt + '" target="_blank">' + posX + ':' + posY + '<br/></a>' +
+                        'Coords: <a href="' + cncOpt + '" target="_blank" onclick="copyCoordsToClipcoard(' + posX + ', ' + posY + ');">' + posX + ':' + posY + '<br/></a>' +
                         'Scan by: ' + playerName + '<br/>' +
                     '</div>' +
                 '</div>' +
             '</div>';
     }
     $('#Scans')[0].innerHTML = strHtml;
+}
+
+function copyCoordsToClipcoard(_posX, _posY)
+{
+    $('#InputCoords')[0].value = '[coords]' + _posX + ':' + _posY + '[/coords]';
+    $('#InputCoords')[0].hidden = false;
+    var copyText = document.getElementById('InputCoords');
+    copyText.select();
+    document.execCommand("copy");
+    $('#InputCoords')[0].hidden = true;
 }
 
 function getGetParas()
