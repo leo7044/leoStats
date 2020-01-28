@@ -55,7 +55,7 @@
                             {
                                 if (this.newVersionAvailable)
                                 {
-                                    qx.core.Init.getApplication().showExternal(linkToRoot + 'js/leoStats.min.user.js');
+                                    qx.core.Init.getApplication().showExternal(linkToRoot + 'js/leostats.min.user.js');
                                 }
                                 else
                                 {
