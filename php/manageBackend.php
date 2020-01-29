@@ -918,6 +918,7 @@ if (!$conn->connect_error)
         }
         case 'getLayoutsByWorldIdAndProcedureName':
         {
+            $UserAnswer = [];
             /*$UserNamesAllowed =
             [
                 'kOeGy', '0__Bio__0', 'MoonGuide', 'Uncle_J00', 'Mediv88', 'Techzhen', 'Kellut', 'effe3005', 'Xx_YEP_xX', 'RolSei', 'LeichenSack', 'Enni_2013', 'KaptainKanalie', 'Takman1979', 'tomwi_74', 'PITTY0203', 'SKEET0980', 'Daikyu80', 'Kaiser30', 'Mattse1977', 'lulupincky', 'saintsviewer', 'guppa123', 'ElDiago1405', 'chris19641964', 'EmperorFS30', 'willi19820723', 'condorsc13', 'I_Prestige_I', 'lvivjanyn1', 'nuubal', 'chertosha', 'SirPushAlot', 'Clix17', 'derstony23', 'kommerizialrat', 'maxweeds', '2208frank', 'Eichenhorst', 'pad3000', 'SUN_FCH_65', 'MICHELANGELLLO', 'qhoststylx', 'smOOter', 'xPrimeAlex', 'VaderRS4', 'Illuminationist2', 'LucifersWife666', 'Krumbeer', 'masterppc88',
@@ -960,6 +961,7 @@ if (!$conn->connect_error)
         }
         case 'getAlianceNamesByWorldId':
         {
+            $UserAnswer = [];
             if (isset($_SESSION['leoStats_UserName']))
             {
                 $worldId = $_post['worldId'];
