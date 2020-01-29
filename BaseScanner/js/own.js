@@ -21,7 +21,7 @@ function setDefaultValues()
     }
     var dataAllianceName = null;
     $.ajaxSetup({async: false});
-    $.post('php/manageBackend.php', data)
+    $.post('../php/manageBackend.php', data)
     .always(function(data)
     {
         dataAllianceName = data;
@@ -56,7 +56,7 @@ function getLayoutsOrderByType(_type)
         PlayerName: playerName
     };
     $.ajaxSetup({async: false});
-    $.post('php/manageBackend.php', data)
+    $.post('../php/manageBackend.php', data)
     .always(function(data)
     {
         ArrayLayouts = data;
