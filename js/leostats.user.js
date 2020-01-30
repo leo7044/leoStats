@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2020.01.28
+// @version     2020.01.30
 // @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://cnc.indyserver.info/
 // @downloadURL https://cnc.indyserver.info/js/leostats.user.js
@@ -39,19 +39,62 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.01.28';
+                            this.scriptVersionLocal = '2020.01.30';
                             this.scriptVersionServer = '';
                             this.newVersionAvailable = false;
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
                             this.app = qx.core.Init.getApplication();
-                            this.buttonLeoStats = new qx.ui.form.Button('leoStats').set(
+                            this.GuiButtonLeoStats = new qx.ui.form.Button('leoStats').set(
                             {
                                 center: true,
                                 rich: true
                             });
-                            this.buttonLeoStats.addListener('click', function()
+                            this.checkForNewVersion();
+                            this.setCncOptVars();
+                            this.getCurrentStats();
+                            this.buildGUI();
+                        },
+                        buildGUI: function()
+                        {
+                            // GUI-Fenster
+                            this.GuiFenster = new qx.ui.window.Window('leoStats ' + this.scriptVersionLocal + ' by leo7044').set({
+                                padding: 5,
+                                paddingRight: 0,
+                                width: 350,
+                                showMaximize:false,
+                                showMinimize:false,
+                                showClose:true,
+                                allowClose:true,
+                                resizable:false
+                            });
+                            this.GuiFenster.setTextColor('black');
+                            this.GuiFenster.setLayout(new qx.ui.layout.HBox());
+                            this.GuiFenster.moveTo(850, 32);
+
+                            // Tab-Reihe
+                            // original: this.GuiTab = (new qx.ui.tabview.TabView()).set({
+                            this.GuiTab = new qx.ui.tabview.TabView().set({
+                                contentPaddingTop: 3,
+                                contentPaddingBottom: 6,
+                                contentPaddingRight: 7,
+                                contentPaddingLeft: 3
+                            });
+                            this.GuiFenster.add(this.GuiTab);
+
+                            // Tab 1: Info
+                            this.GuiInfoPage = new qx.ui.tabview.Page("Info");
+                            this.GuiInfoPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiTab.add(this.GuiInfoPage);
+                            this.GuiInfoVBox = new qx.ui.container.Composite();
+                            this.GuiInfoVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiInfoVBox.setThemedPadding(10);
+                            this.GuiInfoVBox.setThemedBackgroundColor("#eef");
+                            this.GuiInfoPage.add(this.GuiInfoVBox);
+
+                            // Button
+                            this.GuiButtonLeoStats.addListener('click', function()
                             {
                                 if (this.newVersionAvailable)
                                 {
@@ -59,18 +102,51 @@
                                 }
                                 else
                                 {
-                                    console.log('open leoStats-Window');
-                                    qx.core.Init.getApplication().showExternal(linkToRoot);
+                                    // qx.core.Init.getApplication().showExternal(linkToRoot);
+                                    this.GuiInfoVBox.removeAll();
+                                    this.showGui();
+                                    this.GuiFenster.show();
                                 }
                             }, this);
-                            this.app.getDesktop().add(this.buttonLeoStats,
+                            
+                            // set Button to position
+                            this.app.getDesktop().add(this.GuiButtonLeoStats,
                             {
                                 right: 125,
                                 top: 0
                             });
-                            this.checkForNewVersion();
-                            this.setCncOptVars();
-                            this.collectStats();
+                        },
+                        showGui: function()
+                        {
+                            // get current Information
+                            this.getCurrentStats();
+                            // console.log('open leoStats-Window');
+
+                            // Tab 1: Info
+                            var GeneralFieldInfoTableHeader = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var GeneralFieldInfoHeadLine = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            GeneralFieldInfoHeadLine.add(new qx.ui.basic.Label('<br><big><u><b>Information</b></u></big>').set({rich: true}));
+                            GeneralFieldInfoHeadLine.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var GeneralFieldInfoTable = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                            var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                            TextKey.add(new qx.ui.basic.Label('Scriptname').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label('leoStats').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('Version').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.scriptVersionLocal).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('Autor').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label('leo7044').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('Website').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label('<a href="' + linkToRoot + '" target="_blank">' + linkToRoot + '</a>').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('BaseScanner').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label('<a href="' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '" target="_blank">' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '</a>').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('E-Mail').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label('<a href="mailto:cc.ta.leo7044@gmail.com">cc.ta.leo7044@gmail.com</a>').set({rich: true}));
+                            GeneralFieldInfoTable.add(TextKey);
+                            GeneralFieldInfoTable.add(TextValue);
+                            GeneralFieldInfoHeadLine.add(GeneralFieldInfoTable);
+                            GeneralFieldInfoTableHeader.add(GeneralFieldInfoHeadLine);
+                            this.GuiInfoVBox.add(GeneralFieldInfoTableHeader);
                         },
                         checkForNewVersion: function()
                         {
@@ -89,7 +165,7 @@
                             if (this.scriptVersionServer > this.scriptVersionLocal)
                             {
                                 this.newVersionAvailable = true;
-                                this.buttonLeoStats.setLabel('new version for leoStats, click here');
+                                this.GuiButtonLeoStats.setLabel('new version for leoStats, click here');
                             }
                         },
                         setCncOptVars: function()
@@ -554,7 +630,7 @@
                             };
                             cncopt.make_sharelink(_baseId, _baseName, _faction);
                         },
-                        collectStats: function()
+                        getCurrentStats: function()
                         {
                             try
                             {
@@ -806,7 +882,7 @@
                                     var _self = this;
                                     window.setTimeout(function()
                                     {
-                                        _self.collectStats();
+                                        _self.getCurrentStats();
                                     }, 3600000);
                                 }
                                 else
@@ -814,7 +890,7 @@
                                     var _self = this;
                                     window.setTimeout(function()
                                     {
-                                        _self.collectStats();
+                                        _self.getCurrentStats();
                                     }, 1000);
                                 }
                             }
@@ -879,16 +955,20 @@
                         initialize: function()
                         {
                             this.app = qx.core.Init.getApplication();
-                            // BaseScanner
                             this.ArrayLayouts = [];
                             this.ArrayScannedIds = [];
                             this.ScriptIsRunning = false;
-                            this.buttonBaseScanner = new qx.ui.form.Button('Start BaseScanner...').set(
+                            this.buildGUI();
+                        },
+                        buildGUI: function()
+                        {
+                            // Button
+                            this.GuiButtonBaseScanner = new qx.ui.form.Button('Start BaseScanner...').set(
                             {
                                 center: true,
                                 rich: true
                             });
-                            this.buttonBaseScanner.addListener('click', function()
+                            this.GuiButtonBaseScanner.addListener('click', function()
                             {
                                 if (this.ScriptIsRunning)
                                 {
@@ -899,7 +979,9 @@
                                     this.startBaseScan();
                                 }
                             }, this);
-                            this.app.getDesktop().add(this.buttonBaseScanner,
+
+                            // set Button to position
+                            this.app.getDesktop().add(this.GuiButtonBaseScanner,
                             {
                                 right: 125,
                                 top: 24
@@ -908,13 +990,13 @@
                         startBaseScan: function()
                         {
                             this.ScriptIsRunning = true;
-                            this.buttonBaseScanner.setLabel('Stop BaseScanner...');
+                            this.GuiButtonBaseScanner.setLabel('Stop BaseScanner...');
                             this.startScan();
                         },
                         stopBaseScan: function()
                         {
                             this.ScriptIsRunning = false;
-                            this.buttonBaseScanner.setLabel('Start BaseScanner...');
+                            this.GuiButtonBaseScanner.setLabel('Start BaseScanner...');
                             this.stopScan();
                         },
                         initializeDefaultValues: function()
@@ -1849,7 +1931,7 @@
                                             _self.ArrayIdsForScan.splice(0,1);
                                             console.log(_self.ArrayLayouts.length + ' / ' + _self.ArrayIdsForScan.length);
                                             var numberHasToScan = _self.ArrayLayouts.length + _self.ArrayIdsForScan.length;
-                                            _self.buttonBaseScanner.setLabel('Scan Base... (' + _self.ArrayLayouts.length + ' / ' + numberHasToScan + ')');
+                                            _self.GuiButtonBaseScanner.setLabel('Scan Base... (' + _self.ArrayLayouts.length + ' / ' + numberHasToScan + ')');
                                             // _self.sendData();
                                             _self.scanFirstLayout();
                                         }
