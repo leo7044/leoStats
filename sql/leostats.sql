@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 29. Jan 2020 um 10:32
+-- Erstellungszeit: 30. Jan 2020 um 14:12
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -646,7 +646,7 @@ CREATE TABLE `relation_alliance` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `AllianceId` smallint(4) UNSIGNED NOT NULL,
   `AllianceName` varchar(20) COLLATE utf8_bin NOT NULL,
-  `MemberRole` tinyint(1) NOT NULL DEFAULT 3
+  `MemberRole` tinyint(1) NOT NULL DEFAULT 5
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
