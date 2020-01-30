@@ -37,6 +37,7 @@ function setDefaultValues()
 
 function getLayoutsOrderByType(_type)
 {
+    var worldId = WorldId.value || 0;
     var minX = MinX.value || 0;
     var maxX = MaxX.value || 0;
     var minY = MinY.value || 0;
@@ -46,7 +47,7 @@ function getLayoutsOrderByType(_type)
     var data =
     {
         action: 'getLayoutsByWorldIdAndProcedureName',
-        worldId: WorldId.value,
+        worldId: worldId,
         procedureName: 'getLayoutsOrderBy' + _type,
         minX: minX,
         maxX: maxX,
