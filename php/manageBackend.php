@@ -949,7 +949,7 @@ if (!$conn->connect_error)
         case 'getCurrentVersionOfLeoStats':
         {
             $UserAnswer[0] = 1;
-            $UserAnswer[1] = '2020.01.24';
+            $UserAnswer[1] = '2020.01.31';
             break;
         }
 		default:

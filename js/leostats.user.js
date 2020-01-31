@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2020.01.30
+// @version     2020.01.31
 // @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://cnc.indyserver.info/
 // @downloadURL https://cnc.indyserver.info/js/leostats.user.js
@@ -39,7 +39,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.01.30';
+                            this.scriptVersionLocal = '2020.01.31';
                             this.scriptVersionServer = '';
                             this.newVersionAvailable = false;
                             this.sendChatInfoStatus = true;
@@ -635,6 +635,7 @@
                             try
                             {
                                 var AllianceId = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Id();
+                                // var PlayerId = ClientLib.Data.MainData.GetInstance().get_Player().get_Id();
                                 if (AllianceId > 0)
                                 {
                                     this.ObjectData.server = {};
@@ -880,18 +881,12 @@
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
                                     var _self = this;
-                                    window.setTimeout(function()
-                                    {
-                                        _self.getCurrentStats();
-                                    }, 3600000);
+                                    setTimeout(function(){_self.getCurrentStats();}, 3600000);
                                 }
                                 else
                                 {
                                     var _self = this;
-                                    window.setTimeout(function()
-                                    {
-                                        _self.getCurrentStats();
-                                    }, 1000);
+                                    setTimeout(function(){_self.getCurrentStats();}, 1000);
                                 }
                             }
                             catch(e)
@@ -920,7 +915,7 @@
                         },
                         sendDataFromInGame: function()
                         {
-                            if (this.ObjectData != undefined)
+                            if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined)
                             {
                                 var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ObjectData};
                                 var _self = this;
@@ -936,7 +931,8 @@
                             }
                             else
                             {
-                                setTimeout(this.sendDataFromInGame, 1000);
+                                var _self = this;
+                                setTimeout(function(){_self.sendDataFromInGame();}, 1000);
                             }
                         }
                     }
@@ -2093,7 +2089,7 @@
                 else if (window.opera) opera.postError(e);
                 else GM_log(e);
             }
-            window.setTimeout(LoadExtension, 1000);
+            setTimeout(LoadExtension, 1000);
         }
         LoadExtension();
     };
