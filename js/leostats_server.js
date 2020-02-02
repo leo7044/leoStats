@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.02.2';
+                            this.scriptVersionLocal = '2020.02.02.3';
                             this.scriptVersionServer = '';
                             this.newVersionAvailable = false;
                             this.sendChatInfoStatus = true;
@@ -2007,8 +2007,11 @@
                                             _self.ArrayIdsForScan.splice(0,1);
                                             console.log(_self.ArrayLayouts.length + ' / ' + _self.ArrayIdsForScan.length);
                                             var numberHasToScan = _self.ArrayLayouts.length + _self.ArrayIdsForScan.length;
-                                            _self.GuiButtonBaseScanner.setLabel('Scan Base... (' + _self.ArrayLayouts.length + ' / ' + numberHasToScan + ')');
-                                            // _self.sendData();
+                                            if (_self.ScriptIsRunning)
+                                            {
+                                                _self.GuiButtonBaseScanner.setLabel('Scan Base... (' + _self.ArrayLayouts.length + ' / ' + numberHasToScan + ')');
+                                            }
+                                            _self.sendDataOnlyFromLastLayout();
                                             _self.scanFirstLayout();
                                         }
                                         else if (_self.errorExistsCounter < 5)
@@ -2041,7 +2044,8 @@
                             }
                             if (!this.ArrayIdsForScan.length)
                             {
-                                this.sendData();
+                                // this.sendDataAllLayouts();
+                                // this.sendDataOnlyFromLastLayout();
                                 var _self = this;
                                 setTimeout(function(){_self.stopBaseScan();}, 1000);
                             }
@@ -2094,7 +2098,7 @@
                                 this.scanAroundOwnBase(ownBaseId);
                             }
                         },
-                        sendData: function()
+                        sendDataAllLayouts: function()
                         {
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
                             var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
@@ -2102,22 +2106,22 @@
                             // $.ajaxSetup({async: false});
                             for (var packageNumber = 0; packageNumber < Math.ceil(this.ArrayLayouts.length / packageSize); packageNumber++)
                             {
-                                var arrayPackageLayouts = [];
+                                var ArrayPackageLayouts = [];
                                 if (packageNumber == Math.ceil(this.ArrayLayouts.length / packageSize) - 1) // last round / letztes Paket
                                 {
                                     for (var layoutNumber = (packageNumber * packageSize); layoutNumber < this.ArrayLayouts.length; layoutNumber++)
                                     {
-                                        arrayPackageLayouts.push(this.ArrayLayouts[layoutNumber]);
+                                        ArrayPackageLayouts.push(this.ArrayLayouts[layoutNumber]);
                                     }
                                 }
                                 else
                                 {
                                     for (var layoutNumber = (packageNumber * packageSize); layoutNumber < ((packageNumber + 1) * packageSize); layoutNumber++)
                                     {
-                                        arrayPackageLayouts.push(this.ArrayLayouts[layoutNumber]);
+                                        ArrayPackageLayouts.push(this.ArrayLayouts[layoutNumber]);
                                     }
                                 }
-                                var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:arrayPackageLayouts, WorldId: WorldId, PlayerName: PlayerName};
+                                var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayPackageLayouts, WorldId: WorldId, PlayerName: PlayerName};
                                 $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
                                 .always(function(_data)
                                 {
@@ -2132,8 +2136,22 @@
                                 console.log(_data);
                             });*/
                         },
+                        sendDataOnlyFromLastLayout: function()
+                        {
+                            var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
+                            var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
+                            var layout = this.ArrayLayouts[this.ArrayLayouts.length - 1];
+                            var ArrayLayout = [layout];
+                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, PlayerName: PlayerName};
+                            $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
+                            .always(function(_data)
+                            {
+                                console.log(_data);
+                            });
+                        },
                         stopScan: function()
                         {
+                            console.log('Stop...');
                             this.initializeDefaultValues();
                         },
                         startScan: function()
