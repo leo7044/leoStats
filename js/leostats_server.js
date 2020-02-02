@@ -898,6 +898,11 @@
                         },
                         getPublicPlayerInfoByName: function(_context, _data)
                         {
+                            var bases = _data.c;
+                            for (var i = 0; i < bases.length; i++)
+                            {
+                                this.ObjectData.bases[i].ScorePoints = bases[i].p;
+                            }
                             this.ObjectData.player.Shoot = _data.bd;
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
