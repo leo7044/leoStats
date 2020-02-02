@@ -20,9 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.02.3';
-                            this.scriptVersionServer = '';
-                            this.newVersionAvailable = false;
+                            this.scriptVersionLocal = '2020.02.02.4';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -32,7 +30,6 @@
                                 center: true,
                                 rich: true
                             });
-                            this.checkForNewVersion();
                             this.setCncOptVars();
                             this.getCurrentStats();
                             this.buildGUI();
@@ -77,17 +74,10 @@
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
-                                if (this.newVersionAvailable)
-                                {
-                                    qx.core.Init.getApplication().showExternal(linkToRoot + 'js/leostats.min.user.js');
-                                }
-                                else
-                                {
-                                    // qx.core.Init.getApplication().showExternal(linkToRoot);
-                                    this.GuiInfoVBox.removeAll();
-                                    this.showGui();
-                                    this.GuiFenster.show();
-                                }
+                                // qx.core.Init.getApplication().showExternal(linkToRoot);
+                                this.GuiInfoVBox.removeAll();
+                                this.showGui();
+                                this.GuiFenster.show();
                             }, this);
                             
                             // set Button to position
@@ -128,26 +118,6 @@
                             GeneralFieldInfoHeadLine.add(GeneralFieldInfoTable);
                             GeneralFieldInfoTableHeader.add(GeneralFieldInfoHeadLine);
                             this.GuiInfoVBox.add(GeneralFieldInfoTableHeader);
-                        },
-                        checkForNewVersion: function()
-                        {
-                            var ObjectSend =
-                            {
-                                action: 'getCurrentVersionOfLeoStats'
-                            }
-                            var _self = this;
-                            $.ajaxSetup({async: false});
-                            $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
-                            .always(function(_data)
-                            {
-                                _self.scriptVersionServer = _data[1];
-                            });
-                            $.ajaxSetup({async: true});
-                            if (this.scriptVersionServer > this.scriptVersionLocal)
-                            {
-                                this.newVersionAvailable = true;
-                                this.GuiButtonLeoStats.setLabel('new version for leoStats, click here');
-                            }
                         },
                         setCncOptVars: function()
                         {
