@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2020.02.02
+// @version     2020.02.02.1
 // @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://cnc.indyserver.info/
 // @downloadURL https://cnc.indyserver.info/js/leostats.user.js
@@ -39,7 +39,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.02';
+                            this.scriptVersionLocal = '2020.02.02.1';
                             this.scriptVersionServer = '';
                             this.newVersionAvailable = false;
                             this.sendChatInfoStatus = true;
@@ -1992,7 +1992,10 @@
                             for (var key in this.ArrayIdsForScan)
                             {
                                 var curScanId = this.ArrayIdsForScan[key];
-                                ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(curScanId);
+                                if (this.ScriptIsRunning)
+                                {
+                                    ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(curScanId);
+                                }
                                 var _self = this;
                                 setTimeout(function()
                                 {
@@ -2002,7 +2005,14 @@
                                         {
                                             _self.errorExistsCounter = 0
                                             _self.ArrayLayouts.push(_self.returnLayoutOfCurBaseAndEvaluateIt());
-                                            _self.ArrayScannedIds.push(curScanId);
+                                            if (_self.ScriptIsRunning)
+                                            {
+                                                _self.ArrayScannedIds.push(curScanId);
+                                            }
+                                            else
+                                            {
+                                                _self.ArrayScannedIds.push(ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCityId());
+                                            }
                                             _self.ArrayIdsForScan.splice(0,1);
                                             console.log(_self.ArrayLayouts.length + ' / ' + _self.ArrayIdsForScan.length);
                                             var numberHasToScan = _self.ArrayLayouts.length + _self.ArrayIdsForScan.length;
