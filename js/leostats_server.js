@@ -840,7 +840,7 @@
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
                                         type: 1,
                                         skip: 0,
-                                        take: 1000, // ersetzendurch ReportCount
+                                        take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
                                         sort: 1,
                                         ascending: false
                                     }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportHeaderAll), null);
