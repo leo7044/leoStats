@@ -1,6 +1,6 @@
 ﻿// ==UserScript==
 // @name        leoStats
-// @version     2020.01.31
+// @version     2020.02.02
 // @author      leo7044 (https://github.com/leo7044)
 // @homepage    https://cnc.indyserver.info/
 // @downloadURL https://cnc.indyserver.info/js/leostats.user.js
@@ -39,7 +39,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.01.31';
+                            this.scriptVersionLocal = '2020.02.02';
                             this.scriptVersionServer = '';
                             this.newVersionAvailable = false;
                             this.sendChatInfoStatus = true;
@@ -873,11 +873,32 @@
                                     {
                                         this.ObjectData.substitution.active.push(activeSubs[i].n);
                                     }
+                                    // ab hier clever Timeouten
                                     // Abschüsse für Player
                                     var _self = this;
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
                                         name : PlayerName
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.Shoots), null);
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getPublicPlayerInfoByName), null);
+                                    /*// getReportCount (Offensive)
+                                    var _self = this;
+                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
+                                        playerReportType: 1
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportCount), null);
+                                    // getReportHeaderAll (Offensive)
+                                    var _self = this;
+                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
+                                        type: 1,
+                                        skip: 0,
+                                        take: 1000, // ersetzendurch ReportCount
+                                        sort: 1,
+                                        ascending: false
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportHeaderAll), null);
+                                    // getReportData
+                                    var _self = this;
+                                    // Schleife erforderlich
+                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
+                                        playerReportId: 0
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportData), null);*/
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
                                     var _self = this;
@@ -894,12 +915,24 @@
                                 console.log(e);
                             }
                         },
-                        Shoots: function(_context, _data)
+                        getPublicPlayerInfoByName: function(_context, _data)
                         {
                             this.ObjectData.player.Shoot = _data.bd;
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
                         },
+                        /*getReportCount: function(_context, _data)
+                        {
+                            console.log(_data);
+                        },
+                        getReportHeaderAll: function(_context, _data)
+                        {
+                            console.log(_data);
+                        },
+                        getReportData: function(_context, _data)
+                        {
+                            console.log(_data);
+                        },*/
                         sendChatInfo: function(_dataAnswer)
                         {
                             var stringChat = '';
@@ -955,6 +988,7 @@
                             this.ArrayScannedIds = [];
                             this.ScriptIsRunning = false;
                             this.buildGUI();
+                            this.autoScanByClickOnBase();
                         },
                         buildGUI: function()
                         {
@@ -983,6 +1017,50 @@
                                 top: 24
                             });
                         },
+                        autoScanByClickOnBase: function()
+                        {
+                            this.initializeDefaultValues();
+                            var _self = this;
+                            phe.cnc.Util.attachNetEvent(ClientLib.Data.MainData.GetInstance().get_Cities(), "CurrentChange", ClientLib.Data.CurrentCityChange, this, _self.scanClickedBase);
+                        },
+                        scanClickedBase: function(_oldId, _newId)
+                        {
+                            if (!this.ScriptIsRunning) // soll nur aktiv werden, wenn der Benutzer selbst ein Camp anklickt, hat nichts mit dem komplett BasenScan zu tun
+                            {
+                                // console.log(ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity());
+                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity())
+                                {
+                                    // console.log(_newId);
+                                    var cityFaction = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity().get_CityFaction();
+                                    if ((cityFaction == 4|| cityFaction == 5 || cityFaction == 6 || cityFaction == 8) && this.ArrayScannedIds.indexOf(_newId) == -1 && this.ArrayIdsForScan.indexOf(_newId) == -1)
+                                    {
+                                        // console.log(cityFaction);
+                                        this.errorRangeCounter = 0;
+                                        if (typeof(timeoutScanClickedBase) !== 'undefined')
+                                        {
+                                            clearTimeout(timeoutScanClickedBase);
+                                        }
+                                        this.ArrayIdsForScan = []; // fraglich, ob es was bringt - macht Sinn, da nicht 
+                                        this.ArrayIdsForScan.push(_newId);
+                                        this.scanFirstLayout();
+                                    }
+                                    else if (cityFaction == 0 && this.errorRangeCounter < 5)
+                                    {
+                                        this.errorRangeCounter++;
+                                        _self = this;
+                                        timeoutScanClickedBase = setTimeout(function(){_self.scanClickedBase(_oldId, _newId);}, 1000);
+                                    }
+                                    else
+                                    {
+                                        if (typeof(timeoutScanClickedBase) !== 'undefined')
+                                        {
+                                            clearTimeout(timeoutScanClickedBase);
+                                        }
+                                        this.errorRangeCounter = 0;
+                                    }
+                                }
+                            }
+                        },
                         startBaseScan: function()
                         {
                             this.ScriptIsRunning = true;
@@ -1001,7 +1079,8 @@
                             this.ArrayPrototypeGameObjectType2 = [];
                             this.ArrayPrototypeGameObjectType3 = [];
                             this.ArrayIdsForScan = [];
-                            this.errorCounter = 0;
+                            this.errorExistsCounter = 0;
+                            this.errorRangeCounter = 0;
                         },
                         getArrayPrototypeGameObject: function()
                         {
@@ -1921,7 +2000,7 @@
                                     {
                                         if (ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity().get_Buildings().c && ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity().get_OwnerId() < 0)
                                         {
-                                            _self.errorCounter = 0
+                                            _self.errorExistsCounter = 0
                                             _self.ArrayLayouts.push(_self.returnLayoutOfCurBaseAndEvaluateIt());
                                             _self.ArrayScannedIds.push(curScanId);
                                             _self.ArrayIdsForScan.splice(0,1);
@@ -1931,29 +2010,29 @@
                                             // _self.sendData();
                                             _self.scanFirstLayout();
                                         }
-                                        else if (_self.errorCounter < 5)
+                                        else if (_self.errorExistsCounter < 5)
                                         {
-                                            _self.errorCounter++;
-                                            console.log('Layout not found (' + _self.errorCounter + ')');
+                                            _self.errorExistsCounter++;
+                                            console.log('Layout not found (' + _self.errorExistsCounter + ')');
                                             _self.scanFirstLayout();
                                         }
                                         else
                                         {
-                                            console.log('Layout not found (' + _self.errorCounter + '), removing it from scan');
+                                            console.log('Layout not found (' + _self.errorExistsCounter + '), removing it from scan');
                                             _self.ArrayIdsForScan.splice(0,1);
-                                            _self.errorCounter = 0;
+                                            _self.errorExistsCounter = 0;
                                             _self.scanFirstLayout();
                                         }
                                     }
-                                    else if (_self.errorCounter < 5)
+                                    else if (_self.errorExistsCounter < 5)
                                     {
-                                        _self.errorCounter += 1;
+                                        _self.errorExistsCounter += 1;
                                     }
                                     else
                                     {
-                                        console.log('Layout not found (' + _self.errorCounter + '), removing it from scan');
+                                        console.log('Layout not found (' + _self.errorExistsCounter + '), removing it from scan');
                                         _self.ArrayIdsForScan.splice(0,1);
-                                        _self.errorCounter = 0;
+                                        _self.errorExistsCounter = 0;
                                         _self.scanFirstLayout();
                                     }
                                 }, 1000);

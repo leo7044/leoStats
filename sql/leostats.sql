@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 30. Jan 2020 um 14:12
+-- Erstellungszeit: 31. Jan 2020 um 22:49
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -219,6 +219,36 @@ SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p
 JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE p.AccountId=OwnAccountId
 ORDER BY p.WorldId$$
+
+CREATE PROCEDURE `getHistoryAlliancesAsAdmin` (IN `WorldId` INT)  NO SQL
+SELECT al.Zeit, a.AllianceId, a.AllianceName, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef  FROM alliance al
+JOIN relation_alliance a ON a.WorldId=al.WorldId AND a.AllianceId=al.AllianceId
+WHERE
+a.WorldId=WorldId
+ORDER BY al.Zeit ASC, a.AllianceId ASC$$
+
+CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
+SELECT ba.Zeit, b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
+JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
+WHERE
+b.WorldId=WorldId
+AND
+IF (AccountId>0, AccountId=b.AccountId, true)
+AND
+IF (BaseId>0, BaseId=b.BaseId, true)
+ORDER BY ba.Zeit ASC, b.BaseId ASC$$
+
+CREATE PROCEDURE `getHistoryPlayersAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT, IN `AccountId` INT)  NO SQL
+SELECT pl.Zeit, p.AccountId, l.UserName, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, p.MemberRole FROM player pl
+JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+JOIN login l ON l.AccountId=p.AccountId
+WHERE
+p.WorldId=WorldId
+AND
+IF(AllianceId>0, AllianceId=p.AllianceId, true)
+AND
+IF(AccountId>0, AccountId=p.AccountId, true)
+ORDER BY pl.Zeit ASC, p.AccountId ASC$$
 
 CREATE PROCEDURE `getLayouts` (IN `WorldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
 SELECT * FROM layouts l
