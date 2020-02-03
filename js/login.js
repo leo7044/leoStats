@@ -1,7 +1,7 @@
 /* Deceloper: leo7044 */
 // reason: with "(function(){/* contentOfScript */})();" are no global variables accessable for user, additionally it will be more encrypted
 // (function(){
-$(document).ready(function()
+/*$(document).ready(function()
 {
     $('#FormLogin')[0].onsubmit =
     function()
@@ -9,7 +9,7 @@ $(document).ready(function()
         return login();
     }
     $('#CheckBoxDownloadScript').click(toggleDownloadButtonScript);
-});
+});*/
 
 function login()
 {
