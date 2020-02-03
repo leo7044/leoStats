@@ -27,7 +27,7 @@
         <div class="container">
             <div class="jumbotron own-jumbotron-div-content">
                 <noscript>Please activate JavaScript</noscript>
-                <form method="post" action="" id="FormLogin">
+                <form method="post" action="" id="FormLogin" onsubmit="return login();">
                     <div class="form-group">
                         <div class="input-group">
                             <input class="form-control" id="UserName" name="UserName" placeholder="Username" required autofocus />
@@ -243,7 +243,7 @@
                     <div class="modal-footer">
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" id="CheckBoxDownloadScript" type="checkbox"><div>I read and accept the information above / Ich habe die obigen Informationen gelesen und verstanden und ich akzeptiere sie.</div>
+                                <input class="form-check-input" id="CheckBoxDownloadScript" type="checkbox" onclick="toggleDownloadButtonScript();"><div>I read and accept the information above / Ich habe die obigen Informationen gelesen und verstanden und ich akzeptiere sie.</div>
                             </label>
                         </div>
                         <button class="btn btn-primary" id="ButtonDownloadScript" disabled><i class="fas fa-download"></i> Download</button>
