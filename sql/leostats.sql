@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 31. Jan 2020 um 22:49
+-- Erstellungszeit: 04. Feb 2020 um 13:17
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -295,7 +295,7 @@ IF (minPosY > 0, minPosY <= l.PosY, true)
 AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
+IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Crystal6 DESC, l.Crystal5 DESC, l.Crystal4 DESC, l.Crystal3 DESC, l.Crystal2 DESC, l.Crystal1 DESC
@@ -314,7 +314,7 @@ IF (minPosY > 0, minPosY <= l.PosY, true)
 AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
+IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
 l.Zeit >= minDate
 ORDER by l.Zeit DESC
@@ -333,7 +333,7 @@ IF (minPosY > 0, minPosY <= l.PosY, true)
 AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
+IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Mixed6 DESC, l.Mixed5 DESC, l.Mixed4 DESC, l.Mixed3 DESC, l.Mixed2 DESC, l.Mixed1 DESC
@@ -352,7 +352,7 @@ IF (minPosY > 0, minPosY <= l.PosY, true)
 AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
+IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Power8 DESC, l.Power7 DESC, l.Power6 DESC, l.Power5 DESC, l.Power4 DESC, l.Power3 DESC, l.Power2 DESC
@@ -371,7 +371,7 @@ IF (minPosY > 0, minPosY <= l.PosY, true)
 AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
+IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Tiberium6 DESC, l.Tiberium5 DESC, l.Tiberium4 DESC, l.Tiberium3 DESC, l.Tiberium2 DESC, l.Tiberium1 DESC
