@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 04. Feb 2020 um 13:17
+-- Erstellungszeit: 04. Feb 2020 um 17:24
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -315,8 +315,6 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
-AND
-l.Zeit >= minDate
 ORDER by l.Zeit DESC
 LIMIT 100$$
 
@@ -587,6 +585,8 @@ CREATE TABLE `layouts` (
   `PlayerName` varchar(16) COLLATE utf8_bin NOT NULL,
   `PosX` smallint(4) UNSIGNED NOT NULL,
   `PosY` smallint(4) UNSIGNED NOT NULL,
+  `FieldsTib` tinyint(1) NOT NULL,
+  `FieldsCry` tinyint(1) NOT NULL,
   `Layout` text COLLATE utf8_bin NOT NULL,
   `CncOpt` tinytext COLLATE utf8_bin NOT NULL,
   `Tiberium6` tinyint(1) UNSIGNED NOT NULL,

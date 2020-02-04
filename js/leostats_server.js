@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.02.4';
+                            this.scriptVersionLocal = '2020.02.04';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -1114,6 +1114,8 @@
                             }
                             var posX = curCity.get_X();
                             var posY = curCity.get_Y();
+                            var counterFieldsTib = 0;
+                            var counterFieldsCry = 0;
                             var Tiberium6 = 0;
                             var Tiberium5 = 0;
                             var Tiberium4 = 0;
@@ -1938,12 +1940,22 @@
                                             }
                                         }
                                     }
+                                    else if (ArrayBaseResourceFields[y][x] == 2)
+                                    {
+                                        counterFieldsTib++;
+                                    }
+                                    else if (ArrayBaseResourceFields[y][x] == 1)
+                                    {
+                                        counterFieldsCry++;
+                                    }
                                 }
                             }
                             return {
                                 'Zeit': Date.now(),
                                 'PosX': posX,
                                 'PosY': posY,
+                                'FieldsTib': counterFieldsTib,
+                                'FieldsCry': counterFieldsCry,
                                 'Layout': JSON.stringify(ArrayBaseResourceFields),
                                 'EvaluatedFields': [Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2]
                             };
