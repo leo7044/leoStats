@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 05. Feb 2020 um 12:49
+-- Erstellungszeit: 05. Feb 2020 um 15:12
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -282,7 +282,7 @@ CREATE PROCEDURE `getLayoutsGroupByYearMonth` ()  NO SQL
 SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
 
-CREATE PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -296,12 +296,14 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+AND
+IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Crystal6 DESC, l.Crystal5 DESC, l.Crystal4 DESC, l.Crystal3 DESC, l.Crystal2 DESC, l.Crystal1 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -315,10 +317,12 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+AND
+IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
 ORDER by l.Zeit DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -332,12 +336,14 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+AND
+IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Mixed6 DESC, l.Mixed5 DESC, l.Mixed4 DESC, l.Mixed3 DESC, l.Mixed2 DESC, l.Mixed1 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -351,12 +357,14 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+AND
+IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Power8 DESC, l.Power7 DESC, l.Power6 DESC, l.Power5 DESC, l.Power4 DESC, l.Power3 DESC, l.Power2 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -370,6 +378,8 @@ AND
 IF (maxPosY > 0, maxPosY >= l.PosY, true)
 AND
 IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+AND
+IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
 AND
 l.Zeit >= minDate
 ORDER BY l.Tiberium6 DESC, l.Tiberium5 DESC, l.Tiberium4 DESC, l.Tiberium3 DESC, l.Tiberium2 DESC, l.Tiberium1 DESC
