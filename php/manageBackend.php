@@ -911,7 +911,8 @@ if (!$conn->connect_error)
                     $maxY = $_post['maxY'];
                     $MinDate = $_post['MinDate'];
                     $PlayerName = $_post['PlayerName'];
-                    $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName');";
+                    $FieldsTib = $_post['FieldsTib'];
+                    $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
                     $result = $conn->query($sqlQuery);
                     while ($zeile = $result->fetch_assoc())
                     {
