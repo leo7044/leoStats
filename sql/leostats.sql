@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 04. Feb 2020 um 17:24
+-- Erstellungszeit: 05. Feb 2020 um 12:49
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -501,7 +501,7 @@ DELIMITER ;
 --
 
 CREATE TABLE `adminlog` (
-  `ID` int(11) UNSIGNED NOT NULL,
+  `Id` int(11) UNSIGNED NOT NULL,
   `Zeit` datetime NOT NULL,
   `Initiator` tinytext COLLATE utf8_bin NOT NULL,
   `Description` tinytext COLLATE utf8_bin NOT NULL,
@@ -739,7 +739,7 @@ CREATE TABLE `substitution` (
 -- Indizes für die Tabelle `adminlog`
 --
 ALTER TABLE `adminlog`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`Id`);
 
 --
 -- Indizes für die Tabelle `alliance`
@@ -817,7 +817,7 @@ ALTER TABLE `substitution`
 -- AUTO_INCREMENT für Tabelle `adminlog`
 --
 ALTER TABLE `adminlog`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `layouts`
