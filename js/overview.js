@@ -1390,13 +1390,13 @@ function prepareAdminLogTable()
     for (var key in ArrayAdminLog)
     {
         ArrayAdminLog[key].Delete =
-            '<button class="btn btn-light float-right" onclick="deleteElementAdminLog(\'' + ArrayAdminLog[key].ID + '\')">' +
+            '<button class="btn btn-light float-right" onclick="deleteElementAdminLog(\'' + ArrayAdminLog[key].Id + '\')">' +
                 '<font color="#FF0000;">' +
                     '<i class="fas fa-times"></i>' +
                 '</font>' +
             '</button>';
         strHtml += '<tr>' +
-            '<td>' + ArrayAdminLog[key].ID + '</td>' +
+            '<td>' + ArrayAdminLog[key].Id + '</td>' +
             '<td>' + ArrayAdminLog[key].Zeit + '</td>' +
             '<td>' + ArrayAdminLog[key].Initiator + '</td>' +
             '<td>' + ArrayAdminLog[key].Description + '</td>' +
