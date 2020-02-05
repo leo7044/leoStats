@@ -44,6 +44,7 @@ function getLayoutsOrderByType(_type)
     var maxY = MaxY.value || 0;
     var minDate = MinDate.value || new Date(new Date().getTime() - 7 * 24 * 3600000).toISOString().split('T')[0];
     var playerName = PlayerName.value;
+    var fieldsTib = FieldsTib.value || 0;
     var data =
     {
         action: 'getLayoutsByWorldIdAndProcedureName',
@@ -54,7 +55,8 @@ function getLayoutsOrderByType(_type)
         minY: minY,
         maxY: maxY,
         MinDate: minDate,
-        PlayerName: playerName
+        PlayerName: playerName,
+        FieldsTib: fieldsTib
     };
     $.ajaxSetup({async: false});
     $.post('../php/manageBackend.php', data)
