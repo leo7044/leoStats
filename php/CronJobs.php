@@ -31,6 +31,37 @@ if (!$conn->connect_error)
             $UserAnswer = [1, 'done'];
             break;
         }
+        case 'addFieldsTibAndCry':
+        {
+            $result = $conn->query("SELECT Id, Layout FROM layouts WHERE (FieldsTib=0 OR FieldsCry=0);");
+            while ($zeile = $result->fetch_assoc())
+            {
+                $curId = $zeile['Id'];
+                $curLayout = $zeile['Layout'];
+                $ObjectLayout = json_decode($curLayout);
+                $counterTib = 0;
+                $counterCry = 0;
+                foreach ($ObjectLayout as $keyY => $valueY)
+                {
+                    foreach ($valueY as $keyX => $valueX)
+                    {
+                        if ($valueX == 2)
+                        {
+                            $counterTib++;
+                        }
+                        else if ($valueX == 1)
+                        {
+                            $counterCry++;
+                        }
+                    }
+                }
+                $strQuery = "UPDATE layouts SET FieldsTib='$counterTib', FieldsCry='$counterCry' WHERE Id='$curId';";
+                echo $strQuery . '<br/>';
+                $conn->query($strQuery);
+            }
+            $UserAnswer = [1, 'done'];
+            break;
+        }
         case 'resetLayoutIds':
         {
             $strQuery = "SET @counter = 0; UPDATE layouts SET Id=(@counter:=@counter+1) WHERE 1; SELECT @counter + 1 FROM dual;";
