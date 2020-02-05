@@ -33,11 +33,12 @@ if (!$conn->connect_error)
         }
         case 'addFieldsTibAndCry':
         {
-            $result = $conn->query("SELECT Id, Layout FROM layouts WHERE (FieldsTib=0 OR FieldsCry=0);");
+            $result = $conn->query("SELECT Id, Layout, PlayerName FROM layouts WHERE (FieldsTib=0 OR FieldsCry=0);");
             while ($zeile = $result->fetch_assoc())
             {
                 $curId = $zeile['Id'];
                 $curLayout = $zeile['Layout'];
+                $curPlayerName = $zeile['PlayerName'];
                 $ObjectLayout = json_decode($curLayout);
                 $counterTib = 0;
                 $counterCry = 0;
@@ -56,7 +57,7 @@ if (!$conn->connect_error)
                     }
                 }
                 $strQuery = "UPDATE layouts SET FieldsTib='$counterTib', FieldsCry='$counterCry' WHERE Id='$curId';";
-                echo $strQuery . '<br/>';
+                echo $curPlayerName . ': ' . $strQuery . '<br/>';
                 $conn->query($strQuery);
             }
             $UserAnswer = [1, 'done'];
