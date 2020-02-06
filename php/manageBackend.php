@@ -84,12 +84,13 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             // RelationBases and Bases
             $strQueryBasesRelation = "INSERT INTO `relation_bases` (WorldId, AccountId, BaseId, `Name`) VALUES ";
-            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `ID`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
+            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `ID`, `BasePoints`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
             $TimeDay = date("Y-m-d");
             foreach ($ObjectBases as $key => $ObjectBase)
             {
                 $BaseId = $ObjectBase['BaseId'];
                 $Name = $ObjectBase['Name'];
+                $BasePoints = $ObjectBase['BasePoints'];
                 $LvLCY = $ObjectBase['LvLCY'];
                 $LvLBase = $ObjectBase['LvLBase'];
                 $LvLOff = $ObjectBase['LvLOffense'];
@@ -106,16 +107,16 @@ if (!$conn->connect_error)
                 if ($key != count($ObjectBases) - 1)
                 {
                     $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$Name'),";
-                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt'),";
+                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt'),";
                 }
                 else
                 {
                     $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$Name')";
-                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt')";
+                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt')";
                 }
             }
             $strQueryBasesRelation .= " ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AccountId = VALUES(AccountId), BaseId = VALUES(BaseId), Name = VALUES(Name);";
-            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), ID = VALUES(ID), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
+            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), ID = VALUES(ID), BasePoints = VALUES(BasePoints), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
             $conn->query($strQueryBasesRelation);
             $conn->query($strQueryBases);
             // $strQuery .= $strQueryBasesRelation;
