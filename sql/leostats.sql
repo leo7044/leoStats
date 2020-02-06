@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 06. Feb 2020 um 14:41
+-- Erstellungszeit: 06. Feb 2020 um 15:26
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -732,7 +732,20 @@ CREATE TABLE `relation_alliance` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `AllianceId` smallint(4) UNSIGNED NOT NULL,
   `AllianceName` varchar(20) COLLATE utf8_bin NOT NULL,
-  `MemberRole` tinyint(1) NOT NULL DEFAULT 5
+  `MemberRole` tinyint(1) UNSIGNED NOT NULL DEFAULT 5
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `relation_alliance_share`
+--
+
+CREATE TABLE `relation_alliance_share` (
+  `WorldId` smallint(3) UNSIGNED NOT NULL,
+  `AllianceIdSet` smallint(4) UNSIGNED NOT NULL,
+  `AllianceIdGet` smallint(4) UNSIGNED NOT NULL,
+  `MemberRoleAccess` tinyint(1) UNSIGNED NOT NULL DEFAULT 5
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -839,6 +852,13 @@ ALTER TABLE `relation_alliance`
   ADD PRIMARY KEY (`WorldId`,`AllianceId`);
 
 --
+-- Indizes für die Tabelle `relation_alliance_share`
+--
+ALTER TABLE `relation_alliance_share`
+  ADD PRIMARY KEY (`WorldId`,`AllianceIdSet`,`AllianceIdGet`),
+  ADD KEY `WorldId` (`WorldId`,`AllianceIdGet`);
+
+--
 -- Indizes für die Tabelle `relation_bases`
 --
 ALTER TABLE `relation_bases`
@@ -915,6 +935,13 @@ ALTER TABLE `player`
 --
 ALTER TABLE `relation_alliance`
   ADD CONSTRAINT `relation_alliance_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `relation_alliance_share`
+--
+ALTER TABLE `relation_alliance_share`
+  ADD CONSTRAINT `relation_alliance_share_ibfk_1` FOREIGN KEY (`WorldId`,`AllianceIdSet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `relation_alliance_share_ibfk_2` FOREIGN KEY (`WorldId`,`AllianceIdGet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_bases`
