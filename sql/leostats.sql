@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 05. Feb 2020 um 15:12
+-- Erstellungszeit: 06. Feb 2020 um 11:19
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -56,6 +56,51 @@ JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE l.WorldId=WorldId
 GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
+
+CREATE PROCEDURE `getAllianceBaseDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  NO SQL
+SELECT l.UserName, p.Faction, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
+JOIN login l ON l.AccountId=p.AccountId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+WHERE ba.Zeit=
+(
+    SELECT ba.Zeit FROM bases ba
+    WHERE ba.WorldId=p.WorldId
+    AND ba.ID=b.BaseId
+    ORDER BY ba.Zeit DESC LIMIT 1
+)
+AND p.WorldId=WorldId
+AND p.AllianceId=AllianceId
+ORDER BY l.UserName ASC, ba.Id ASC$$
+
+CREATE PROCEDURE `getAllianceBaseDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  NO SQL
+SELECT l.UserName, p.Faction, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
+JOIN login l ON l.AccountId=p.AccountId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE ba.Zeit=
+(
+	SELECT ba.Zeit FROM bases ba
+	WHERE ba.WorldId=p.WorldId
+	AND ba.ID=b.BaseId
+	ORDER BY ba.Zeit DESC LIMIT 1
+)
+AND p.WorldId=WorldId
+AND a.AllianceId=
+(
+	SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+)
+AND
+(
+	IF
+	(
+		(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
+		true,
+		p.AccountId=OwnAccountId
+	)
+)
+ORDER BY l.UserName ASC, ba.Id ASC$$
 
 CREATE PROCEDURE `getAllianceDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
 SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
