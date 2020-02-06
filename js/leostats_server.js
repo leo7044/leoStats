@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.04';
+                            this.scriptVersionLocal = '2020.02.06';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -871,7 +871,7 @@
                             var bases = _data.c;
                             for (var i = 0; i < bases.length; i++)
                             {
-                                this.ObjectData.bases[i].ScorePoints = bases[i].p;
+                                this.ObjectData.bases[i].BasePoints = bases[i].p;
                             }
                             this.ObjectData.player.Shoot = _data.bd;
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
