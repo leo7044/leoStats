@@ -942,6 +942,7 @@
                             this.app = qx.core.Init.getApplication();
                             this.ArrayLayouts = [];
                             this.ArrayScannedIds = [];
+                            this.ArrayIdsForScan = [];
                             this.ScriptIsRunning = false;
                             this.buildGUI();
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
@@ -1025,7 +1026,8 @@
                         startBaseScan: function()
                         {
                             this.ScriptIsRunning = true;
-                            this.GuiButtonBaseScanner.setLabel('Stop BaseScanner...');
+                            var numberHasToScan = this.ArrayLayouts.length + this.ArrayIdsForScan.length;
+                            this.GuiButtonBaseScanner.setLabel('Scan Base... (' + this.ArrayLayouts.length + ' / ' + numberHasToScan + ')');
                             this.startScan();
                         },
                         stopBaseScan: function()
