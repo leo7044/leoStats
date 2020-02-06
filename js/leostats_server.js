@@ -906,6 +906,21 @@
                         {
                             if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined)
                             {
+                                // funktioniert nicht
+                                /*var requestLogin = new qx.io.request.Xhr(linkToRoot + 'php/manageBackend.php', 'post');
+                                requestLogin.setRequestData(ObjectSend);
+                                requestLogin.addListener('success', function(e)
+                                {
+                                    var req = e.getTarget();
+                                    var response = req.getResponse();
+                                    console.log(response);
+                                    if (_self.sendChatInfoStatus)
+                                    {
+                                        _self.sendChatInfo(response);
+                                        _self.sendChatInfoStatus = false;
+                                    }
+                                }, this);
+                                requestLogin.send();*/
                                 var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ObjectData};
                                 var _self = this;
                                 $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
