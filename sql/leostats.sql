@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 06. Feb 2020 um 11:19
+-- Erstellungszeit: 06. Feb 2020 um 14:41
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -612,6 +612,7 @@ CREATE TABLE `bases` (
   `Zeit` date NOT NULL,
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `ID` int(9) UNSIGNED NOT NULL,
+  `BasePoints` int(9) UNSIGNED NOT NULL,
   `LvLCY` tinyint(2) UNSIGNED NOT NULL,
   `LvLBase` decimal(4,2) UNSIGNED NOT NULL,
   `LvLOff` decimal(4,2) UNSIGNED NOT NULL,
