@@ -778,6 +778,10 @@ function manageContentAllianceBase()
     lastName = '';
     curBaseCount = 1;
     var nameCount = -1;
+    for (var i = 0; i < curObjectAllianceBaseData.length; i++)
+    {
+        curObjectAllianceBaseData[i][type] = parseFloat(curObjectAllianceBaseData[i][type]);
+    }
     var maxLvL = alasql('SELECT MAX(' + type + ') FROM ?',[curObjectAllianceBaseData])[0]['MAX(' + type + ')'];
     var ArrayColors =
     [
@@ -834,7 +838,11 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
         strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', \'' + curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');">';
-		if (type == 'LvLOff' || type == 'LvLDef' || type == 'LvLSup')
+        if (type == 'LvLOff' || type == 'LvLDef')
+        {
+            strHtml += Intl.NumberFormat('en-US', {minimumFractionDigits: 2}).format(curObjectAllianceBaseData[key][type]) + '</td>';
+        }
+        else if (type == 'LvLSup')
 		{
 			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
 		}
