@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 06. Feb 2020 um 15:26
+-- Erstellungszeit: 07. Feb 2020 um 12:40
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -58,7 +58,7 @@ GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
 
 CREATE PROCEDURE `getAllianceBaseDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  NO SQL
-SELECT l.UserName, p.Faction, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
@@ -74,7 +74,7 @@ AND p.AllianceId=AllianceId
 ORDER BY l.UserName ASC, ba.Id ASC$$
 
 CREATE PROCEDURE `getAllianceBaseDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  NO SQL
-SELECT l.UserName, p.Faction, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
@@ -547,6 +547,12 @@ ORDER BY pl.Zeit ASC$$
 CREATE PROCEDURE `getTransmissionsPerDay` ()  NO SQL
 SELECT pl.Zeit, count(*) FROM player pl GROUP BY pl.Zeit$$
 
+CREATE PROCEDURE `getTransmissionsPerDayUnique` ()  NO SQL
+SELECT pl.Zeit, COUNT(DISTINCT pl.AccountId)
+FROM player pl
+GROUP BY pl.Zeit
+ORDER BY pl.Zeit ASC$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -560,7 +566,7 @@ CREATE TABLE `adminlog` (
   `Zeit` datetime NOT NULL,
   `Initiator` tinytext COLLATE utf8_bin NOT NULL,
   `Description` tinytext COLLATE utf8_bin NOT NULL,
-  `Show` bit(1) NOT NULL
+  `ShowRow` bit(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -645,6 +651,7 @@ CREATE TABLE `layouts` (
   `FieldsCry` tinyint(1) NOT NULL,
   `Layout` text COLLATE utf8_bin NOT NULL,
   `CncOpt` tinytext COLLATE utf8_bin NOT NULL,
+  `ReservedBy` mediumint(7) UNSIGNED NOT NULL,
   `Tiberium6` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium5` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium4` tinyint(1) UNSIGNED NOT NULL,
@@ -790,6 +797,26 @@ CREATE TABLE `relation_server` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `reports`
+--
+
+CREATE TABLE `reports` (
+  `WorldId` smallint(3) UNSIGNED NOT NULL,
+  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `ReportId` int(10) UNSIGNED NOT NULL,
+  `AttackTime` datetime NOT NULL,
+  `TargetLevel` tinyint(2) UNSIGNED NOT NULL,
+  `GainTib` int(10) UNSIGNED NOT NULL,
+  `GainCry` int(10) UNSIGNED NOT NULL,
+  `GainCre` int(10) UNSIGNED NOT NULL,
+  `GainRp` int(10) UNSIGNED NOT NULL,
+  `CostCry` int(10) UNSIGNED NOT NULL,
+  `CostRep` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `substitution`
 --
 
@@ -829,7 +856,8 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `WorldId` (`WorldId`,`PosX`,`PosY`);
+  ADD UNIQUE KEY `WorldId` (`WorldId`,`PosX`,`PosY`),
+  ADD KEY `ReservedBy` (`ReservedBy`);
 
 --
 -- Indizes für die Tabelle `login`
@@ -880,6 +908,13 @@ ALTER TABLE `relation_server`
   ADD PRIMARY KEY (`WorldId`);
 
 --
+-- Indizes für die Tabelle `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`WorldId`,`ReportId`),
+  ADD KEY `WorldId` (`WorldId`,`AccountId`);
+
+--
 -- Indizes für die Tabelle `substitution`
 --
 ALTER TABLE `substitution`
@@ -921,7 +956,8 @@ ALTER TABLE `bases`
 -- Constraints der Tabelle `layouts`
 --
 ALTER TABLE `layouts`
-  ADD CONSTRAINT `layouts_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `layouts_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `player`
@@ -956,6 +992,12 @@ ALTER TABLE `relation_bases`
 ALTER TABLE `relation_player`
   ADD CONSTRAINT `relation_player_ibfk_1` FOREIGN KEY (`WorldId`,`AllianceId`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `relation_player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `reports`
+--
+ALTER TABLE `reports`
+  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`AccountId`) REFERENCES `relation_player` (`WorldId`, `AccountId`);
 
 --
 -- Constraints der Tabelle `substitution`
