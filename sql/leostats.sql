@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 07. Feb 2020 um 12:40
+-- Erstellungszeit: 07. Feb 2020 um 13:02
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -641,7 +641,6 @@ CREATE TABLE `bases` (
 --
 
 CREATE TABLE `layouts` (
-  `Id` int(11) UNSIGNED NOT NULL,
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `Zeit` datetime NOT NULL,
   `PlayerName` varchar(16) COLLATE utf8_bin NOT NULL,
@@ -855,8 +854,7 @@ ALTER TABLE `bases`
 -- Indizes für die Tabelle `layouts`
 --
 ALTER TABLE `layouts`
-  ADD PRIMARY KEY (`Id`),
-  ADD UNIQUE KEY `WorldId` (`WorldId`,`PosX`,`PosY`),
+  ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
   ADD KEY `ReservedBy` (`ReservedBy`);
 
 --
@@ -928,12 +926,6 @@ ALTER TABLE `substitution`
 -- AUTO_INCREMENT für Tabelle `adminlog`
 --
 ALTER TABLE `adminlog`
-  MODIFY `Id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `layouts`
---
-ALTER TABLE `layouts`
   MODIFY `Id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
