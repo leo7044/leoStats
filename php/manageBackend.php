@@ -74,8 +74,15 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             // RelationAlliance
             $AllianceId = $ObjectAlliance['AllianceId'];
-            $AllianceName = $ObjectAlliance['AllianceName'];
-            $strQuery = "INSERT INTO `relation_alliance` (WorldId, AllianceId, AllianceName) VALUES ('$WorldId', '$AllianceId', '$AllianceName') ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceName = VALUES(AllianceName);";
+            if ($ObjectAlliance['AllianceId'] > 0)
+            {
+                $AllianceName = $ObjectAlliance['AllianceName'];
+                $strQuery = "INSERT INTO `relation_alliance` (WorldId, AllianceId, AllianceName) VALUES ('$WorldId', '$AllianceId', '$AllianceName') ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceName = VALUES(AllianceName);";
+            }
+            else
+            {
+                $strQuery = "INSERT INTO `relation_alliance` (WorldId, AllianceId, AllianceName) VALUES ('$WorldId', '$AllianceId', '') ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceName = VALUES(AllianceName);";
+            }
             $conn->query($strQuery);
             // RelationPlayer
 			$Faction = $ObjectPlayer['Faction'];
@@ -122,35 +129,38 @@ if (!$conn->connect_error)
             // $strQuery .= $strQueryBasesRelation;
             // $strQuery .= $strQueryBases;
             // Alliance
-            $AllianceRank = $ObjectAlliance['AllianceRank'];
-            $AllianceEventRank = $ObjectAlliance['AllianceEventRank'];
-            $AllianceTotalScore = $ObjectAlliance['AllianceTotalScore'];
-            $AllianceAverageScore = $ObjectAlliance['AllianceAverageScore'];
-            $AllianceVeteranPoints = $ObjectAlliance['AllianceVeteranPoints'];
-            $AllianceProdVetPoints = $ObjectAlliance['AllianceProdVetPoints'];
-            $BonusTiberium = $ObjectAlliance['BonusTiberium'];
-            $BonusCrystal = $ObjectAlliance['BonusCrystal'];
-            $BonusPower = $ObjectAlliance['BonusPower'];
-            $BonusInfantrie = $ObjectAlliance['BonusInfantrie'];
-            $BonusVehicle = $ObjectAlliance['BonusVehicle'];
-            $BonusAir = $ObjectAlliance['BonusAir'];
-            $BonusDef = $ObjectAlliance['BonusDef'];
-            $RankTib = $ObjectAlliance['RankTib'];
-            $RankCry = $ObjectAlliance['RankCry'];
-            $RankPow = $ObjectAlliance['RankPow'];
-            $RankInf = $ObjectAlliance['RankInf'];
-            $RankVeh = $ObjectAlliance['RankVeh'];
-            $RankAir = $ObjectAlliance['RankAir'];
-            $RankDef = $ObjectAlliance['RankDef'];
-            $ScoreTib = $ObjectAlliance['ScoreTib'];
-            $ScoreCry = $ObjectAlliance['ScoreCry'];
-            $ScorePow = $ObjectAlliance['ScorePow'];
-            $ScoreInf = $ObjectAlliance['ScoreInf'];
-            $ScoreVeh = $ObjectAlliance['ScoreVeh'];
-            $ScoreAir = $ObjectAlliance['ScoreAir'];
-            $ScoreDef = $ObjectAlliance['ScoreDef'];
-            $strQuery = "INSERT INTO `alliance`(`Zeit`, `WorldId`, `AllianceId`, `AllianceRank`, `EventRank`, `TotalScore`, `AverageScore`, `VP`, `VPh`, `BonusTiberium`, `BonusCrystal`, `BonusPower`, `BonusInfantrie`, `BonusVehicle`, `BonusAir`, `BonusDef`, `ScoreTib`, `ScoreCry`, `ScorePow`, `ScoreInf`, `ScoreVeh`, `ScoreAir`, `ScoreDef`, `RankTib`, `RankCry`, `RankPow`, `RankInf`, `RankVeh`, `RankAir`, `RankDef`) VALUES ('$TimeDay', '$WorldId', '$AllianceId', '$AllianceRank', '$AllianceEventRank', '$AllianceTotalScore', '$AllianceAverageScore', '$AllianceVeteranPoints', '$AllianceProdVetPoints', '$BonusTiberium', '$BonusCrystal', '$BonusPower', '$BonusInfantrie', '$BonusVehicle', '$BonusAir', '$BonusDef', '$ScoreTib', '$ScoreCry', '$ScorePow', '$ScoreInf', '$ScoreVeh', '$ScoreAir', '$ScoreDef', '$RankTib', '$RankCry', '$RankPow', '$RankInf', '$RankVeh', '$RankAir', '$RankDef') ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceRank = VALUES(AllianceRank), EventRank = VALUES(EventRank), TotalScore = VALUES(TotalScore), AverageScore = VALUES(AverageScore), VP = VALUES(VP), VPh = VALUES(VPh), BonusTiberium = VALUES(BonusTiberium), BonusCrystal = VALUES(BonusCrystal), BonusPower = VALUES(BonusPower), BonusInfantrie = VALUES(BonusInfantrie), BonusVehicle = VALUES(BonusVehicle), BonusAir = VALUES(BonusAir), BonusDef = VALUES(BonusDef), ScoreTib = VALUES(ScoreTib), ScoreCry = VALUES(ScoreCry), ScorePow = VALUES(ScorePow), ScoreInf = VALUES(ScoreInf), ScoreVeh = VALUES(ScoreVeh), ScoreAir = VALUES(ScoreAir), ScoreDef = VALUES(ScoreDef), RankTib = VALUES(RankTib), RankCry = VALUES(RankCry), RankPow = VALUES(RankPow), RankInf = VALUES(RankInf), RankVeh = VALUES(RankVeh), RankAir = VALUES(RankAir), RankDef = VALUES(RankDef);";
-            $conn->query($strQuery);
+            if ($ObjectAlliance['AllianceId'] > 0)
+            {
+                $AllianceRank = $ObjectAlliance['AllianceRank'];
+                $AllianceEventRank = $ObjectAlliance['AllianceEventRank'];
+                $AllianceTotalScore = $ObjectAlliance['AllianceTotalScore'];
+                $AllianceAverageScore = $ObjectAlliance['AllianceAverageScore'];
+                $AllianceVeteranPoints = $ObjectAlliance['AllianceVeteranPoints'];
+                $AllianceProdVetPoints = $ObjectAlliance['AllianceProdVetPoints'];
+                $BonusTiberium = $ObjectAlliance['BonusTiberium'];
+                $BonusCrystal = $ObjectAlliance['BonusCrystal'];
+                $BonusPower = $ObjectAlliance['BonusPower'];
+                $BonusInfantrie = $ObjectAlliance['BonusInfantrie'];
+                $BonusVehicle = $ObjectAlliance['BonusVehicle'];
+                $BonusAir = $ObjectAlliance['BonusAir'];
+                $BonusDef = $ObjectAlliance['BonusDef'];
+                $RankTib = $ObjectAlliance['RankTib'];
+                $RankCry = $ObjectAlliance['RankCry'];
+                $RankPow = $ObjectAlliance['RankPow'];
+                $RankInf = $ObjectAlliance['RankInf'];
+                $RankVeh = $ObjectAlliance['RankVeh'];
+                $RankAir = $ObjectAlliance['RankAir'];
+                $RankDef = $ObjectAlliance['RankDef'];
+                $ScoreTib = $ObjectAlliance['ScoreTib'];
+                $ScoreCry = $ObjectAlliance['ScoreCry'];
+                $ScorePow = $ObjectAlliance['ScorePow'];
+                $ScoreInf = $ObjectAlliance['ScoreInf'];
+                $ScoreVeh = $ObjectAlliance['ScoreVeh'];
+                $ScoreAir = $ObjectAlliance['ScoreAir'];
+                $ScoreDef = $ObjectAlliance['ScoreDef'];
+                $strQuery = "INSERT INTO `alliance`(`Zeit`, `WorldId`, `AllianceId`, `AllianceRank`, `EventRank`, `TotalScore`, `AverageScore`, `VP`, `VPh`, `BonusTiberium`, `BonusCrystal`, `BonusPower`, `BonusInfantrie`, `BonusVehicle`, `BonusAir`, `BonusDef`, `ScoreTib`, `ScoreCry`, `ScorePow`, `ScoreInf`, `ScoreVeh`, `ScoreAir`, `ScoreDef`, `RankTib`, `RankCry`, `RankPow`, `RankInf`, `RankVeh`, `RankAir`, `RankDef`) VALUES ('$TimeDay', '$WorldId', '$AllianceId', '$AllianceRank', '$AllianceEventRank', '$AllianceTotalScore', '$AllianceAverageScore', '$AllianceVeteranPoints', '$AllianceProdVetPoints', '$BonusTiberium', '$BonusCrystal', '$BonusPower', '$BonusInfantrie', '$BonusVehicle', '$BonusAir', '$BonusDef', '$ScoreTib', '$ScoreCry', '$ScorePow', '$ScoreInf', '$ScoreVeh', '$ScoreAir', '$ScoreDef', '$RankTib', '$RankCry', '$RankPow', '$RankInf', '$RankVeh', '$RankAir', '$RankDef') ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceRank = VALUES(AllianceRank), EventRank = VALUES(EventRank), TotalScore = VALUES(TotalScore), AverageScore = VALUES(AverageScore), VP = VALUES(VP), VPh = VALUES(VPh), BonusTiberium = VALUES(BonusTiberium), BonusCrystal = VALUES(BonusCrystal), BonusPower = VALUES(BonusPower), BonusInfantrie = VALUES(BonusInfantrie), BonusVehicle = VALUES(BonusVehicle), BonusAir = VALUES(BonusAir), BonusDef = VALUES(BonusDef), ScoreTib = VALUES(ScoreTib), ScoreCry = VALUES(ScoreCry), ScorePow = VALUES(ScorePow), ScoreInf = VALUES(ScoreInf), ScoreVeh = VALUES(ScoreVeh), ScoreAir = VALUES(ScoreAir), ScoreDef = VALUES(ScoreDef), RankTib = VALUES(RankTib), RankCry = VALUES(RankCry), RankPow = VALUES(RankPow), RankInf = VALUES(RankInf), RankVeh = VALUES(RankVeh), RankAir = VALUES(RankAir), RankDef = VALUES(RankDef);";
+                $conn->query($strQuery);
+            }
             // Player
             $ScorePoints = $ObjectPlayer['PlayerScorePoints'];
             $PlayerRank = $ObjectPlayer['PlayerRank'];

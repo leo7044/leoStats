@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.06';
+                            this.scriptVersionLocal = '2020.02.07';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -585,9 +585,9 @@
                         {
                             try
                             {
-                                var AllianceId = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Id();
-                                // var PlayerId = ClientLib.Data.MainData.GetInstance().get_Player().get_Id();
-                                if (AllianceId > 0)
+                                // var AllianceId = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Id();
+                                var PlayerId = ClientLib.Data.MainData.GetInstance().get_Player().get_Id();
+                                if (PlayerId > 0)
                                 {
                                     this.ObjectData.server = {};
                                     this.ObjectData.alliance = {};
@@ -601,44 +601,48 @@
                                     var ServerName = ClientLib.Data.MainData.GetInstance().get_Server().get_Name().trim();
                                     var SeasonServer = ClientLib.Data.MainData.GetInstance().get_Server().get_IsSeasonServer();
                                     // Alliance
-                                    var AllianceName = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Name();
-                                    var AllianceRank = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Rank();
-                                    var AllianceEventRank = ClientLib.Data.MainData.GetInstance().get_Alliance().get_EventRank();
-                                    var AllianceTotalScore = ClientLib.Data.MainData.GetInstance().get_Alliance().get_TotalScore();
-                                    var AllianceAverageScore = ClientLib.Data.MainData.GetInstance().get_Alliance().get_AverageScore();
-                                    var AllianceVeteranPoints = ClientLib.Data.MainData.GetInstance().get_Alliance().get_EventScore();
-                                    var AllianceProdVetPoints = 0;
-                                    try
+                                    var AllianceId = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Id();
+                                    if (AllianceId > 0)
                                     {
-                                        for (i = 0; i < ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnShieldHubs().length; i++)
+                                        var AllianceName = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Name();
+                                        var AllianceRank = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Rank();
+                                        var AllianceEventRank = ClientLib.Data.MainData.GetInstance().get_Alliance().get_EventRank();
+                                        var AllianceTotalScore = ClientLib.Data.MainData.GetInstance().get_Alliance().get_TotalScore();
+                                        var AllianceAverageScore = ClientLib.Data.MainData.GetInstance().get_Alliance().get_AverageScore();
+                                        var AllianceVeteranPoints = ClientLib.Data.MainData.GetInstance().get_Alliance().get_EventScore();
+                                        var AllianceProdVetPoints = 0;
+                                        try
                                         {
-                                            AllianceProdVetPoints += ClientLib.Data.MainData.GetInstance().get_Server().GetControlHubVeteranPointsProduction(ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnShieldHubs()[i].l);
+                                            for (i = 0; i < ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnShieldHubs().length; i++)
+                                            {
+                                                AllianceProdVetPoints += ClientLib.Data.MainData.GetInstance().get_Server().GetControlHubVeteranPointsProduction(ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnShieldHubs()[i].l);
+                                            }
                                         }
+                                        catch(e){}
+                                        // Bonus
+                                        var BonusTiberium = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Tiberium);
+                                        var BonusCrystal = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Crystal);
+                                        var BonusPower = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Power);
+                                        var BonusInfantrie = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus();
+                                        var BonusVehicle = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus();
+                                        var BonusAir = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus();
+                                        var BonusDef = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIDefenseBonus();
+                                        var Ranks = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIRankScore();
+                                        var RankTib = Ranks[0].r;
+                                        var RankCry = Ranks[1].r;
+                                        var RankPow = Ranks[2].r;
+                                        var RankInf = Ranks[3].r;
+                                        var RankVeh = Ranks[4].r;
+                                        var RankAir = Ranks[5].r;
+                                        var RankDef = Ranks[6].r;
+                                        var ScoreTib = Ranks[0].s;
+                                        var ScoreCry = Ranks[1].s;
+                                        var ScorePow = Ranks[2].s;
+                                        var ScoreInf = Ranks[3].s;
+                                        var ScoreVeh = Ranks[4].s;
+                                        var ScoreAir = Ranks[5].s;
+                                        var ScoreDef = Ranks[6].s;
                                     }
-                                    catch(e){}
-                                    // Bonus
-                                    var BonusTiberium = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Tiberium);
-                                    var BonusCrystal = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Crystal);
-                                    var BonusPower = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Power);
-                                    var BonusInfantrie = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus();
-                                    var BonusVehicle = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus();
-                                    var BonusAir = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus();
-                                    var BonusDef = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIDefenseBonus();
-                                    var Ranks = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIRankScore();
-                                    var RankTib = Ranks[0].r;
-                                    var RankCry = Ranks[1].r;
-                                    var RankPow = Ranks[2].r;
-                                    var RankInf = Ranks[3].r;
-                                    var RankVeh = Ranks[4].r;
-                                    var RankAir = Ranks[5].r;
-                                    var RankDef = Ranks[6].r;
-                                    var ScoreTib = Ranks[0].s;
-                                    var ScoreCry = Ranks[1].s;
-                                    var ScorePow = Ranks[2].s;
-                                    var ScoreInf = Ranks[3].s;
-                                    var ScoreVeh = Ranks[4].s;
-                                    var ScoreAir = Ranks[5].s;
-                                    var ScoreDef = Ranks[6].s;
                                     // Player
                                     var AccountId = ClientLib.Data.MainData.GetInstance().get_Player().get_AccountId();
                                     var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
@@ -752,34 +756,37 @@
                                     this.ObjectData.server.SeasonServer = SeasonServer;
                                     // Alliance
                                     this.ObjectData.alliance.AllianceId = AllianceId;
-                                    this.ObjectData.alliance.AllianceName = AllianceName;
-                                    this.ObjectData.alliance.AllianceRank = AllianceRank;
-                                    this.ObjectData.alliance.AllianceEventRank = AllianceEventRank;
-                                    this.ObjectData.alliance.AllianceTotalScore = AllianceTotalScore;
-                                    this.ObjectData.alliance.AllianceAverageScore = AllianceAverageScore;
-                                    this.ObjectData.alliance.AllianceVeteranPoints = AllianceVeteranPoints;
-                                    this.ObjectData.alliance.AllianceProdVetPoints = AllianceProdVetPoints;
-                                    this.ObjectData.alliance.BonusTiberium = BonusTiberium;
-                                    this.ObjectData.alliance.BonusCrystal = BonusCrystal;
-                                    this.ObjectData.alliance.BonusPower = BonusPower;
-                                    this.ObjectData.alliance.BonusInfantrie = BonusInfantrie;
-                                    this.ObjectData.alliance.BonusVehicle = BonusVehicle;
-                                    this.ObjectData.alliance.BonusAir = BonusAir;
-                                    this.ObjectData.alliance.BonusDef = BonusDef;
-                                    this.ObjectData.alliance.RankTib = RankTib;
-                                    this.ObjectData.alliance.RankCry = RankCry;
-                                    this.ObjectData.alliance.RankPow = RankPow;
-                                    this.ObjectData.alliance.RankInf = RankInf;
-                                    this.ObjectData.alliance.RankVeh = RankVeh;
-                                    this.ObjectData.alliance.RankAir = RankAir;
-                                    this.ObjectData.alliance.RankDef = RankDef;
-                                    this.ObjectData.alliance.ScoreTib = ScoreTib;
-                                    this.ObjectData.alliance.ScoreCry = ScoreCry;
-                                    this.ObjectData.alliance.ScorePow = ScorePow;
-                                    this.ObjectData.alliance.ScoreInf = ScoreInf;
-                                    this.ObjectData.alliance.ScoreVeh = ScoreVeh;
-                                    this.ObjectData.alliance.ScoreAir = ScoreAir;
-                                    this.ObjectData.alliance.ScoreDef = ScoreDef;
+                                    if (AllianceId > 0)
+                                    {
+                                        this.ObjectData.alliance.AllianceName = AllianceName;
+                                        this.ObjectData.alliance.AllianceRank = AllianceRank;
+                                        this.ObjectData.alliance.AllianceEventRank = AllianceEventRank;
+                                        this.ObjectData.alliance.AllianceTotalScore = AllianceTotalScore;
+                                        this.ObjectData.alliance.AllianceAverageScore = AllianceAverageScore;
+                                        this.ObjectData.alliance.AllianceVeteranPoints = AllianceVeteranPoints;
+                                        this.ObjectData.alliance.AllianceProdVetPoints = AllianceProdVetPoints;
+                                        this.ObjectData.alliance.BonusTiberium = BonusTiberium;
+                                        this.ObjectData.alliance.BonusCrystal = BonusCrystal;
+                                        this.ObjectData.alliance.BonusPower = BonusPower;
+                                        this.ObjectData.alliance.BonusInfantrie = BonusInfantrie;
+                                        this.ObjectData.alliance.BonusVehicle = BonusVehicle;
+                                        this.ObjectData.alliance.BonusAir = BonusAir;
+                                        this.ObjectData.alliance.BonusDef = BonusDef;
+                                        this.ObjectData.alliance.RankTib = RankTib;
+                                        this.ObjectData.alliance.RankCry = RankCry;
+                                        this.ObjectData.alliance.RankPow = RankPow;
+                                        this.ObjectData.alliance.RankInf = RankInf;
+                                        this.ObjectData.alliance.RankVeh = RankVeh;
+                                        this.ObjectData.alliance.RankAir = RankAir;
+                                        this.ObjectData.alliance.RankDef = RankDef;
+                                        this.ObjectData.alliance.ScoreTib = ScoreTib;
+                                        this.ObjectData.alliance.ScoreCry = ScoreCry;
+                                        this.ObjectData.alliance.ScorePow = ScorePow;
+                                        this.ObjectData.alliance.ScoreInf = ScoreInf;
+                                        this.ObjectData.alliance.ScoreVeh = ScoreVeh;
+                                        this.ObjectData.alliance.ScoreAir = ScoreAir;
+                                        this.ObjectData.alliance.ScoreDef = ScoreDef;
+                                    }
                                     // Player
                                     this.ObjectData.player.AccountId = AccountId;
                                     this.ObjectData.player.PlayerName = PlayerName;
