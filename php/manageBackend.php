@@ -40,7 +40,7 @@ if (!$conn->connect_error)
                 $strQuery = "INSERT INTO `login`(`AccountId`, `UserName`, `Password`) VALUES ('$AccountId', '$PlayerName', '$PasswordStandard');";
                 $conn->query($strQuery);
                 $Time = date("Y-m-d H:i:s");
-                $strQuery = "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$PlayerName', 'Spieler angelegt', true);";
+                $strQuery = "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$PlayerName', 'Spieler angelegt', true);";
                 $conn->query($strQuery);
                 $UserAnswer[0] = 0;
                 $UserAnswer[1] = 'UserDidNotChangedPassword';
@@ -52,7 +52,7 @@ if (!$conn->connect_error)
                     $strQuery = "UPDATE `login` SET `UserName`='$PlayerName' WHERE `AccountId`='$AccountId';";
                     $conn->query($strQuery);
                     $Time = date("Y-m-d H:i:s");
-                    $strQuery = "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$PlayerName', 'Spieler umbenannt (alter Name: " . $oldPlayerName . ")', true);";
+                    $strQuery = "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$PlayerName', 'Spieler umbenannt (alter Name: " . $oldPlayerName . ")', true);";
                     $conn->query($strQuery);
                 }
             }
@@ -247,14 +247,14 @@ if (!$conn->connect_error)
                 $UserAnswer[0] = 1;
                 $UserAnswer[1] = 'UserInDb';
                 $Time = date("Y-m-d H:i:s");
-                $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$UserName', 'Login erfolgreich', true);");
+                $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$UserName', 'Login erfolgreich', true);");
             }
             else
             {
                 $UserAnswer[0] = 0;
                 $UserAnswer[1] = 'UserNotInDb';
                 $Time = date("Y-m-d H:i:s");
-                $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `Show`) VALUES ('$Time', '$UserName', 'Login fehlgeschlagen', true);");
+                $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$UserName', 'Login fehlgeschlagen', true);");
             }
             break;
         }
@@ -784,7 +784,7 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $result = $conn->query("SELECT Id, `Zeit`, `Initiator`, `Description` FROM adminlog WHERE `SHOW`=TRUE ORDER BY Id DESC;");
+                    $result = $conn->query("SELECT Id, `Zeit`, `Initiator`, `Description` FROM adminlog WHERE `ShowRow`=TRUE ORDER BY Id DESC;");
                     while ($zeile = $result->fetch_assoc())
                     {
                         array_push($UserAnswer, $zeile);
@@ -801,7 +801,7 @@ if (!$conn->connect_error)
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
                     $Id = $_post['Id'];
-                    $conn->query("UPDATE adminlog SET `Show`=FALSE WHERE Id='$Id';");
+                    $conn->query("UPDATE adminlog SET `ShowRow`=FALSE WHERE Id='$Id';");
                 }
             }
             break;
