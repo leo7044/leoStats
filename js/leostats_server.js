@@ -20,10 +20,11 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.07';
+                            this.scriptVersionLocal = '2020.02.08';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
+                            this.ReportCount = 0;
                             this.app = qx.core.Init.getApplication();
                             this.GuiButtonLeoStats = new qx.ui.form.Button('leoStats').set(
                             {
@@ -833,30 +834,13 @@
                                     }
                                     // ab hier clever Timeouten
                                     // Abschüsse für Player
-                                    var _self = this;
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
                                         name : PlayerName
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getPublicPlayerInfoByName), null);
-                                    /*// getReportCount (Offensive)
-                                    var _self = this;
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfoByName), null);
+                                    // getReportCount (Offensive)
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
                                         playerReportType: 1
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportCount), null);
-                                    // getReportHeaderAll (Offensive)
-                                    var _self = this;
-                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
-                                        type: 1,
-                                        skip: 0,
-                                        take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
-                                        sort: 1,
-                                        ascending: false
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportHeaderAll), null);
-                                    // getReportData
-                                    var _self = this;
-                                    // Schleife erforderlich
-                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
-                                        playerReportId: 0
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, _self.getReportData), null);*/
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportCount), null);
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
                                     var _self = this;
@@ -884,18 +868,74 @@
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
                         },
-                        /*getReportCount: function(_context, _data)
+                        getReportCount: function(_context, _data)
                         {
-                            console.log(_data);
+                            this.ReportCount = _data;
+                            if (this.ReportCount)
+                            {
+                                this.getReportHeaderAllTimeManager();
+                            }
+                        },
+                        getReportHeaderAllTimeManager: function()
+                        {
+                            var loops = parseInt(this.ReportCount / 1000) + 1;
+                            console.log(loops);
+                            for (var i = 0; i < loops; i++)
+                            {
+                                this.getReportHeaderAllManager(i * 1000);
+                            }
+                        },
+                        getReportHeaderAllManager: function(_skipReports)
+                        {
+                            var _self = this;
+                            setTimeout(function()
+                            {
+                                // getReportHeaderAll (Offensive)
+                                ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
+                                    type: 1,
+                                    skip: _skipReports,
+                                    take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
+                                    sort: 1,
+                                    ascending: false
+                                }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportHeaderAll), null);
+                            }, _skipReports * 1000); // 1000ms pro Bericht
                         },
                         getReportHeaderAll: function(_context, _data)
                         {
-                            console.log(_data);
+                            // concat richtig, nicht davor hängen?
+                            // this.ArrayReportHeader = this.ArrayReportHeader.concat(_data); // concat, weil hinten anhängen, falls mehrere Schleifendurchläufe
+                            var ArrayReportHeader = _data;
+                            var ArrayReportIds = [];
+                            for (var i = 0; i < ArrayReportHeader.length; i++)
+                            {
+                                ArrayReportIds.push(ArrayReportHeader[i].i);
+                            }
+                            console.log(ArrayReportIds);
+                            for (var i = 0; i < ArrayReportIds.length; i++)
+                            {
+                                this.getReportDataManager(ArrayReportIds[i], i);
+                            }
+                            // wie läuft das mit aufrufen des Timers?
+                            // ad.cr = Ausgang vom Kampf
+                            // 1 = Total Victory
+                            // 4 = Victory
+                            // 5 = Total Defeat
+                        },
+                        getReportDataManager: function(_curReportId, _curReportCount)
+                        {
+                            // getReportData
+                            var _self = this;
+                            setTimeout(function()
+                            {
+                                ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
+                                    playerReportId: _curReportId
+                                }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportData), null);
+                            }, _curReportCount * 1000);
                         },
                         getReportData: function(_context, _data)
                         {
                             console.log(_data);
-                        },*/
+                        },
                         sendChatInfo: function(_dataAnswer)
                         {
                             var stringChat = '';
