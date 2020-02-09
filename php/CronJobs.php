@@ -90,7 +90,7 @@ if (!$conn->connect_error)
         }
         case 'optimizeTables':
         {
-            $strQuery = "OPTIMIZE TABLE adminlog, alliance, bases, layouts, login, player, relation_alliance, relation_alliance_share, relation_bases, relation_player, relation_server, substitution;";
+            $strQuery = "OPTIMIZE TABLE adminlog, alliance, bases, layouts, login, player, relation_alliance, relation_alliance_share, relation_bases, relation_player, relation_server, reports, substitution;";
             $conn->query($strQuery);
             $UserAnswer = [1, 'done'];
             break;
