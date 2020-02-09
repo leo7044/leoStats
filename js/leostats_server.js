@@ -20,11 +20,10 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.09';
+                            this.scriptVersionLocal = '2020.02.09.1';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
-                            this.ReportCount = 0;
                             this.ObjectReportData = {};
                             this.timeoutArrayReportHeaderAllManager = [];
                             this.timeoutArrayReportDataManager = [];
@@ -846,7 +845,6 @@
                                         this.ReportsAreLoading = true;
                                         // console.log(this.ReportsAreLoading);
                                         // getReportCount (Offensive)
-                                        this.ReportCount = 0;
                                         ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
                                             playerReportType: 1
                                         }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportCount), null);
@@ -880,13 +878,13 @@
                         },
                         getReportCount: function(_context, _data)
                         {
-                            this.ReportCount = _data;
-                            if (this.ReportCount)
+                            var reportCounter = _data;
+                            if (reportCounter)
                             {
-                                this.getReportHeaderAllTimeManager();
+                                this.getReportHeaderAllTimeManager(reportCounter);
                             }
                         },
-                        getReportHeaderAllTimeManager: function()
+                        getReportHeaderAllTimeManager: function(_reportCounter)
                         {
                             // kill Timeouts
                             this.timeoutArrayReportDataManager.push([]);
@@ -905,7 +903,7 @@
                                     clearTimeout(this.timeoutArrayReportHeaderAllManager[i][j]);
                                 }
                             }
-                            var loops = parseInt(this.ReportCount / 1000) + 1;
+                            var loops = parseInt(_reportCounter / 1000) + 1;
                             for (var i = 0; i < loops; i++)
                             {
                                 this.getReportHeaderAllManager(i * 1000);
