@@ -20,11 +20,15 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.08';
+                            this.scriptVersionLocal = '2020.02.09';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
                             this.ReportCount = 0;
+                            this.ObjectReportData = {};
+                            this.timeoutArrayReportHeaderAllManager = [];
+                            this.timeoutArrayReportDataManager = [];
+                            this.ReportsAreLoading = false;
                             this.app = qx.core.Init.getApplication();
                             this.GuiButtonLeoStats = new qx.ui.form.Button('leoStats').set(
                             {
@@ -554,7 +558,7 @@
                                                         /* Swamp */
                                                         link += "k";
                                                         break;
-                                                    Default:
+                                                    default:
                                                         console.log("cncopt [4]: Unhandled resource type: " + city.GetResourceType(j, i));
                                                         link += ".";
                                                         break;
@@ -832,15 +836,21 @@
                                     {
                                         this.ObjectData.substitution.active.push(activeSubs[i].n);
                                     }
-                                    // ab hier clever Timeouten
-                                    // Abschüsse für Player
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
                                         name : PlayerName
                                     }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfoByName), null);
-                                    // getReportCount (Offensive)
-                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
-                                        playerReportType: 1
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportCount), null);
+                                    // ab hier clever Timeouten
+                                    // Abschüsse für Player
+                                    if (!this.ReportsAreLoading)
+                                    {
+                                        this.ReportsAreLoading = true;
+                                        // console.log(this.ReportsAreLoading);
+                                        // getReportCount (Offensive)
+                                        this.ReportCount = 0;
+                                        ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
+                                            playerReportType: 1
+                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportCount), null);
+                                    }
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
                                     var _self = this;
@@ -878,8 +888,24 @@
                         },
                         getReportHeaderAllTimeManager: function()
                         {
+                            // kill Timeouts
+                            this.timeoutArrayReportDataManager.push([]);
+                            this.timeoutArrayReportHeaderAllManager.push([]);
+                            for (var i = 0; i < this.timeoutArrayReportDataManager.length; i++)
+                            {
+                                for (var j = 0; j < this.timeoutArrayReportDataManager[i].length; j++)
+                                {
+                                    clearTimeout(this.timeoutArrayReportDataManager[i][j]);
+                                }
+                            }
+                            for (var i = 0; i < this.timeoutArrayReportHeaderAllManager.length; i++)
+                            {
+                                for (var j = 0; j < this.timeoutArrayReportHeaderAllManager[i].length; j++)
+                                {
+                                    clearTimeout(this.timeoutArrayReportHeaderAllManager[i][j]);
+                                }
+                            }
                             var loops = parseInt(this.ReportCount / 1000) + 1;
-                            console.log(loops);
                             for (var i = 0; i < loops; i++)
                             {
                                 this.getReportHeaderAllManager(i * 1000);
@@ -887,10 +913,10 @@
                         },
                         getReportHeaderAllManager: function(_skipReports)
                         {
+                            // getReportHeaderAll (Offensive)
                             var _self = this;
-                            setTimeout(function()
+                            this.timeoutArrayReportHeaderAllManager[this.timeoutArrayReportHeaderAllManager.length - 1].push(setTimeout(function()
                             {
-                                // getReportHeaderAll (Offensive)
                                 ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
                                     type: 1,
                                     skip: _skipReports,
@@ -898,7 +924,7 @@
                                     sort: 1,
                                     ascending: false
                                 }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportHeaderAll), null);
-                            }, _skipReports * 1000); // 1000ms pro Bericht
+                            }, _skipReports * 1000)); // 1000ms pro Bericht
                         },
                         getReportHeaderAll: function(_context, _data)
                         {
@@ -908,33 +934,184 @@
                             var ArrayReportIds = [];
                             for (var i = 0; i < ArrayReportHeader.length; i++)
                             {
-                                ArrayReportIds.push(ArrayReportHeader[i].i);
+                                if (this.ObjectReportData[ArrayReportHeader[i].i] == undefined)
+                                {
+                                    ArrayReportIds.push(ArrayReportHeader[i].i);
+                                }
                             }
-                            console.log(ArrayReportIds);
                             for (var i = 0; i < ArrayReportIds.length; i++)
                             {
                                 this.getReportDataManager(ArrayReportIds[i], i);
                             }
-                            // wie läuft das mit aufrufen des Timers?
+                            this.ReportsAreLoading = false;
+                            // console.log(this.ReportsAreLoading);
                             // ad.cr = Ausgang vom Kampf
                             // 1 = Total Victory
                             // 4 = Victory
                             // 5 = Total Defeat
+                            /*
+                            Type:ClientLib.Data.Reports.ECombatResult
+                            System.Int32 value__
+                            static ClientLib.Data.Reports.ECombatResult Draw
+                            static ClientLib.Data.Reports.ECombatResult CityDestroyed
+                            static ClientLib.Data.Reports.ECombatResult CommandPostDestroyed
+                            static ClientLib.Data.Reports.ECombatResult DefenseDestroyed
+                            static ClientLib.Data.Reports.ECombatResult BaseBreakthrough
+                            static ClientLib.Data.Reports.ECombatResult OffenseDestroyed
+                            static ClientLib.Data.Reports.ECombatResult AttackerMoreRP
+                            static ClientLib.Data.Reports.ECombatResult DefenderMoreRP
+                            */
                         },
                         getReportDataManager: function(_curReportId, _curReportCount)
                         {
                             // getReportData
                             var _self = this;
-                            setTimeout(function()
+                            this.timeoutArrayReportDataManager[this.timeoutArrayReportDataManager.length - 1].push(setTimeout(function()
                             {
                                 ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
                                     playerReportId: _curReportId
                                 }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportData), null);
-                            }, _curReportCount * 1000);
+                            }, _curReportCount * 1000));
                         },
                         getReportData: function(_context, _data)
                         {
-                            console.log(_data);
+                            if (_data.i) // existiert Report noch?
+                            {
+                                var report = {};
+                                report.WorldId = this.ObjectData.server.WorldId;
+                                report.AccountId = this.ObjectData.player.AccountId;
+                                report.ReportId = _data.i;
+                                report.OwnBaseId = _data.d.abi;
+                                report.AttackTime = _data.d.t;
+                                report.TargetLevel = _data.d.dbl;
+                                report.TargetFaction = _data.d.dpf;
+                                report.BattleStatus = _data.d.cr;
+                                report.GainTib = 0;
+                                report.GainCry = 0;
+                                report.GainCre = 0;
+                                report.GainRp = 0;
+                                if (_data.tp == 2) // Attack agains forgotten
+                                {
+                                    for (var i = 0; i < _data.d.arr.length; i++)
+                                    {
+                                        var typeOfRessources = _data.d.arr[i].t;
+                                        switch(typeOfRessources)
+                                        {
+                                            case 1:
+                                            {
+                                                report.GainTib = parseInt(_data.d.arr[i].a);
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                report.GainCry = parseInt(_data.d.arr[i].a);
+                                                break;
+                                            }
+                                            case 3:
+                                            {
+                                                report.GainCre = parseInt(_data.d.arr[i].a);
+                                                break;
+                                            }
+                                            case 6:
+                                            {
+                                                report.GainRp = parseInt(_data.d.arr[i].a);
+                                                break;
+                                            }
+                                            default:
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (_data.tp == 1) // Attack against player
+                                {
+                                    for (var i = 0; i < _data.d.arp.length; i++)
+                                    {
+                                        var typeOfRessources = _data.d.arp[i].t;
+                                        switch(typeOfRessources)
+                                        {
+                                            case 1:
+                                            {
+                                                report.GainTib = parseInt(_data.d.arp[i].a);
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                report.GainCry = parseInt(_data.d.arp[i].a);
+                                                break;
+                                            }
+                                            case 3:
+                                            {
+                                                report.GainCre = parseInt(_data.d.arp[i].a);
+                                                break;
+                                            }
+                                            case 6:
+                                            {
+                                                report.GainRp = parseInt(_data.d.arp[i].a);
+                                                break;
+                                            }
+                                            default:
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                report.CostCry = 0;
+                                report.CostRep = 0;
+                                for (var i = 0; i < _data.d.arca.length; i++)
+                                {
+                                    var typeOfRessources = _data.d.arca[i].t;
+                                    switch(typeOfRessources)
+                                    {
+                                        case 2:
+                                        {
+                                            report.CostCry = parseInt(_data.d.arca[i].a);
+                                            break;
+                                        }
+                                        case 8:
+                                        {
+                                            report.CostRep = parseInt(_data.d.arca[i].a);
+                                            break;
+                                        }
+                                        default:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                for (var i = 0; i < _data.d.arci.length; i++)
+                                {
+                                    var typeOfRessources = _data.d.arci[i].t;
+                                    switch(typeOfRessources)
+                                    {
+                                        case 2:
+                                        {
+                                            report.CostCry = parseInt(_data.d.arci[i].a);
+                                            break;
+                                        }
+                                        case 9:
+                                        {
+                                            report.CostRep = parseInt(_data.d.arci[i].a);
+                                            break;
+                                        }
+                                        default:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                this.ObjectReportData[_data.i] = report;
+                                this.sendReportData(_data.i);
+                            }
+                        },
+                        sendReportData: function(_reportId)
+                        {
+                            // console.log(this.ObjectReportData[_reportId]);
+                            var ArrayReports = [this.ObjectReportData[_reportId]];
+                            var ObjectSend = {action:"sendDataFromInGameReport", ObjectData:ArrayReports};
+                            $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         sendChatInfo: function(_dataAnswer)
                         {
@@ -2168,11 +2345,7 @@
                                     }
                                 }
                                 var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayPackageLayouts, WorldId: WorldId, PlayerName: PlayerName};
-                                $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
-                                .always(function(_data)
-                                {
-                                    console.log(_data);
-                                });
+                                $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                             }
                             // $.ajaxSetup({async: true});
                             /*var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ArrayLayouts, WorldId: WorldId};
@@ -2189,11 +2362,7 @@
                             var layout = this.ArrayLayouts[this.ArrayLayouts.length - 1];
                             var ArrayLayout = [layout];
                             var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, PlayerName: PlayerName};
-                            $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
-                            .always(function(_data)
-                            {
-                                console.log(_data);
-                            });
+                            $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         stopScan: function()
                         {

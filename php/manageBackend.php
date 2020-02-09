@@ -959,6 +959,41 @@ if (!$conn->connect_error)
             }
             break;
         }
+        // Reports
+        case 'sendDataFromInGameReport':
+        {
+            $ObjectData = $_post['ObjectData'];
+            $strQueryReports = "INSERT INTO reports (WorldId, AccountId, ReportId, OwnBaseId, AttackTime, TargetLevel, TargetFaction, BattleStatus, GainTib, GainCry, GainCre, GainRp, CostCry, CostRep) VALUES ";
+            foreach ($ObjectData as $key => $value)
+            {
+                $WorldId = $value['WorldId'];
+                $AccountId = $value['AccountId'];
+                $ReportId = $value['ReportId'];
+                $OwnBaseId = $value['OwnBaseId'];
+                $AttackTime = date('Y-m-d H-i-s', intval($value['AttackTime'] /= 1000));
+                $TargetLevel = $value['TargetLevel'];
+                $TargetFaction = $value['TargetFaction'];
+                $BattleStatus = $value['BattleStatus'];
+                $GainTib = $value['GainTib'];
+                $GainCry = $value['GainCry'];
+                $GainCre = $value['GainCre'];
+                $GainRp = $value['GainRp'];
+                $CostCry = $value['CostCry'];
+                $CostRep = $value['CostRep'];
+                if ($key != count($ObjectData) - 1)
+                {
+                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep'),";
+                }
+                else
+                {
+                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep')";
+                }
+            }
+            $strQueryReports .= " ON DUPLICATE KEY UPDATE AccountId = VALUES(AccountId), OwnBaseId = VALUES(OwnBaseId), AttackTime = VALUES(AttackTime), TargetLevel = VALUES(TargetLevel), TargetFaction = VALUES(TargetFaction), BattleStatus = VALUES(BattleStatus), GainTib = VALUES(GainTib), GainCry = VALUES(GainCry), GainCre = VALUES(GainCre), GainRp = VALUES(GainRp), CostCry = VALUES(CostCry), CostRep = VALUES(CostRep);";
+            $conn->multi_query($strQueryReports);
+            $UserAnswer = [1, 'Report-Data successfull transmitted'];
+            break;
+        }
         // Update-Service
         case 'getCurrentVersionOfLeoStats':
         {
