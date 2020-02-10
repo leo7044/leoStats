@@ -8,7 +8,7 @@
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
                 // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.10.2';
+                var scriptVersionLocal = '2020.02.10.3';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -25,7 +25,6 @@
                             this.ObjectData = {};
                             this.linkBase = '';
                             this.ObjectReportData = {};
-                            this.timeoutArrayReportHeaderAllManager = [];
                             this.timeoutArrayReportDataManager = [];
                             this.ReportsAreLoading = false;
                             this.app = qx.core.Init.getApplication();
@@ -838,6 +837,8 @@
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
                                         name : PlayerName
                                     }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfoByName), null);
+                                    // Anfrage absenden
+                                    this.sendDataFromInGame();
                                     // ab hier clever Timeouten
                                     // Abschüsse für Player
                                     if (!this.ReportsAreLoading)
@@ -845,19 +846,23 @@
                                         this.ReportsAreLoading = true;
                                         // console.log(this.ReportsAreLoading);
                                         // getReportCount (Offensive)
-                                        ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportCount", {
-                                            playerReportType: 1
-                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportCount), null);
+                                        var ObjectSend = {action: 'getExistingReportIds', WorldId: WorldId, AccountId: AccountId};
+                                        var _self = this;
+                                        $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
+                                        .always(function(_data)
+                                        {
+                                            for (var i = 0; i < _data.length; i++)
+                                            {
+                                                _self.ObjectReportData[_data[i].ReportId] = _data[i].ReportId; // create fake-report
+                                            }
+                                            _self.killReportTimeouts();
+                                        });
                                     }
-                                    // Anfrage absenden
-                                    this.sendDataFromInGame();
-                                    var _self = this;
-                                    setTimeout(function(){_self.getCurrentStats();}, 3600000);
+                                    setTimeout(function(_self){_self.getCurrentStats();}, 3600000, this);
                                 }
                                 else
                                 {
-                                    var _self = this;
-                                    setTimeout(function(){_self.getCurrentStats();}, 1000);
+                                    setTimeout(function(_self){_self.getCurrentStats();}, 1000, this);
                                 }
                             }
                             catch(e)
@@ -876,19 +881,9 @@
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
                         },
-                        getReportCount: function(_context, _data)
+                        killReportTimeouts: function()
                         {
-                            var reportCounter = _data;
-                            if (reportCounter)
-                            {
-                                this.getReportHeaderAllTimeManager(reportCounter);
-                            }
-                        },
-                        getReportHeaderAllTimeManager: function(_reportCounter)
-                        {
-                            // kill Timeouts
                             this.timeoutArrayReportDataManager.push([]);
-                            this.timeoutArrayReportHeaderAllManager.push([]);
                             for (var i = 0; i < this.timeoutArrayReportDataManager.length; i++)
                             {
                                 for (var j = 0; j < this.timeoutArrayReportDataManager[i].length; j++)
@@ -896,38 +891,22 @@
                                     clearTimeout(this.timeoutArrayReportDataManager[i][j]);
                                 }
                             }
-                            for (var i = 0; i < this.timeoutArrayReportHeaderAllManager.length; i++)
-                            {
-                                for (var j = 0; j < this.timeoutArrayReportHeaderAllManager[i].length; j++)
-                                {
-                                    clearTimeout(this.timeoutArrayReportHeaderAllManager[i][j]);
-                                }
-                            }
-                            var loops = parseInt(_reportCounter / 1000) + 1;
-                            for (var i = 0; i < loops; i++)
-                            {
-                                this.getReportHeaderAllManager(i * 1000);
-                            }
+                            this.getReportHeaderAllManager();
                         },
-                        getReportHeaderAllManager: function(_skipReports)
+                        getReportHeaderAllManager: function()
                         {
                             // getReportHeaderAll (Offensive)
-                            var _self = this;
-                            this.timeoutArrayReportHeaderAllManager[this.timeoutArrayReportHeaderAllManager.length - 1].push(setTimeout(function()
-                            {
-                                ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
-                                    type: 1,
-                                    skip: _skipReports,
-                                    take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
-                                    sort: 1,
-                                    ascending: false
-                                }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportHeaderAll), null);
-                            }, _skipReports * 1000)); // 1000ms pro Bericht
+                            ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportHeaderAll", {
+                                type: 1,
+                                skip: 0,
+                                take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
+                                sort: 1,
+                                ascending: false
+                            }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportHeaderAll), null);
                         },
                         getReportHeaderAll: function(_context, _data)
                         {
-                            // concat richtig, nicht davor hängen?
-                            // this.ArrayReportHeader = this.ArrayReportHeader.concat(_data); // concat, weil hinten anhängen, falls mehrere Schleifendurchläufe
+                            // console.log(this.ObjectReportData);
                             var ArrayReportHeader = _data;
                             var ArrayReportIds = [];
                             for (var i = 0; i < ArrayReportHeader.length; i++)
@@ -942,38 +921,20 @@
                                 this.getReportDataManager(ArrayReportIds[i], i);
                             }
                             this.ReportsAreLoading = false;
-                            // console.log(this.ReportsAreLoading);
-                            // ad.cr = Ausgang vom Kampf
-                            // 1 = Total Victory
-                            // 4 = Victory
-                            // 5 = Total Defeat
-                            /*
-                            Type:ClientLib.Data.Reports.ECombatResult
-                            System.Int32 value__
-                            static ClientLib.Data.Reports.ECombatResult Draw
-                            static ClientLib.Data.Reports.ECombatResult CityDestroyed
-                            static ClientLib.Data.Reports.ECombatResult CommandPostDestroyed
-                            static ClientLib.Data.Reports.ECombatResult DefenseDestroyed
-                            static ClientLib.Data.Reports.ECombatResult BaseBreakthrough
-                            static ClientLib.Data.Reports.ECombatResult OffenseDestroyed
-                            static ClientLib.Data.Reports.ECombatResult AttackerMoreRP
-                            static ClientLib.Data.Reports.ECombatResult DefenderMoreRP
-                            */
                         },
                         getReportDataManager: function(_curReportId, _curReportCount)
                         {
                             // getReportData
-                            var _self = this;
-                            this.timeoutArrayReportDataManager[this.timeoutArrayReportDataManager.length - 1].push(setTimeout(function()
+                            this.timeoutArrayReportDataManager[this.timeoutArrayReportDataManager.length - 1].push(setTimeout(function(_self)
                             {
                                 ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
                                     playerReportId: _curReportId
                                 }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportData), null);
-                            }, _curReportCount * 1000));
+                            }, _curReportCount * 1000, this));
                         },
                         getReportData: function(_context, _data)
                         {
-                            if (_data.i) // existiert Report noch?
+                            if (_data.i) // existiert Report noch? (könnte gelöscht worden sein von User oder automatisch nach 1 Woche gelöscht)
                             {
                                 var report = {};
                                 report.WorldId = this.ObjectData.server.WorldId;
@@ -988,7 +949,7 @@
                                 report.GainCry = 0;
                                 report.GainCre = 0;
                                 report.GainRp = 0;
-                                if (_data.tp == 2) // Attack agains forgotten
+                                if (_data.tp == 2) // Attack against forgotten
                                 {
                                     for (var i = 0; i < _data.d.arr.length; i++)
                                     {
@@ -1157,8 +1118,7 @@
                             }
                             else
                             {
-                                var _self = this;
-                                setTimeout(function(){_self.sendDataFromInGame();}, 1000);
+                                setTimeout(function(_self){_self.sendDataFromInGame();}, 1000, this);
                             }
                         }
                     }
@@ -1246,8 +1206,7 @@
                                     else if (cityFaction == 0 && this.errorRangeCounter < 5)
                                     {
                                         this.errorRangeCounter++;
-                                        _self = this;
-                                        timeoutScanClickedBase = setTimeout(function(){_self.scanClickedBase(_oldId, _newId);}, 1000);
+                                        timeoutScanClickedBase = setTimeout(function(_self){_self.scanClickedBase(_oldId, _newId);}, 1000, this);
                                     }
                                     else
                                     {
@@ -2208,8 +2167,7 @@
                                 {
                                     ClientLib.Data.MainData.GetInstance().get_Cities().set_CurrentCityId(curScanId);
                                 }
-                                var _self = this;
-                                setTimeout(function()
+                                setTimeout(function(_self)
                                 {
                                     if (ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity())
                                     {
@@ -2260,15 +2218,14 @@
                                         _self.errorExistsCounter = 0;
                                         _self.scanFirstLayout();
                                     }
-                                }, 1000);
+                                }, 1000, this);
                                 break;
                             }
                             if (!this.ArrayIdsForScan.length)
                             {
                                 // this.sendDataAllLayouts();
                                 // this.sendDataOnlyFromLastLayout();
-                                var _self = this;
-                                setTimeout(function(){_self.stopBaseScan();}, 1000);
+                                setTimeout(function(_self){_self.stopBaseScan();}, 1000, this);
                             }
                         },
                         scanAroundOwnBase: function(_ownBaseId)
