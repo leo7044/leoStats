@@ -23,6 +23,14 @@ if (!$conn->connect_error)
             // Login
             $AccountId = $ObjectPlayer['AccountId'];
             $PlayerName = $ObjectPlayer['PlayerName'];
+            
+            $VersionNew = '';
+            if (isset($_post['ScriptVersionLocal']))
+            {
+                $VersionNew = $_post['ScriptVersionLocal'];
+            }
+            putStuffIntoTableTmpLogs($conn, $PlayerName, $VersionNew);
+
             $PasswordStandard = hash('sha512', $PlayerName . '_' . $AccountId);
             $result = $conn->query("SELECT `AccountId`, `UserName`, `Password` FROM `login` WHERE `AccountId`='$AccountId';");
             $oldPlayerName = '';
@@ -105,7 +113,6 @@ if (!$conn->connect_error)
                 {
                     $BaseName = $ObjectBase['BaseName'];
                 }
-                putStuffIntoTableTmpLogs($conn, $ObjectBase['Name'], $ObjectBase['BaseName']);
                 $BasePoints = $ObjectBase['BasePoints'];
                 $LvLCY = $ObjectBase['LvLCY'];
                 $LvLBase = $ObjectBase['LvLBase'];
