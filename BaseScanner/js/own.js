@@ -91,7 +91,7 @@ function drawLayouts()
         var layoutArray = ArrayLayouts[key];
         var worldId = layoutArray['WorldId'];
         var zeit = layoutArray['Zeit'];
-        var playerName = layoutArray['PlayerName'];
+        var playerName = layoutArray['UserName'];
         var posX = layoutArray['PosX'];
         var posY = layoutArray['PosY'];
         var layout = layoutArray['Layout'];
