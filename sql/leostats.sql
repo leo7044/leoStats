@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 09. Feb 2020 um 16:30
+-- Erstellungszeit: 10. Feb 2020 um 10:30
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -544,11 +544,38 @@ AccountId IN
 )
 ORDER BY pl.Zeit ASC$$
 
-CREATE PROCEDURE `getReportsGroupByWorldIdAccountId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+CREATE PROCEDURE `getReportsGroupByAccountIdWhereWorldId` (IN `WorldId` INT)  NO SQL
+SELECT r.AccountId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+GROUP BY r.AccountId
+ORDER BY COUNT(*) DESC, r.AccountId ASC$$
+
+CREATE PROCEDURE `getReportsGroupByAttackTime` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
 SELECT DATE(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
-GROUP BY DATE(r.AttackTime)$$
+GROUP BY DATE(r.AttackTime)
+ORDER BY DATE(r.AttackTime) ASC$$
+
+CREATE PROCEDURE `getReportsGroupByAttackTimeBaseId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+SELECT DATE(r.AttackTime), r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+GROUP BY r.OwnBaseId
+ORDER BY r.OwnBaseId ASC$$
+
+CREATE PROCEDURE `getReportsGroupByBaseIdWhereAttackTime` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
+SELECT r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+and DATE(r.AttackTime)=Date
+GROUP BY r.OwnBaseId
+ORDER BY r.OwnBaseId ASC$$
+
+CREATE PROCEDURE `getReportsGroupByWorldId` ()  NO SQL
+SELECT r.WorldId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+GROUP BY r.WorldId
+ORDER BY COUNT(*) DESC$$
 
 CREATE PROCEDURE `getTransmissionsPerDay` ()  NO SQL
 SELECT pl.Zeit, count(*) FROM player pl GROUP BY pl.Zeit$$
@@ -649,6 +676,7 @@ CREATE TABLE `bases` (
 CREATE TABLE `layouts` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `Zeit` datetime NOT NULL,
+  `AccountId` mediumint(7) UNSIGNED NOT NULL,
   `PlayerName` varchar(16) COLLATE utf8_bin NOT NULL,
   `PosX` smallint(4) UNSIGNED NOT NULL,
   `PosY` smallint(4) UNSIGNED NOT NULL,
@@ -814,8 +842,8 @@ CREATE TABLE `reports` (
   `TargetLevel` tinyint(2) UNSIGNED NOT NULL,
   `TargetFaction` tinyint(1) UNSIGNED NOT NULL,
   `BattleStatus` tinyint(1) UNSIGNED NOT NULL,
-  `GainTib` bigint(11) UNSIGNED NOT NULL,
-  `GainCry` bigint(11) UNSIGNED NOT NULL,
+  `GainTib` bigint(12) UNSIGNED NOT NULL,
+  `GainCry` bigint(12) UNSIGNED NOT NULL,
   `GainCre` bigint(11) UNSIGNED NOT NULL,
   `GainRp` bigint(11) UNSIGNED NOT NULL,
   `CostCry` bigint(11) UNSIGNED NOT NULL,
@@ -864,7 +892,8 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
-  ADD KEY `ReservedBy` (`ReservedBy`);
+  ADD KEY `ReservedBy` (`ReservedBy`),
+  ADD KEY `AccountId` (`AccountId`);
 
 --
 -- Indizes für die Tabelle `login`
@@ -959,7 +988,8 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD CONSTRAINT `layouts_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `layouts_ibfk_3` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `player`
