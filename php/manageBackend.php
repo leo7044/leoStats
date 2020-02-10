@@ -96,19 +96,16 @@ if (!$conn->connect_error)
             foreach ($ObjectBases as $key => $ObjectBase)
             {
                 $BaseId = $ObjectBase['BaseId'];
-                $Name = '';
+                $BaseName = '';
                 if (isset($ObjectBase['Name']))
                 {
-                    $Name = $ObjectBase['Name'];
+                    $BaseName = $ObjectBase['Name'];
                 }
                 else if (isset($ObjectBase['BaseName']))
                 {
-                    $Name = $ObjectBase['BaseName'];
+                    $BaseName = $ObjectBase['BaseName'];
                 }
-                $stringOld = $ObjectBase['Name'];
-                $stringNew = $ObjectBase['BaseName'];
-                $TmpLogString = "INSERT INTO tmp_logs (StringValueOld, StringValueNew) VALUES ('$stringOld', '$stringNew')";
-                $conn->query($TmpLogString);
+                putStuffIntoTableTmpLogs($conn, $ObjectBase['Name'], $ObjectBase['BaseName']);
                 $BasePoints = $ObjectBase['BasePoints'];
                 $LvLCY = $ObjectBase['LvLCY'];
                 $LvLBase = $ObjectBase['LvLBase'];
@@ -125,12 +122,12 @@ if (!$conn->connect_error)
                 $CnCOpt = $ObjectBase['CnCOpt'];
                 if ($key != count($ObjectBases) - 1)
                 {
-                    $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$Name'),";
+                    $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$BaseName'),";
                     $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt'),";
                 }
                 else
                 {
-                    $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$Name')";
+                    $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$BaseName')";
                     $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt')";
                 }
             }
@@ -1113,6 +1110,12 @@ function prepareSelectStringOverviewWorld($typeOfPlayerData, $WorldId)
             SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
         );";
     return $strQuery;
+}
+
+function putStuffIntoTableTmpLogs($conn, $stringOld, $stringNew)
+{
+    $TmpLogString = "INSERT INTO tmp_logs (StringValueOld, StringValueNew) VALUES ('$stringOld', '$stringNew')";
+    $conn->query($TmpLogString);
 }
 
 // ersetzt Sonderzeichen (für schreiben in DB)
