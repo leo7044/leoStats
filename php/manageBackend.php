@@ -994,6 +994,18 @@ if (!$conn->connect_error)
             $UserAnswer = [1, 'Report-Data successfull transmitted'];
             break;
         }
+        case 'getExistingReportIds':
+        {
+            $WorldId = $_post['WorldId'];
+            $AccountId = $_post['AccountId'];
+            $sqlQuery = "SELECT r.ReportId FROM reports r WHERE r.WorldId='$WorldId' AND r.AccountId='$AccountId' ORDER BY r.ReportId ASC;";
+            $result = $conn->query($sqlQuery);
+            while ($zeile = $result->fetch_assoc())
+            {
+                array_push($UserAnswer, $zeile);
+            }
+            break;
+        }
         // Update-Service
         case 'getCurrentVersionOfLeoStats':
         {
