@@ -821,11 +821,7 @@ if (!$conn->connect_error)
         {
             $strQueryLayouts = "INSERT INTO layouts (WorldId, Zeit, AccountId, PlayerName, PosX, PosY, FieldsTib, FieldsCry, Layout, CncOpt, Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2) VALUES ";
             $WorldId = $_post['WorldId'];
-            $AccountId = 0;
-            if (isset($_post['AccountId']))
-            {
-                $AccountId = $_post['AccountId'];
-            }
+            $AccountId = $_post['AccountId'];
             $PlayerName = $_post['PlayerName'];
             $ObjectData = $_post['ObjectData'];
             foreach ($ObjectData as $key => $value)
