@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 10. Feb 2020 um 10:30
+-- Erstellungszeit: 10. Feb 2020 um 16:21
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -313,8 +313,9 @@ AND
 l.Zeit >= minDate$$
 
 CREATE PROCEDURE `getLayoutsGroupByPlayerName` ()  NO SQL
-SELECT l.PlayerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
-GROUP BY l.PlayerName
+SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
+GROUP BY lo.UserName
 ORDER BY COUNT(*) DESC$$
 
 CREATE PROCEDURE `getLayoutsGroupByWorldId` ()  NO SQL
@@ -328,106 +329,111 @@ SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
 
 CREATE PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT * FROM layouts l
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
+IF (worldId > 0, worldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
+IF (minPosX > 0, minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
+IF (maxPosX > 0, maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
+IF (minPosY > 0, minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
+IF (maxPosY > 0, maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
+IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
 AND
-l.Zeit >= minDate
-ORDER BY l.Crystal6 DESC, l.Crystal5 DESC, l.Crystal4 DESC, l.Crystal3 DESC, l.Crystal2 DESC, l.Crystal1 DESC
+la.Zeit >= minDate
+ORDER BY la.Crystal6 DESC, la.Crystal5 DESC, la.Crystal4 DESC, la.Crystal3 DESC, la.Crystal2 DESC, la.Crystal1 DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT * FROM layouts l
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
+IF (worldId > 0, worldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
+IF (minPosX > 0, minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
+IF (maxPosX > 0, maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
+IF (minPosY > 0, minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
+IF (maxPosY > 0, maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
-ORDER by l.Zeit DESC
+IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
+ORDER by la.Zeit DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT * FROM layouts l
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
+IF (worldId > 0, worldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
+IF (minPosX > 0, minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
+IF (maxPosX > 0, maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
+IF (minPosY > 0, minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
+IF (maxPosY > 0, maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
+IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
 AND
-l.Zeit >= minDate
-ORDER BY l.Mixed6 DESC, l.Mixed5 DESC, l.Mixed4 DESC, l.Mixed3 DESC, l.Mixed2 DESC, l.Mixed1 DESC
+la.Zeit >= minDate
+ORDER BY la.Mixed6 DESC, la.Mixed5 DESC, la.Mixed4 DESC, la.Mixed3 DESC, la.Mixed2 DESC, la.Mixed1 DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT * FROM layouts l
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
+IF (worldId > 0, worldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
+IF (minPosX > 0, minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
+IF (maxPosX > 0, maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
+IF (minPosY > 0, minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
+IF (maxPosY > 0, maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
+IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
 AND
-l.Zeit >= minDate
-ORDER BY l.Power8 DESC, l.Power7 DESC, l.Power6 DESC, l.Power5 DESC, l.Power4 DESC, l.Power3 DESC, l.Power2 DESC
+la.Zeit >= minDate
+ORDER BY la.Power8 DESC, la.Power7 DESC, la.Power6 DESC, la.Power5 DESC, la.Power4 DESC, la.Power3 DESC, la.Power2 DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT * FROM layouts l
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
+IF (worldId > 0, worldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
+IF (minPosX > 0, minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
+IF (maxPosX > 0, maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
+IF (minPosY > 0, minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
+IF (maxPosY > 0, maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', l.PlayerName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=l.FieldsTib, true)
+IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
 AND
-l.Zeit >= minDate
-ORDER BY l.Tiberium6 DESC, l.Tiberium5 DESC, l.Tiberium4 DESC, l.Tiberium3 DESC, l.Tiberium2 DESC, l.Tiberium1 DESC
+la.Zeit >= minDate
+ORDER BY la.Tiberium6 DESC, la.Tiberium5 DESC, la.Tiberium4 DESC, la.Tiberium3 DESC, la.Tiberium2 DESC, la.Tiberium1 DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
@@ -863,6 +869,18 @@ CREATE TABLE `substitution` (
   `active` bit(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tmp_logs`
+--
+
+CREATE TABLE `tmp_logs` (
+  `Zeit` timestamp NOT NULL DEFAULT current_timestamp(),
+  `StringValueOld` text COLLATE utf8_bin NOT NULL,
+  `StringValueNew` text COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 --
 -- Indizes der exportierten Tabellen
 --
@@ -893,13 +911,15 @@ ALTER TABLE `bases`
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
   ADD KEY `ReservedBy` (`ReservedBy`),
-  ADD KEY `AccountId` (`AccountId`);
+  ADD KEY `AccountId` (`AccountId`),
+  ADD KEY `PlayerName` (`PlayerName`);
 
 --
 -- Indizes für die Tabelle `login`
 --
 ALTER TABLE `login`
-  ADD PRIMARY KEY (`AccountId`);
+  ADD PRIMARY KEY (`AccountId`),
+  ADD KEY `UserName` (`UserName`);
 
 --
 -- Indizes für die Tabelle `player`
@@ -948,8 +968,7 @@ ALTER TABLE `relation_server`
 --
 ALTER TABLE `reports`
   ADD PRIMARY KEY (`WorldId`,`ReportId`),
-  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`),
-  ADD KEY `WorldId_2` (`WorldId`,`AccountId`);
+  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`);
 
 --
 -- Indizes für die Tabelle `substitution`
@@ -1029,8 +1048,7 @@ ALTER TABLE `relation_player`
 -- Constraints der Tabelle `reports`
 --
 ALTER TABLE `reports`
-  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`WorldId`,`AccountId`) REFERENCES `relation_player` (`WorldId`, `AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `substitution`
