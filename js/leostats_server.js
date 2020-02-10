@@ -7,6 +7,8 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
+                // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
+                var scriptVersionLocal = '2020.02.10.2';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -19,8 +21,6 @@
                     {
                         initialize: function()
                         {
-                            // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.10.1';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -41,7 +41,7 @@
                         buildGUI: function()
                         {
                             // GUI-Fenster
-                            this.GuiFenster = new qx.ui.window.Window('leoStats ' + this.scriptVersionLocal + ' by leo7044').set({
+                            this.GuiFenster = new qx.ui.window.Window('leoStats ' + scriptVersionLocal + ' by leo7044').set({
                                 padding: 5,
                                 paddingRight: 0,
                                 width: 350,
@@ -108,7 +108,7 @@
                             TextKey.add(new qx.ui.basic.Label('Scriptname').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('leoStats').set({rich: true}));
                             TextKey.add(new qx.ui.basic.Label('Version').set({rich: true}));
-                            TextValue.add(new qx.ui.basic.Label(this.scriptVersionLocal).set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(scriptVersionLocal).set({rich: true}));
                             TextKey.add(new qx.ui.basic.Label('Autor').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('leo7044').set({rich: true}));
                             TextKey.add(new qx.ui.basic.Label('Website').set({rich: true}));
@@ -1108,7 +1108,7 @@
                         {
                             // console.log(this.ObjectReportData[_reportId]);
                             var ArrayReports = [this.ObjectReportData[_reportId]];
-                            var ObjectSend = {action:"sendDataFromInGameReport", ObjectData:ArrayReports};
+                            var ObjectSend = {action:"sendDataFromInGameReport", ObjectData:ArrayReports, ScriptVersionLocal: scriptVersionLocal};
                             $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         sendChatInfo: function(_dataAnswer)
@@ -1143,7 +1143,7 @@
                                     }
                                 }, this);
                                 requestLogin.send();*/
-                                var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ObjectData};
+                                var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ObjectData, ScriptVersionLocal: scriptVersionLocal};
                                 var _self = this;
                                 $.post(linkToRoot + 'php/manageBackend.php', ObjectSend)
                                 .always(function(_data)
@@ -2319,7 +2319,7 @@
                                 this.scanAroundOwnBase(ownBaseId);
                             }
                         },
-                        sendDataAllLayouts: function()
+                        /*sendDataAllLayouts: function()
                         {
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
                             var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
@@ -2342,17 +2342,17 @@
                                         ArrayPackageLayouts.push(this.ArrayLayouts[layoutNumber]);
                                     }
                                 }
-                                var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayPackageLayouts, WorldId: WorldId, PlayerName: PlayerName};
+                                var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayPackageLayouts, WorldId: WorldId, PlayerName: PlayerName, ScriptVersionLocal: scriptVersionLocal};
                                 $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                             }
                             // $.ajaxSetup({async: true});
-                            /*var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ArrayLayouts, WorldId: WorldId};
+                            var ObjectSend = {action:"sendDataFromInGame", ObjectData:this.ArrayLayouts, WorldId: WorldId, ScriptVersionLocal: scriptVersionLocal};
                             $.post('https://leostats.000webhostapp.com/BaseScanner/php/manageBackend.php', ObjectSend)
                             .always(function(_data)
                             {
                                 console.log(_data);
-                            });*/
-                        },
+                            });
+                        },*/
                         sendDataOnlyFromLastLayout: function()
                         {
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
@@ -2360,7 +2360,7 @@
                             var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
                             var layout = this.ArrayLayouts[this.ArrayLayouts.length - 1];
                             var ArrayLayout = [layout];
-                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, AccountId: AccountId, PlayerName: PlayerName};
+                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, AccountId: AccountId, PlayerName: PlayerName, ScriptVersionLocal: scriptVersionLocal};
                             $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         stopScan: function()
