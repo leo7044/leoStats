@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.09.1';
+                            this.scriptVersionLocal = '2020.02.10';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -2356,10 +2356,11 @@
                         sendDataOnlyFromLastLayout: function()
                         {
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
+                            var AccountId = ClientLib.Data.MainData.GetInstance().get_Player().get_AccountId();
                             var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
                             var layout = this.ArrayLayouts[this.ArrayLayouts.length - 1];
                             var ArrayLayout = [layout];
-                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, PlayerName: PlayerName};
+                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, AccountId: AccountId, PlayerName: PlayerName};
                             $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         stopScan: function()
