@@ -1019,7 +1019,7 @@ if (!$conn->connect_error)
         {
             $WorldId = $_post['WorldId'];
             $AccountId = $_post['AccountId'];
-            $sqlQuery = "SELECT r.ReportId FROM reports r WHERE r.WorldId='$WorldId' AND r.AccountId='$AccountId' ORDER BY r.ReportId ASC;";
+            $sqlQuery = "SELECT r.ReportId FROM reports r WHERE r.WorldId='$WorldId' AND r.AccountId='$AccountId' ORDER BY r.ReportId DESC LIMIT 1000;";
             $result = $conn->query($sqlQuery);
             while ($zeile = $result->fetch_assoc())
             {
