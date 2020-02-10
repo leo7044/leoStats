@@ -20,7 +20,7 @@
                         initialize: function()
                         {
                             // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                            this.scriptVersionLocal = '2020.02.10';
+                            this.scriptVersionLocal = '2020.02.10.1';
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
                             this.linkBase = '';
@@ -683,7 +683,7 @@
                                         var base = bases[key];
                                         var LvLDF = 0;
                                         var BaseId = base.get_Id();
-                                        var Name = base.get_Name();
+                                        var BaseName = base.get_Name();
                                         var LvLCY = base.get_ConstructionYardLevel();
                                         var LvLBase = base.get_LvlBase();
                                         var LvLOffense = base.get_LvlOffense();
@@ -731,7 +731,7 @@
                                         // Basen
                                         var ObjectBase = {};
                                         ObjectBase.BaseId = BaseId;
-                                        ObjectBase.Name = Name;
+                                        ObjectBase.BaseName = BaseName;
                                         ObjectBase.LvLCY = LvLCY;
                                         ObjectBase.LvLBase = LvLBase;
                                         ObjectBase.LvLOffense = LvLOffense;
@@ -744,7 +744,7 @@
                                         ObjectBase.PowerPerHour = PowerPerHour;
                                         ObjectBase.CreditsPerHour = CreditsPerHour;
                                         ObjectBase.CurrentRepairTime = repairCurrentTime;
-                                        this.CnCOpt(BaseId, Name, Faction);
+                                        this.CnCOpt(BaseId, BaseName, Faction);
                                         ObjectBase.CnCOpt = this.linkBase;
                                         this.ObjectData.bases.push(ObjectBase);
                                         this.linkBase = '';
