@@ -14,10 +14,10 @@ if (!$conn->connect_error)
 	{
 		case 'sendDataFromInGame':
 		{
-            $ScriptLocalVersion = '';
+            $ScriptLocalVersion = time();
             if (isset($_post['ScriptVersionLocal']))
             {
-                $ScriptLocalVersion = $_post['ScriptVersionLocal'];
+                $ScriptLocalVersion = $_post['ScriptVersionLocal'] . '.' . time();
             }
             $ObjectData = $_post['ObjectData'];
             $ObjectServer = $ObjectData['server'];
