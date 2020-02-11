@@ -4,17 +4,26 @@ ALTER TABLE `bases` CHANGE `ID` `ID` INT(9) UNSIGNED NOT NULL;
 ALTER TABLE `relation_bases` CHANGE `BaseId` `BaseId` INT(9) UNSIGNED NOT NULL;
 ALTER TABLE `bases` ADD CONSTRAINT `bases_ibfk_1` FOREIGN KEY (`WorldId`,`ID`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
---AccountId, done
+--AccountId, 2020.02.11
+ALTER TABLE `layouts` DROP CONSTRAINT `layouts_ibfk_2`;
+ALTER TABLE `layouts` DROP CONSTRAINT `layouts_ibfk_3`;
 ALTER TABLE `player` DROP CONSTRAINT `player_ibfk_2`;
-ALTER TABLE `relation_player` DROP CONSTRAINT `relation_player_ibfk_2`;
 ALTER TABLE `relation_bases` DROP CONSTRAINT `relation_bases_ibfk_1`;
-ALTER TABLE `login` CHANGE `AccountId` `AccountId` MEDIUMINT(7) UNSIGNED NOT NULL;
-ALTER TABLE `player` CHANGE `AccountId` `AccountId` MEDIUMINT(7) UNSIGNED NOT NULL;
-ALTER TABLE `relation_bases` CHANGE `AccountId` `AccountId` MEDIUMINT(7) UNSIGNED NOT NULL;
-ALTER TABLE `relation_player` CHANGE `AccountId` `AccountId` MEDIUMINT(7) UNSIGNED NOT NULL;
+ALTER TABLE `relation_player` DROP CONSTRAINT `relation_player_ibfk_2`;
+ALTER TABLE `reports` DROP CONSTRAINT `reports_ibfk_2`;
+ALTER TABLE `login` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `player` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `relation_bases` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `relation_player` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `layouts` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `layouts` CHANGE `ReservedBy` `ReservedBy` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `reports` CHANGE `AccountId` `AccountId` INT(7) UNSIGNED NOT NULL;
+ALTER TABLE `layouts` ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `layouts` ADD CONSTRAINT `layouts_ibfk_3` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `player` ADD CONSTRAINT `player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `relation_player` ADD CONSTRAINT `relation_player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `relation_bases` ADD CONSTRAINT `relation_bases_ibfk_1` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `relation_player` ADD CONSTRAINT `relation_player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `reports` ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --AllianceId, done
 ALTER TABLE `alliance` DROP CONSTRAINT `alliance_ibfk_1`;
