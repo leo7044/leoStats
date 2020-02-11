@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 10. Feb 2020 um 16:21
+-- Erstellungszeit: 11. Feb 2020 um 13:54
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -682,7 +682,7 @@ CREATE TABLE `bases` (
 CREATE TABLE `layouts` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `Zeit` datetime NOT NULL,
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `PlayerName` varchar(16) COLLATE utf8_bin NOT NULL,
   `PosX` smallint(4) UNSIGNED NOT NULL,
   `PosY` smallint(4) UNSIGNED NOT NULL,
@@ -690,7 +690,7 @@ CREATE TABLE `layouts` (
   `FieldsCry` tinyint(1) NOT NULL,
   `Layout` text COLLATE utf8_bin NOT NULL,
   `CncOpt` tinytext COLLATE utf8_bin NOT NULL,
-  `ReservedBy` mediumint(7) UNSIGNED NOT NULL,
+  `ReservedBy` int(7) UNSIGNED NOT NULL,
   `Tiberium6` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium5` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium4` tinyint(1) UNSIGNED NOT NULL,
@@ -725,9 +725,11 @@ CREATE TABLE `layouts` (
 --
 
 CREATE TABLE `login` (
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `UserName` varchar(16) COLLATE utf8_bin NOT NULL,
-  `Password` char(128) COLLATE utf8_bin NOT NULL
+  `Password` char(128) COLLATE utf8_bin NOT NULL,
+  `LastTransmission` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `ScriptLocalVersion` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -739,7 +741,7 @@ CREATE TABLE `login` (
 CREATE TABLE `player` (
   `Zeit` date NOT NULL,
   `WorldId` smallint(3) UNSIGNED NOT NULL,
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `ScorePoints` bigint(10) UNSIGNED NOT NULL,
   `CountBases` tinyint(2) UNSIGNED NOT NULL,
   `CountSup` tinyint(2) UNSIGNED NOT NULL,
@@ -802,7 +804,7 @@ CREATE TABLE `relation_alliance_share` (
 
 CREATE TABLE `relation_bases` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `BaseId` int(9) UNSIGNED NOT NULL,
   `Name` varchar(19) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -816,7 +818,7 @@ CREATE TABLE `relation_bases` (
 CREATE TABLE `relation_player` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `AllianceId` smallint(4) UNSIGNED NOT NULL,
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `Faction` tinyint(1) NOT NULL,
   `MemberRole` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -841,7 +843,7 @@ CREATE TABLE `relation_server` (
 
 CREATE TABLE `reports` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
-  `AccountId` mediumint(7) UNSIGNED NOT NULL,
+  `AccountId` int(7) UNSIGNED NOT NULL,
   `ReportId` int(10) UNSIGNED NOT NULL,
   `OwnBaseId` int(9) UNSIGNED NOT NULL,
   `AttackTime` datetime NOT NULL,
@@ -910,9 +912,9 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
-  ADD KEY `ReservedBy` (`ReservedBy`),
-  ADD KEY `AccountId` (`AccountId`),
-  ADD KEY `PlayerName` (`PlayerName`);
+  ADD KEY `PlayerName` (`PlayerName`),
+  ADD KEY `layouts_ibfk_2` (`ReservedBy`),
+  ADD KEY `layouts_ibfk_3` (`AccountId`);
 
 --
 -- Indizes für die Tabelle `login`
@@ -968,7 +970,8 @@ ALTER TABLE `relation_server`
 --
 ALTER TABLE `reports`
   ADD PRIMARY KEY (`WorldId`,`ReportId`),
-  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`);
+  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`),
+  ADD KEY `reports_ibfk_2` (`AccountId`);
 
 --
 -- Indizes für die Tabelle `substitution`
@@ -1048,7 +1051,8 @@ ALTER TABLE `relation_player`
 -- Constraints der Tabelle `reports`
 --
 ALTER TABLE `reports`
-  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `substitution`
