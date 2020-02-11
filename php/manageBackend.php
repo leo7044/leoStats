@@ -14,6 +14,11 @@ if (!$conn->connect_error)
 	{
 		case 'sendDataFromInGame':
 		{
+            $ScriptLocalVersion = '';
+            if (isset($_post['ScriptVersionLocal']))
+            {
+                $ScriptLocalVersion = $_post['ScriptVersionLocal'];
+            }
             $ObjectData = $_post['ObjectData'];
             $ObjectServer = $ObjectData['server'];
             $ObjectAlliance = $ObjectData['alliance'];
@@ -23,14 +28,6 @@ if (!$conn->connect_error)
             // Login
             $AccountId = $ObjectPlayer['AccountId'];
             $PlayerName = $ObjectPlayer['PlayerName'];
-            
-            $VersionNew = '';
-            if (isset($_post['ScriptVersionLocal']))
-            {
-                $VersionNew = $_post['ScriptVersionLocal'];
-            }
-            putStuffIntoTableTmpLogs($conn, $PlayerName, $VersionNew);
-
             $PasswordStandard = hash('sha512', $PlayerName . '_' . $AccountId);
             $result = $conn->query("SELECT `AccountId`, `UserName`, `Password` FROM `login` WHERE `AccountId`='$AccountId';");
             $oldPlayerName = '';
@@ -64,6 +61,8 @@ if (!$conn->connect_error)
                     $conn->query($strQuery);
                 }
             }
+            $strQuery = "UPDATE login SET ScriptLocalVersion='$ScriptLocalVersion' WHERE AccountId='$AccountId';";
+            $conn->query($strQuery);
             if (!$password || $password == $PasswordStandard)
             {
                 $UserAnswer[0] = 0;
