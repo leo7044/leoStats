@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 11. Feb 2020 um 13:54
+-- Erstellungszeit: 13. Feb 2020 um 16:43
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -26,7 +26,7 @@ DELIMITER $$
 --
 -- Prozeduren
 --
-CREATE PROCEDURE `compareTwoAlliances` (IN `WorldId` INT, IN `AllianceId1` INT, IN `AllianceId2` INT)  NO SQL
+CREATE PROCEDURE `compareTwoAlliancesAsAdmin` (IN `WorldId` INT, IN `AllianceId1` INT, IN `AllianceId2` INT)  NO SQL
 SELECT al1.Zeit, al1.TotalScore AS 'Data1', al2.TotalScore AS 'Data2',
 IF (al1.TotalScore >= al2.TotalScore, al1.TotalScore - al2.TotalScore, al2.TotalScore - al1.TotalScore) AS 'Difference'
 FROM relation_alliance a
@@ -37,7 +37,7 @@ AND al1.AllianceId=AllianceId1
 AND al2.AllianceId=AllianceId2
 ORDER BY al1.Zeit ASC$$
 
-CREATE PROCEDURE `compareTwoPlayers` (IN `WorldId` INT, IN `AccountId1` INT, IN `AccountId2` INT)  NO SQL
+CREATE PROCEDURE `compareTwoPlayersAsAdmin` (IN `WorldId` INT, IN `AccountId1` INT, IN `AccountId2` INT)  NO SQL
 SELECT pl1.Zeit, pl1.ScorePoints AS 'Data1', pl2.ScorePoints AS 'Data2',
 IF (pl1.ScorePoints >= pl2.ScorePoints, pl1.ScorePoints - pl2.ScorePoints, pl2.ScorePoints - pl1.ScorePoints) AS 'Difference'
 FROM relation_player p
@@ -124,7 +124,7 @@ p.AccountId=OwnAccountId
 ORDER BY a.Zeit ASC$$
 
 CREATE PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
-SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
 WHERE p.WorldId=WorldId
@@ -137,7 +137,7 @@ pl.Zeit=
 ORDER BY l.UserName$$
 
 CREATE PROCEDURE `getAlliancePlayerDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
+SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
 WHERE
@@ -504,7 +504,7 @@ ORDER BY b.BaseId$$
 CREATE PROCEDURE `getPlayerDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT pl.Zeit, pl.ScorePoints,
 IFNULL(a.AverageScore, 0) AS AverageScore,
-pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
 JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
 LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
 WHERE pl.WorldId=WorldId
@@ -514,7 +514,7 @@ ORDER BY pl.Zeit ASC$$
 CREATE PROCEDURE `getPlayerDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT pl.Zeit, pl.ScorePoints,
 IFNULL(a.AverageScore, 0) AS AverageScore,
-pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
+pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
 JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
 LEFT JOIN alliance a ON a.WorldId=pl.WorldId AND a.AllianceId=p.AllianceId AND a.Zeit=pl.Zeit
 WHERE
@@ -667,9 +667,9 @@ CREATE TABLE `bases` (
   `SupArt` enum('','Art','Ion','Air') COLLATE utf8_bin NOT NULL,
   `Tib` bigint(10) UNSIGNED NOT NULL,
   `Cry` bigint(10) UNSIGNED NOT NULL,
-  `Pow` bigint(11) UNSIGNED NOT NULL,
+  `Pow` bigint(12) UNSIGNED NOT NULL,
   `Cre` bigint(11) UNSIGNED NOT NULL,
-  `Rep` mediumint(8) UNSIGNED NOT NULL,
+  `Rep` mediumint(7) UNSIGNED NOT NULL,
   `CnCOpt` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -689,7 +689,7 @@ CREATE TABLE `layouts` (
   `FieldsTib` tinyint(1) NOT NULL,
   `FieldsCry` tinyint(1) NOT NULL,
   `Layout` text COLLATE utf8_bin NOT NULL,
-  `CncOpt` tinytext COLLATE utf8_bin NOT NULL,
+  `CncOpt` varchar(230) COLLATE utf8_bin NOT NULL,
   `ReservedBy` int(7) UNSIGNED NOT NULL,
   `Tiberium6` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium5` tinyint(1) UNSIGNED NOT NULL,
@@ -757,6 +757,7 @@ CREATE TABLE `player` (
   `PvP` smallint(4) UNSIGNED NOT NULL,
   `PvE` smallint(4) UNSIGNED NOT NULL,
   `LvLOff` decimal(4,2) UNSIGNED NOT NULL,
+  `LvLDef` decimal(4,2) UNSIGNED NOT NULL,
   `BaseD` decimal(4,2) UNSIGNED NOT NULL,
   `OffD` decimal(4,2) UNSIGNED NOT NULL,
   `DefD` decimal(4,2) UNSIGNED NOT NULL,
@@ -764,10 +765,10 @@ CREATE TABLE `player` (
   `SupD` decimal(4,2) UNSIGNED NOT NULL,
   `VP` mediumint(7) UNSIGNED NOT NULL,
   `LP` mediumint(6) UNSIGNED NOT NULL,
-  `RepMax` int(8) UNSIGNED NOT NULL,
+  `RepMax` int(7) UNSIGNED NOT NULL,
   `CPMax` mediumint(5) UNSIGNED NOT NULL,
   `CPCur` mediumint(5) UNSIGNED NOT NULL,
-  `Funds` mediumint(7) UNSIGNED NOT NULL
+  `Funds` mediumint(6) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -844,7 +845,7 @@ CREATE TABLE `relation_server` (
 CREATE TABLE `reports` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `AccountId` int(7) UNSIGNED NOT NULL,
-  `ReportId` int(10) UNSIGNED NOT NULL,
+  `ReportId` int(8) UNSIGNED NOT NULL,
   `OwnBaseId` int(9) UNSIGNED NOT NULL,
   `AttackTime` datetime NOT NULL,
   `TargetLevel` tinyint(2) UNSIGNED NOT NULL,
@@ -855,7 +856,7 @@ CREATE TABLE `reports` (
   `GainCre` bigint(11) UNSIGNED NOT NULL,
   `GainRp` bigint(11) UNSIGNED NOT NULL,
   `CostCry` bigint(11) UNSIGNED NOT NULL,
-  `CostRep` int(10) UNSIGNED NOT NULL
+  `CostRep` mediumint(6) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -913,8 +914,8 @@ ALTER TABLE `bases`
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
   ADD KEY `PlayerName` (`PlayerName`),
-  ADD KEY `layouts_ibfk_2` (`ReservedBy`),
-  ADD KEY `layouts_ibfk_3` (`AccountId`);
+  ADD KEY `ReservedBy` (`ReservedBy`) USING BTREE,
+  ADD KEY `AccountId` (`AccountId`) USING BTREE;
 
 --
 -- Indizes für die Tabelle `login`
@@ -929,7 +930,7 @@ ALTER TABLE `login`
 ALTER TABLE `player`
   ADD PRIMARY KEY (`Zeit`,`WorldId`,`AccountId`),
   ADD KEY `AccountId` (`AccountId`) USING BTREE,
-  ADD KEY `player_ibfk_1` (`WorldId`);
+  ADD KEY `WorldId` (`WorldId`) USING BTREE;
 
 --
 -- Indizes für die Tabelle `relation_alliance`
@@ -970,8 +971,8 @@ ALTER TABLE `relation_server`
 --
 ALTER TABLE `reports`
   ADD PRIMARY KEY (`WorldId`,`ReportId`),
-  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`),
-  ADD KEY `reports_ibfk_2` (`AccountId`);
+  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`) USING BTREE,
+  ADD KEY `AccountId` (`AccountId`) USING BTREE;
 
 --
 -- Indizes für die Tabelle `substitution`
@@ -1030,8 +1031,8 @@ ALTER TABLE `relation_alliance`
 -- Constraints der Tabelle `relation_alliance_share`
 --
 ALTER TABLE `relation_alliance_share`
-  ADD CONSTRAINT `relation_alliance_share_ibfk_1` FOREIGN KEY (`WorldId`,`AllianceIdSet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `relation_alliance_share_ibfk_2` FOREIGN KEY (`WorldId`,`AllianceIdGet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `relation_alliance_share_ibfk_3` FOREIGN KEY (`WorldId`,`AllianceIdSet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `relation_alliance_share_ibfk_4` FOREIGN KEY (`WorldId`,`AllianceIdGet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_bases`
