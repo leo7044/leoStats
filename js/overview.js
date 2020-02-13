@@ -1542,7 +1542,7 @@ function createOverviews(_ObjectCur, _nameOfSubObject, _typeOfOverview, _typeOfP
         ObjectDiagramData[_nameOfSubObject] = {};
     }
     ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData] = [[], []];
-    for (var i = 0; i <= 67; i++)
+    for (var i = 0; i <= 82; i++)
     {
         ObjectDiagramData[_nameOfSubObject][_typeOfPlayerData][1].push(i);
     }
