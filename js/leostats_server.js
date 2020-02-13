@@ -8,7 +8,7 @@
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
                 // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.10.3';
+                var scriptVersionLocal = '2020.02.13.1';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1296,9 +1296,9 @@
                         },
                         returnLayoutOfCurBaseAndEvaluateIt: function()
                         {
-                            var ArrayBaseResourceFields = new Array(8).fill().map(x => new Array(9).fill());
+                            var ArrayBaseResourceFields = new Array(16).fill().map(x => new Array(9).fill(''));
                             var curCity = ClientLib.Data.MainData.GetInstance().get_Cities().get_CurrentCity();
-                            for (var y = 0; y < 8; y++)
+                            for (var y = 0; y < 16; y++)
                             {
                                 for (var x = 0; x < 9; x++)
                                 {
@@ -1343,7 +1343,7 @@
                             {
                                 for (var x = 0; x < 9; x++)
                                 {
-                                    if (ArrayBaseResourceFields[y][x] == undefined) // das Feld darf nicht belegt sein - schließlich kann man auf belegte Felder nichts stellen
+                                    if (ArrayBaseResourceFields[y][x] == '') // das Feld darf nicht belegt sein - schließlich kann man auf belegte Felder nichts stellen
                                     {
                                         var curTibConn = 0;
                                         var curCryConn = 0;
