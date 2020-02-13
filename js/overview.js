@@ -651,7 +651,7 @@ function manageContentAllianceMembers()
     $('#TableAlliancePlayerTheadTr')[0].children[1].style.minWidth = '64px';
     var ArrayAlliancePlayerCurIdsAndNames = [[], []];
     strHtml = '';
-    var ArrayExcludedFieldsFromUsNumberFormat = ['UserName', 'Zeit', 'LvLOff', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD'];
+    var ArrayExcludedFieldsFromUsNumberFormat = ['UserName', 'Zeit', 'LvLOff', 'LvLDef', 'BaseD', 'OffD', 'DefD', 'DFD', 'SupD'];
     for (var keyPlayer in ObjectAlliancePlayerCur)
     {
         strHtml += '<tr>';
@@ -899,7 +899,7 @@ function manageContentPlayer()
     ObjectDiagramData.Player.Production = [[0], ['Zeit', 'GesamtTiberium', 'GesamtCrystal', 'GesamtPower', 'GesamtCredits', 'Player - Production']];
     ObjectDiagramData.Player.RpsCred = [[0], ['Zeit', 'ResearchPoints', 'Credits', 'Player - RPs / Credits']];
     ObjectDiagramData.Player.Shoots = [[0], ['Zeit', 'Shoot', 'PvP', 'PvE', 'Player - Shoots']];
-    ObjectDiagramData.Player.Values = [[0], ['Zeit', 'BaseD', 'LvLOff', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values']];
+    ObjectDiagramData.Player.Values = [[0], ['Zeit', 'BaseD', 'LvLOff', 'LvLDef', 'OffD', 'DefD', 'DFD', 'SupD', 'Player - Values']];
     if (ArraySeasonServerIds.indexOf(WorldId) != -1)
     {
         document.getElementById('GoogleChartLinePlayer - VPs').className = 'divGoogleChart';
