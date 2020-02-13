@@ -107,6 +107,33 @@ if (!$conn->connect_error)
             $UserAnswer = [1, 'done'];
             break;
         }
+        case 'fillMissingLvLDefInTablePlayer':
+        {
+            $strQuery = "SELECT ba.Zeit, ba.WorldId, b.AccountId, ba.LvLDef FROM bases ba
+                    JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
+                    WHERE ba.ID=
+                    (
+                        SELECT ba2.ID FROM bases ba2
+                        JOIN relation_bases b2 ON b2.WorldId=ba2.WorldId AND b2.BaseId=ba2.ID
+                        WHERE ba2.Zeit=ba.Zeit AND ba2.WorldId=ba.WorldId AND b2.AccountId=b.AccountId
+                        ORDER BY ba2.LvLDef DESC, ba2.ID ASC LIMIT 1
+                    )
+                    AND ba.LvLDef=0
+                    ORDER BY ba.Zeit ASC, ba.WorldId ASC, b.AccountId ASC;";
+            $result = $conn->query($strQuery);
+            while ($zeile = $result->fetch_assoc())
+            {
+                $Zeit = $zeile['Zeit'];
+                $WorldId = $zeile['WorldId'];
+                $AccountId = $zeile['AccountId'];
+                $LvLDef = $zeile['LvLDef'];
+                $strQueryUpdate = "UPDATE player SET LvLDef='$LvLDef' WHERE Zeit='$Zeit' AND WorldId='$WorldId' AND AccountId='$AccountId';";
+                echo $strQueryUpdate . '<br/>';
+                $conn->query($strQueryUpdate);
+            }
+            $UserAnswer = [1, 'done'];
+            break;
+        }
         case 'optimizeTables':
         {
             $strQuery = "OPTIMIZE TABLE adminlog, alliance, bases, layouts, login, player, relation_alliance, relation_alliance_share, relation_bases, relation_player, relation_server, reports, substitution;";
