@@ -918,13 +918,13 @@ if (!$conn->connect_error)
                         $strCncOpt .= $letterForCncOpt;
                     }
                 }
-                if (strlen($strLayout) == 217 || strlen($strLayout) == 337) // old
-                {
-                    $strCncOpt .= '............................................................................................................|newEconomy';
-                }
-                else // new
+                if (strlen($strLayout) == 431) // new
                 {
                     $strCncOpt .= '....................................|newEconomy';
+                }
+                else // old
+                {
+                    $strCncOpt .= '............................................................................................................|newEconomy';
                 }
                 if ($key != count($ObjectData) - 1)
                 {
