@@ -104,11 +104,11 @@ if (!$conn->connect_error)
             {
                 $BaseId = $ObjectBase['BaseId'];
                 $BaseName = '';
-                if (isset($ObjectBase['Name']))
+                if (isset($ObjectBase['Name'])) // old
                 {
                     $BaseName = $ObjectBase['Name'];
                 }
-                else if (isset($ObjectBase['BaseName']))
+                else if (isset($ObjectBase['BaseName'])) // new
                 {
                     $BaseName = $ObjectBase['BaseName'];
                 }
@@ -892,19 +892,42 @@ if (!$conn->connect_error)
                     foreach ($arrayLayoutRow as $key2 => $arrayLayoutCol)
                     {
                         // echo $arrayLayoutCol . '<br/>';
-                        $letterforCncOpt = '.';
+                        $letterForCncOpt = '.';
                         if ($arrayLayoutCol == '1')
                         {
-                            $letterforCncOpt = 'c';
+                            $letterForCncOpt = 'c';
                         }
                         else if ($arrayLayoutCol == '2')
                         {
-                            $letterforCncOpt = 't';
+                            $letterForCncOpt = 't';
                         }
-                        $strCncOpt .= $letterforCncOpt;
+                        else if ($arrayLayoutCol == '4')
+                        {
+                            $letterForCncOpt = 'j';
+                        }
+                        else if ($arrayLayoutCol == '5')
+                        {
+                            $letterForCncOpt = 'h';
+                        }
+                        else if ($arrayLayoutCol == '6')
+                        {
+                            $letterForCncOpt = 'l';
+                        }
+                        else if ($arrayLayoutCol == '7')
+                        {
+                            $letterForCncOpt = 'k';
+                        }
+                        $strCncOpt .= $letterForCncOpt;
                     }
                 }
-                $strCncOpt .= '............................................................................................................|newEconomy';
+                if (strlen($strLayout) == 217 || strlen($strLayout) == 337) // old
+                {
+                    $strCncOpt .= '............................................................................................................|newEconomy';
+                }
+                else // new
+                {
+                    $strCncOpt .= '....................................|newEconomy';
+                }
                 if ($key != count($ObjectData) - 1)
                 {
                     $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";

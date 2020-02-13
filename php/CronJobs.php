@@ -88,6 +88,24 @@ if (!$conn->connect_error)
             $UserAnswer = [1, 'done'];
             break;
         }
+        case 'replaceNullThroughEmptyString':
+        {
+            $strQuery = "SELECT WorldId, PosX, PosY, Layout FROM layouts WHERE Layout LIKE '%null%';";
+            $result = $conn->query($strQuery);
+            while ($zeile = $result->fetch_assoc())
+            {
+                $WorldId = $zeile['WorldId'];
+                $PosX = $zeile['PosX'];
+                $PosY = $zeile['PosY'];
+                $curLayout = $zeile['Layout'];
+                $strLayout = str_replace('null', '""', $curLayout);
+                $strQueryUpdate = "UPDATE layouts SET Layout='$strLayout' WHERE WorldId='$WorldId' AND PosX='$PosX' AND PosY='$PosY';";
+                echo $strQueryUpdate . '<br/>';
+                $conn->query($strQueryUpdate);
+            }
+            $UserAnswer = [1, 'done'];
+            break;
+        }
         case 'optimizeTables':
         {
             $strQuery = "OPTIMIZE TABLE adminlog, alliance, bases, layouts, login, player, relation_alliance, relation_alliance_share, relation_bases, relation_player, relation_server, reports, substitution;";
