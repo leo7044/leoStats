@@ -1050,11 +1050,11 @@ echo json_encode($UserAnswer);
 function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAccountId)
 {
     $strQuery = "SELECT ";
-    for ($i = 0; $i <= 71; $i++)
+    for ($i = 0; $i <= 81; $i++)
     {
         $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
     }
-    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 72 AND 72.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "72 ";
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 82 AND 82.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "82 ";
     $strQuery .=
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
@@ -1076,11 +1076,11 @@ function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAc
 function prepareSelectStringOverviewAllianceAdmin($typeOfPlayerData, $WorldId, $AllianceId)
 {
     $strQuery = "SELECT ";
-    for ($i = 0; $i <= 71; $i++)
+    for ($i = 0; $i <= 81; $i++)
     {
         $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
     }
-    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 72 AND 72.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "72 ";
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 82 AND 82.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "82 ";
     $strQuery .=
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
@@ -1099,11 +1099,11 @@ function prepareSelectStringOverviewAllianceAdmin($typeOfPlayerData, $WorldId, $
 function prepareSelectStringOverviewWorld($typeOfPlayerData, $WorldId)
 {
     $strQuery = "SELECT ";
-    for ($i = 0; $i <= 71; $i++)
+    for ($i = 0; $i <= 81; $i++)
     {
         $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN $i AND $i.99 THEN 1 ELSE 0 END) AS $typeOfPlayerData$i, ";
     }
-    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 72 AND 72.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "72 ";
+    $strQuery .= "SUM(CASE WHEN ba.$typeOfPlayerData BETWEEN 82 AND 82.99 THEN 1 ELSE 0 END) AS " . $typeOfPlayerData . "82 ";
     $strQuery .=
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
