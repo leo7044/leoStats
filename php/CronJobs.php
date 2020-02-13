@@ -90,7 +90,7 @@ if (!$conn->connect_error)
         }
         case 'replaceNullThroughEmptyString':
         {
-            $strQuery = "SELECT WorldId, PosX, PosY, Layout FROM layouts WHERE Layout LIKE '%null%';";
+            $strQuery = "SELECT WorldId, PosX, PosY, Layout, PlayerName FROM layouts WHERE Layout LIKE '%null%';";
             $result = $conn->query($strQuery);
             while ($zeile = $result->fetch_assoc())
             {
@@ -98,9 +98,10 @@ if (!$conn->connect_error)
                 $PosX = $zeile['PosX'];
                 $PosY = $zeile['PosY'];
                 $curLayout = $zeile['Layout'];
+                $curPlayerName = $zeile['PlayerName'];
                 $strLayout = str_replace('null', '""', $curLayout);
                 $strQueryUpdate = "UPDATE layouts SET Layout='$strLayout' WHERE WorldId='$WorldId' AND PosX='$PosX' AND PosY='$PosY';";
-                echo $strQueryUpdate . '<br/>';
+                echo $curPlayerName . ': ' . $strQueryUpdate . '<br/>';
                 $conn->query($strQueryUpdate);
             }
             $UserAnswer = [1, 'done'];
