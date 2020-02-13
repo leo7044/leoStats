@@ -101,7 +101,7 @@ function drawLayouts()
             '<div class="scan">' +
                 '<div class="DivOneLayout">' +
                     '<table class="TableOneLayout">';
-                    for (var y in layoutJson)
+                    for (var y = 0; y < 8; y++)
                     {
                         strHtml += '<tr>';
                         for (var x in layoutJson[y])
