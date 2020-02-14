@@ -153,7 +153,6 @@ var ObjectCncOptPics =
 $(document).ready(function()
 {
     initializeStart();
-    setInterval(getLoginStatus, 60000); // 1x pro Minute
 });
 
 function getLoginStatus()
@@ -192,6 +191,7 @@ function initializeStart()
 
 function getSessionVariables()
 {
+    getLoginStatus();
     var data =
     {
         action: "getSessionVariables"
@@ -211,6 +211,7 @@ function getSessionVariables()
 
 function getSeasonServerIds()
 {
+    getLoginStatus();
     var data =
     {
         action: "getSeasonServerIds"
@@ -297,6 +298,7 @@ $(window).resize(function()
 //==================================================
 function getDropDownListData()
 {
+    getLoginStatus();
     var data =
     {
         action: "getDropDownListData"
@@ -635,6 +637,7 @@ function updateCurrentDatasInView()
 //==================================================
 function manageContentAllianceMembers()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     // if (!ObjectAlliancePlayerData[WorldId + '_' + AllianceId] || !ObjectAlliancePlayerData[WorldId + '_' + AllianceId][0])
@@ -707,6 +710,7 @@ function manageContentAllianceMembers()
 
 function manageContentAlliance()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     if (!ObjectAllianceData[WorldId + '_' + AllianceId])
@@ -743,6 +747,7 @@ function manageContentAlliance()
 
 function manageContentAllianceBase()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var type = $('#DropDownAllianceBaseType')[0].value;
@@ -886,6 +891,7 @@ function manageContentAllianceBase()
 
 function manageContentPlayer()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AccountId = $('#DropDownListPlayer')[0].value;
     if (!ObjectPlayerData[WorldId + '_' + AccountId])
@@ -938,6 +944,7 @@ function manageContentPlayer()
 
 function manageContentPlayerBase()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AccountId = $('#DropDownListPlayer')[0].value;
     if (!ObjectPlayerBaseData[WorldId + '_' + AccountId])
@@ -1011,6 +1018,7 @@ function manageContentPlayerBase()
 
 function manageContentAllianceOverview()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId])
@@ -1040,6 +1048,7 @@ function manageContentAllianceOverview()
 
 function manageContentBase()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var BaseId = $('#DropDownListBase')[0].value;
     if (!ObjectBaseData[WorldId + '_' + BaseId])
@@ -1083,6 +1092,7 @@ function manageContentBase()
 
 function manageContentWorldOverview()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     if (!ObjectWorldOverviewData[WorldId.toString()])
     {
@@ -1154,6 +1164,7 @@ function resetViewSettingsTabs()
 
 function changePassword()
 {
+    getLoginStatus();
     var ownAccountId = ObjectSessionVariables.leoStats_AccountId;
     var dataUrl = 'action=changePassword&AccountId=' + ownAccountId + '&' + $('#FormChangePassword').serialize();
     $.ajaxSetup({async: false});
@@ -1201,6 +1212,7 @@ function validatePassword()
 
 function resetPlayer()
 {
+    getLoginStatus();
     var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
     if (confirm('Do you want reset player ' + playerName + '?'))
     {
@@ -1219,6 +1231,7 @@ function resetPlayer()
 
 function deletePlayer()
 {
+    getLoginStatus();
     var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
     if (confirm('Do you want to delete player ' + playerName + ' from database?'))
     {
@@ -1282,6 +1295,7 @@ function prepareSettingsServer()
 
 function saveChangeNeededMemberRole()
 {
+    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var MemberRole = $('#DropDownListMemberRole')[0].value;
@@ -1320,6 +1334,7 @@ function saveChangeNeededMemberRole()
 
 function getNeededMemberRoles(_WorldId, _AllianceId)
 {
+    getLoginStatus();
     if (!ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId])
     {
         var data =
@@ -1340,6 +1355,7 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
 
 function deletePlayerTableCell(_cellId)
 {
+    getLoginStatus();
     var AccountId = _cellId.substr(10, _cellId.length - 10);
     var playerName = $('#TableCellName_' + AccountId)[0].innerHTML;
     if (confirm('Do you want to remove ' + playerName + ' from alliance?'))
@@ -1363,6 +1379,7 @@ function deletePlayerTableCell(_cellId)
 
 function optimizeAllTables()
 {
+    getLoginStatus();
     $('#LoadingSymbol').removeClass('d-none');
     setTimeout(function()
     {
@@ -1379,6 +1396,7 @@ function optimizeAllTables()
 
 function deleteServer()
 {
+    getLoginStatus();
     var serverName = $('#DropDownListWorld')[0][$('#DropDownListWorld')[0].selectedIndex].innerHTML;
     if (confirm('Do you want to delete server ' + serverName + ' from database?'))
     {
@@ -1397,6 +1415,7 @@ function deleteServer()
 
 function getAdminLog()
 {
+    getLoginStatus();
     var data=
     {
         action: "getAdminLog"
@@ -1441,6 +1460,7 @@ function prepareAdminLogTable()
 
 function deleteElementAdminLog(_Id)
 {
+    getLoginStatus();
     $('#TableAdminLog').DataTable().destroy();
     var data=
     {
