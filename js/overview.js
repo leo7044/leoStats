@@ -153,7 +153,26 @@ var ObjectCncOptPics =
 $(document).ready(function()
 {
     initializeStart();
+    setInterval(getLoginStatus, 60000); // 1x pro Minute
 });
+
+function getLoginStatus()
+{
+    var data =
+    {
+        action: "getLoginStatus"
+    };
+    $.ajaxSetup({async: false});
+    $.post('php/manageBackend.php', data)
+    .always(function(data)
+    {
+        if (!data[0])
+        {
+            location.reload();
+        }
+    });
+    $.ajaxSetup({async: true});
+}
 
 function initializeStart()
 {
@@ -1273,7 +1292,6 @@ function saveChangeNeededMemberRole()
         AllianceId: AllianceId,
         MemberRole: MemberRole
     }
-    var success = false;
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
     .always(function(data)
