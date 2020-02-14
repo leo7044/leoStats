@@ -630,6 +630,7 @@ if (!$conn->connect_error)
                     $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$Id';");
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deletePlayer':
@@ -643,16 +644,17 @@ if (!$conn->connect_error)
                     $conn->query("DELETE FROM `login` WHERE AccountId='$Id';");
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'getNeededMemberRoles':
         {
-            $QueryAnswer = [];
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
+                    $QueryAnswer = [];
                     $WorldId = $_post['WorldId'];
                     $AllianceId = $_post['AllianceId'];
                     $result = $conn->query("SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a WHERE WorldId='$WorldId' AND AllianceId='$AllianceId';");
@@ -660,9 +662,9 @@ if (!$conn->connect_error)
                     {
                         array_push($QueryAnswer, $zeile);
                     }
+                    $UserAnswer = $QueryAnswer[0];
                 }
             }
-            $UserAnswer = $QueryAnswer[0];
             break;
         }
         case 'changeNeededMemberRole':
@@ -774,6 +776,7 @@ if (!$conn->connect_error)
                     echo $strQuery;
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deleteServer':
@@ -787,6 +790,7 @@ if (!$conn->connect_error)
                     $conn->query("DELETE FROM `relation_server` WHERE WorldId='$Id';");
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'optimizeAllTables':
@@ -799,6 +803,7 @@ if (!$conn->connect_error)
                     $conn->query("OPTIMIZE TABLES adminlog, alliance, bases, contact, login, player, relation_alliance, relation_bases, relation_player, relation_server, substitution;");
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'getAdminLog':
@@ -815,6 +820,7 @@ if (!$conn->connect_error)
                     }
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deleteElementAdminLog':
@@ -828,6 +834,7 @@ if (!$conn->connect_error)
                     $conn->query("UPDATE adminlog SET `ShowRow`=FALSE WHERE Id='$Id';");
                 }
             }
+            $UserAnswer = [1, 'done'];
             break;
         }
         // BaseScanner
@@ -1049,6 +1056,18 @@ if (!$conn->connect_error)
             break;
         }
         // Update-Service
+        case 'getLoginStatus':
+        {
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $UserAnswer = [1, 'login'];
+            }
+            else
+            {
+                $UserAnswer = [0, 'logout'];
+            }
+            break;
+        }
         case 'getCurrentVersionOfLeoStats':
         {
             $UserAnswer[0] = 1;
