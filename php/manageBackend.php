@@ -259,7 +259,6 @@ if (!$conn->connect_error)
             while ($zeile = $result->fetch_assoc())
             {
                 $_SESSION['leoStats_AccountId'] = $AccountId = $zeile['AccountId'];
-                $_SESSION['leoStats_UserName'] = $UserName;
                 $_SESSION['leoStats_IsAdmin'] = false;
                 if (in_array($AccountId, $ArrayAdminAccounts))
                 {
@@ -950,19 +949,8 @@ if (!$conn->connect_error)
         }
         case 'getLayoutsByWorldIdAndProcedureName':
         {
-            /*$UserNamesAllowed =
-            [
-                'kOeGy', '0__Bio__0', 'MoonGuide', 'Uncle_J00', 'Mediv88', 'Techzhen', 'Kellut', 'effe3005', 'Xx_YEP_xX', 'RolSei', 'LeichenSack', 'Enni_2013', 'KaptainKanalie', 'Takman1979', 'tomwi_74', 'PITTY0203', 'SKEET0980', 'Daikyu80', 'Kaiser30', 'Mattse1977', 'lulupincky', 'saintsviewer', 'guppa123', 'ElDiago1405', 'chris19641964', 'EmperorFS30', 'willi19820723', 'condorsc13', 'I_Prestige_I', 'lvivjanyn1', 'nuubal', 'chertosha', 'SirPushAlot', 'Clix17', 'derstony23', 'kommerizialrat', 'maxweeds', '2208frank', 'Eichenhorst', 'pad3000', 'SUN_FCH_65', 'MICHELANGELLLO', 'qhoststylx', 'smOOter', 'xPrimeAlex', 'VaderRS4', 'Illuminationist2', 'LucifersWife666', 'Krumbeer', 'masterppc88',
-                'maecki13', 'Psychosisti', 'vivida00', 'sasa26111984', 'viajes1969', '2201777', 'VanillaDaKilla', 'Pinzga76', 'Nacht-Eagle', 'chip4711', 'xGhosti66x', 'Basstronaut-88', 'iCr0NiiX', 'saebel74', 'Odinthoor', 'venga6', 'Conan1278', 'FerdinandMAX', 'daybumbum', 'stortebeker', 'LuckyIce1', 'dartrokker', 'Weip', 'CptApolloAdama', 'wolf200467', 'HAUDEGEN-BS01', 'striegler1', 'moori64', 'Findus1204', 'GEIL_Piccolo81', 'Father19691', 'Borg9876', 'Schiewawa', 'niCo_Bjk', 'Chucky130179', 'Spawnkiel', 'buktop1977', 'Krossfire68', 'Fusshocker', 'mersejens', 'E1drago', 'LEOxxxxx', 'Gaertner73', 'maodis', 'FelsnamroN', 'ScottBrannen', 'X-LiViNg--TaNk-X', 'DonRapa', 'xenergy27', 'Blackline20',
-                'Kati806', 'waylander586', 'Borsch1978', 'Ospe3', 'EvilCom11', 'gaytiger', 'Lurido23', 'Killroy05', 'dummdidummdi', 'Voyager135', 'kykmnfluit', 'ErzengelRaphaela', 'popivoda1967', 'Nuttenpapa', '17blakeks', '1900liverpool', 'xFatherbullx', 'Roofdeert', 'thund99', 'Meister1Joda', 'DBF4b14n', 'deejaydanijel', 'Pat_FSK', 'DemisRussos', 'HaYaDa', 'KUME71dd', '9snake8', 'commanderic', 'Battadom', 'xp10theo', 'Schnuffii66', 'Devil2691', 'InDianaJones-x-x', 'LordofForge', 'Sandman2503', 'Kaos4712', 'RedSebbi', 'SunTzu1109', 'Pumababy1963', 'Madbeatings', 'braunfelserpc', 'RealSyndic', 'Ignitedfury', 'majiorpain', 'Nachtwanderer1', 'ertoja_01', 'xSokar', '0qHPp0',
-                'DrBiwater', 'doctor_no_z', 'meggy6', 'TomDickenz', 'didsteel', 'Jofikat', 'grosseronkel1', 'HardestFighter', 'hanskanns78', 'rodeons', 'pkobow', '1ebb', 'rudolfosson', 'jetbomb2', 'bandishu', 'Dubloyr', 'kailichen', 'tannenblatt', 'LegolasX69', 'saibot46', 'MostDeath', 'xGraysonDeathx', 'Schneckenfloh', 'CommandTom2', 'Dark-Tiger90', 'HitChatcher', 'Tulloch3', 'digiconcept', 'Bliporama', 'gsgandhi', 'Devil-Sunstorm', 'panzfredy', 'Drobao', 'sine_faciem_tuam', 'Askari2525', 'Obi_Wahn0706', 'Lollo2012', 'LSMPort555', 'takacy2016', 'xX-S1mple-Xx', 'Kapt_Chaos1337', '1895FortunaDUS', 'MercedesGT', 'IIDevilOfDeathII', 'Keksi75', 'jarzihao', 'Schippi1977',
-                'ouiouilol', 'KarlLaschnikoff', 'flash351', '06295160571', '88Horn', 'nh2712', 'Sral214', 'Typischjunx1', 'AzEruS128', 'zanoni1', 'janniselias', 'rodzloeffl', 'commandcharly', 'LegolasSun', 'RangerLuke', 'UKM17', 'VampirHamburg', 'AmigoII', 'MAMOUTH82', 'leo7044', 'Illuminationist', 'chemnitzer72', 'shinthegamer', 'achim56de', 'Fynn1966', 'broesel1976', 'brummi2011', 'MasterSYR', 'Winneworm', 'JHONE7', '19Asterix68', 'Nordstadtbube', 'herbertap', 'singlemaltII', 'rabauke11', 'lupoma1996', 'Flopwnz', 'Takar02', 'higgs122', 'michaelschmitt27', 'oernycoco', '7561894563917', 'alexs5', 'winter238', 'Xx-John59-xX', 'Creato1', 'nostradamus1188', 'callmerockstar2'
-                //'leo7044'
-            ];*/
-            if (isset($_SESSION['leoStats_UserName']))
+            if (isset($_SESSION['leoStats_AccountId']))
             {
-                /*if (in_array($_SESSION['leoStats_UserName'], $UserNamesAllowed))
-                {*/
                     $worldId = $_post['worldId'];
                     $procedureName = $_post['procedureName'];
                     $minX = $_post['minX'];
@@ -992,7 +980,7 @@ if (!$conn->connect_error)
         }
         case 'getAlianceNamesByWorldId':
         {
-            if (isset($_SESSION['leoStats_UserName']))
+            if (isset($_SESSION['leoStats_AccountId']))
             {
                 $worldId = $_post['worldId'];
                 $sqlQuery = "CALL getAlianceNamesByWorldId('$worldId');";
