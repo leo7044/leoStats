@@ -186,7 +186,7 @@
                                 TextPower.add(new qx.ui.basic.Label((this.ObjectData.bases[i].PowerPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
                                 TextCredits.add(new qx.ui.basic.Label((this.ObjectData.bases[i].CreditsPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
                             }
-                            TextBaseName.add(new qx.ui.basic.Label('<b>Gesamt</b>').set({rich: true}));
+                            TextBaseName.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
                             TextLvlCY.add(new qx.ui.basic.Label((this.ObjectData.player.AverageCY).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
                             TextLvlBase.add(new qx.ui.basic.Label((this.ObjectData.player.AverageBase).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
                             TextLvlOff.add(new qx.ui.basic.Label((this.ObjectData.player.AverageOff).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
