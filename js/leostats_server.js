@@ -8,7 +8,7 @@
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
                 // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.13.1';
+                var scriptVersionLocal = '2020.02.16';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -52,7 +52,7 @@
                             });
                             this.GuiFenster.setTextColor('black');
                             this.GuiFenster.setLayout(new qx.ui.layout.HBox());
-                            this.GuiFenster.moveTo(850, 32);
+                            this.GuiFenster.moveTo(590, 48);
 
                             // Tab-Reihe
                             // original: this.GuiTab = (new qx.ui.tabview.TabView()).set({
@@ -74,15 +74,26 @@
                             this.GuiInfoVBox.setThemedBackgroundColor("#eef");
                             this.GuiInfoPage.add(this.GuiInfoVBox);
 
+                            // Tab 2: Bases
+                            this.GuiBasesPage = new qx.ui.tabview.Page("Bases");
+                            this.GuiBasesPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiTab.add(this.GuiBasesPage);
+                            this.GuiBasesVBox = new qx.ui.container.Composite();
+                            this.GuiBasesVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiBasesVBox.setThemedPadding(10);
+                            this.GuiBasesVBox.setThemedBackgroundColor("#eef");
+                            this.GuiBasesPage.add(this.GuiBasesVBox);
+
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
                                 // qx.core.Init.getApplication().showExternal(linkToRoot);
                                 this.GuiInfoVBox.removeAll();
+                                this.GuiBasesVBox.removeAll();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
-                            
+
                             // set Button to position
                             this.app.getDesktop().add(this.GuiButtonLeoStats,
                             {
@@ -97,11 +108,11 @@
                             // console.log('open leoStats-Window');
 
                             // Tab 1: Info
-                            var GeneralFieldInfoTableHeader = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
-                            var GeneralFieldInfoHeadLine = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            GeneralFieldInfoHeadLine.add(new qx.ui.basic.Label('<br><big><u><b>Information</b></u></big>').set({rich: true}));
-                            GeneralFieldInfoHeadLine.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var GeneralFieldInfoTable = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var HeaderTableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLineInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineInfo.add(new qx.ui.basic.Label('<br><big><u><b>Information</b></u></big>').set({rich: true}));
+                            HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
                             var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
                             TextKey.add(new qx.ui.basic.Label('Scriptname').set({rich: true}));
@@ -116,11 +127,90 @@
                             TextValue.add(new qx.ui.basic.Label('<a href="' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '" target="_blank">' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '</a>').set({rich: true}));
                             TextKey.add(new qx.ui.basic.Label('E-Mail').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('<a href="mailto:cc.ta.leo7044@gmail.com">cc.ta.leo7044@gmail.com</a>').set({rich: true}));
-                            GeneralFieldInfoTable.add(TextKey);
-                            GeneralFieldInfoTable.add(TextValue);
-                            GeneralFieldInfoHeadLine.add(GeneralFieldInfoTable);
-                            GeneralFieldInfoTableHeader.add(GeneralFieldInfoHeadLine);
-                            this.GuiInfoVBox.add(GeneralFieldInfoTableHeader);
+                            TableInfo.add(TextKey);
+                            TableInfo.add(TextValue);
+                            HeadLineInfo.add(TableInfo);
+                            var FieldInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            FieldInfo.add(new qx.ui.basic.Label('').set({rich: true}));
+                            FieldInfo.add(new qx.ui.basic.Label('<form><input type="button" value="Transmit data" onclick="leoStats.getInstance().getCurrentStats();"/></form>').set({rich: true}));
+                            HeadLineInfo.add(FieldInfo);
+                            HeaderTableInfo.add(HeadLineInfo);
+                            this.GuiInfoVBox.add(HeaderTableInfo);
+
+                            // Tab 2: Bases
+                            var HeaderTableBases = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLineBases = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineBases.add(new qx.ui.basic.Label('<br><big><u><b>Playerbases</b></u></big>').set({rich: true}));
+                            HeadLineBases.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableBases = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlCY = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlBase = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlOff = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlDef = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlDF = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextLvlSup = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextCrystal = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextCredits = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextBaseName.add(new qx.ui.basic.Label('<b>BaseName</b>').set({rich: true}));
+                            TextLvlCY.add(new qx.ui.basic.Label('<b>CY</b>').set({rich: true}));
+                            TextLvlBase.add(new qx.ui.basic.Label('<b>Base</b>').set({rich: true}));
+                            TextLvlOff.add(new qx.ui.basic.Label('<b>Off</b>').set({rich: true}));
+                            TextLvlDef.add(new qx.ui.basic.Label('<b>Def</b>').set({rich: true}));
+                            TextLvlDF.add(new qx.ui.basic.Label('<b>DF</b>').set({rich: true}));
+                            TextLvlSup.add(new qx.ui.basic.Label('<b>Sup</b>').set({rich: true}));
+                            TextTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                            TextCrystal.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
+                            TextPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                            TextCredits.add(new qx.ui.basic.Label('<b>Credits</b>').set({rich: true}));
+                            for (var i in this.ObjectData.bases)
+                            {
+                                TextBaseName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName.toLocaleString()).set({rich: true, alignX: "left"}));
+                                TextLvlCY.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLCY).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextLvlBase.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLBase).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextLvlOff.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLOffense).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextLvlDef.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLDefense).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextLvlDF.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLDF).toLocaleString()).set({rich: true, alignX: "right"}));
+                                if (this.ObjectData.bases[i].LvLSupport > 0)
+                                {
+                                    TextLvlSup.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLSupport).toLocaleString() + ' (' + this.ObjectData.bases[i].SupArt + ')').set({rich: true, alignX: "right"}));
+                                }
+                                else
+                                {
+                                    TextLvlSup.add(new qx.ui.basic.Label('---').set({rich: true, alignX: "right"}));
+                                }
+                                TextTiberium.add(new qx.ui.basic.Label((this.ObjectData.bases[i].TiberiumPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextCrystal.add(new qx.ui.basic.Label((this.ObjectData.bases[i].CrystalPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextPower.add(new qx.ui.basic.Label((this.ObjectData.bases[i].PowerPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextCredits.add(new qx.ui.basic.Label((this.ObjectData.bases[i].CreditsPerHour).toLocaleString()).set({rich: true, alignX: "right"}));
+                            }
+                            TextBaseName.add(new qx.ui.basic.Label('<b>Gesamt</b>').set({rich: true}));
+                            TextLvlCY.add(new qx.ui.basic.Label((this.ObjectData.player.AverageCY).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextLvlBase.add(new qx.ui.basic.Label((this.ObjectData.player.AverageBase).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextLvlOff.add(new qx.ui.basic.Label((this.ObjectData.player.AverageOff).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextLvlDef.add(new qx.ui.basic.Label((this.ObjectData.player.AverageDef).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextLvlDF.add(new qx.ui.basic.Label((this.ObjectData.player.AverageDF).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextLvlSup.add(new qx.ui.basic.Label((this.ObjectData.player.AverageSup).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextTiberium.add(new qx.ui.basic.Label((this.ObjectData.player.ProductionTiberium).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextCrystal.add(new qx.ui.basic.Label((this.ObjectData.player.ProductionCrystal).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextPower.add(new qx.ui.basic.Label((this.ObjectData.player.ProductionPower).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextCredits.add(new qx.ui.basic.Label((this.ObjectData.player.ProductionCredits).toLocaleString()).set({rich: true, alignX: "right"}));
+                            TableBases.add(TextBaseName);
+                            TableBases.add(TextLvlCY);
+                            TableBases.add(TextLvlBase);
+                            TableBases.add(TextLvlOff);
+                            TableBases.add(TextLvlDef);
+                            TableBases.add(TextLvlDF);
+                            TableBases.add(TextLvlSup);
+                            TableBases.add(TextTiberium);
+                            TableBases.add(TextCrystal);
+                            TableBases.add(TextPower);
+                            TableBases.add(TextCredits);
+                            HeadLineBases.add(TableBases);
+                            HeaderTableBases.add(HeadLineBases);
+                            this.GuiBasesVBox.add(HeaderTableBases);
                         },
                         setCncOptVars: function()
                         {
@@ -141,7 +231,7 @@
                                 "GDI_Def_Predator": "d",
                                 "GDI_Def_Sniper": "s",
                                 "GDI_Def_Zone Trooper": "z",
-                
+
                                 /* Nod Defense Units */
                                 "NOD_Def_Antitank Barrier": "t",
                                 "NOD_Def_Art Air": "e",
@@ -176,7 +266,7 @@
                                 "GDI_Riflemen": "r",
                                 "GDI_Sniper Team": "s",
                                 "GDI_Zone Trooper": "z",
-                
+
                                 /* Nod Offense Units */
                                 "NOD_Attack Bike": "b",
                                 "NOD_Avatar": "a",
@@ -304,7 +394,7 @@
                                     "GDI_Support_Art": "z",
                                     "GDI_Support_Air": "x",
                                     "GDI_Support_Ion": "i",
-            
+
                                     /* Forgotten Buildings */
                                     "FOR_Silo": "s",
                                     "FOR_Refinery": "r",
@@ -317,7 +407,7 @@
                                     "FOR_Harvester_Tiberium": "h",
                                     "FOR_Defense HQ": "q",
                                     "FOR_Harvester_Crystal": "n",
-            
+
                                     /* Nod Buildings */
                                     "NOD_Refinery": "r",
                                     "NOD_Power Plant": "p",
@@ -339,7 +429,7 @@
                                     //"NOD_Tech Lab": "",
                                     //"NOD_Recruitment Hub": "X",
                                     //"NOD_Temple of Nod": "X",
-            
+
                                     /* GDI Defense Units */
                                     "GDI_Wall": "w",
                                     "GDI_Cannon": "c",
@@ -356,7 +446,7 @@
                                     "GDI_Def_Predator": "d",
                                     "GDI_Def_Sniper": "s",
                                     "GDI_Def_Zone Trooper": "z",
-            
+
                                     /* Nod Defense Units */
                                     "NOD_Def_Antitank Barrier": "t",
                                     "NOD_Def_Art Air": "e",
@@ -373,7 +463,7 @@
                                     "NOD_Def_Reckoner": "g",
                                     "NOD_Def_Scorpion Tank": "d",
                                     "NOD_Def_Wall": "w",
-            
+
                                     /* GDI Offense Units */
                                     "GDI_APC Guardian": "g",
                                     "GDI_Commando": "c",
@@ -389,7 +479,7 @@
                                     "GDI_Riflemen": "r",
                                     "GDI_Sniper Team": "s",
                                     "GDI_Zone Trooper": "z",
-            
+
                                     /* Nod Offense Units */
                                     "NOD_Attack Bike": "b",
                                     "NOD_Avatar": "a",
@@ -405,7 +495,7 @@
                                     "NOD_Specter Artilery": "p",
                                     "NOD_Venom": "v",
                                     "NOD_Vertigo": "t",
-            
+
                                     "<last>": "."
                                 },
                                 make_sharelink: function (_baseId, _baseName, _faction) {
@@ -450,7 +540,7 @@
                                                 Defense_units[unit.get_CoordX()][unit.get_CoordY() + 8] = unit;
                                             }
                                         }
-            
+
                                         var offense_units = [];
                                         for (var i = 0; i < 20; ++i) {
                                             var col = [];
@@ -459,7 +549,7 @@
                                             }
                                             offense_units.push(col);
                                         }
-            
+
                                         if (city.get_CityFaction() == 1 || city.get_CityFaction() == 2) {
                                             var offense_unit_list = _self.getOffenseUnits(city);
                                         }
@@ -477,7 +567,7 @@
                                                 offense_units[unit.get_CoordX()][unit.get_CoordY() + 16] = unit;
                                             }
                                         }
-            
+
                                         var techLayout = _self.findTechLayout(city);
                                         var buildings = _self.findBuildings(city);
                                         for (var i = 0; i < 20; ++i) {
@@ -501,7 +591,7 @@
                                                 if (level > 1) {
                                                     link += level;
                                                 }
-            
+
                                                 switch (i > 16 ? 0 : city.GetResourceType(j, i)) {
                                                     case 0:
                                                         if (building) {
@@ -664,6 +754,7 @@
                                     // Basen
                                     var bases = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d;
                                     var CountBases = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().c;
+                                    var LvLSumCY = 0;
                                     var LvLSumBase = 0;
                                     var LvLSumOff = 0;
                                     var LvLSumDef = 0;
@@ -680,7 +771,6 @@
                                     for (var key in bases)
                                     {
                                         var base = bases[key];
-                                        var LvLDF = 0;
                                         var BaseId = base.get_Id();
                                         var BaseName = base.get_Name();
                                         var LvLCY = base.get_ConstructionYardLevel();
@@ -692,23 +782,24 @@
                                             repairMaxTime = base.GetResourceMaxStorage(ClientLib.Base.EResourceType.RepairChargeInf);
                                         }
                                         var repairCurrentTime = base.GetResourceCount(ClientLib.Base.EResourceType.RepairChargeInf);
-                                        var unitData = base.get_CityBuildingsData();
-                                        var df = unitData.GetUniqueBuildingByTechName(ClientLib.Base.ETechName.Defense_Facility);
+                                        var LvLDF = 0;
+                                        var df = base.get_CityBuildingsData().GetUniqueBuildingByTechName(ClientLib.Base.ETechName.Defense_Facility);
                                         if (df !== null)
                                         {
                                             LvLDF = df.get_CurrentLevel();
-                                            LvLSumDF += df.get_CurrentLevel();
+                                            LvLSumDF += LvLDF;
                                         }
-                                        LvLSumBase += base.get_LvlBase();
-                                        LvLSumOff += base.get_LvlOffense();
-                                        LvLSumDef += base.get_LvlDefense();
-                                        if (base.get_LvlOffense() > LvLHighestOff)
+                                        LvLSumCY += LvLCY;
+                                        LvLSumBase += LvLBase;
+                                        LvLSumOff += LvLOffense;
+                                        LvLSumDef += LvLDefense;
+                                        if (LvLSumOff > LvLHighestOff)
                                         {
-                                            LvLHighestOff = base.get_LvlOffense();
+                                            LvLHighestOff = LvLSumOff;
                                         }
-                                        if (base.get_LvlDefense() > LvLHighestDef)
+                                        if (LvLDefense > LvLHighestDef)
                                         {
-                                            LvLHighestDef = base.get_LvlDefense();
+                                            LvLHighestDef = LvLDefense;
                                         }
                                         var LvLSupport = 0;
                                         var SupArt = "";
@@ -748,6 +839,7 @@
                                         this.ObjectData.bases.push(ObjectBase);
                                         this.linkBase = '';
                                     }
+                                    var AverageCY = LvLSumCY / CountBases;
                                     var AverageBase = LvLSumBase / CountBases;
                                     var AverageOff = LvLSumOff / CountBases;
                                     var AverageDef = LvLSumDef / CountBases;
@@ -809,6 +901,7 @@
                                     this.ObjectData.player.MemberRole = MemberRole;
                                     this.ObjectData.player.LvLHighestOff = LvLHighestOff;
                                     this.ObjectData.player.LvLHighestDef = LvLHighestDef;
+                                    this.ObjectData.player.AverageCY = AverageCY;
                                     this.ObjectData.player.AverageBase = AverageBase;
                                     this.ObjectData.player.AverageOff = AverageOff;
                                     this.ObjectData.player.AverageDef = AverageDef;
