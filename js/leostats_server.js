@@ -8,7 +8,7 @@
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
                 // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.16';
+                var scriptVersionLocal = '2020.02.16.2';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -793,9 +793,9 @@
                                         LvLSumBase += LvLBase;
                                         LvLSumOff += LvLOffense;
                                         LvLSumDef += LvLDefense;
-                                        if (LvLSumOff > LvLHighestOff)
+                                        if (LvLOffense > LvLHighestOff)
                                         {
-                                            LvLHighestOff = LvLSumOff;
+                                            LvLHighestOff = LvLOffense;
                                         }
                                         if (LvLDefense > LvLHighestDef)
                                         {
