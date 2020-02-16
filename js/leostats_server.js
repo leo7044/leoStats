@@ -8,7 +8,7 @@
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
                 // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.16.2';
+                var scriptVersionLocal = '2020.02.16.3';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -84,12 +84,23 @@
                             this.GuiBasesVBox.setThemedBackgroundColor("#eef");
                             this.GuiBasesPage.add(this.GuiBasesVBox);
 
+                            // Tab 3: POIs
+                            this.GuiPoisPage = new qx.ui.tabview.Page("POIs");
+                            this.GuiPoisPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiTab.add(this.GuiPoisPage);
+                            this.GuiPoisVBox = new qx.ui.container.Composite();
+                            this.GuiPoisVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiPoisVBox.setThemedPadding(10);
+                            this.GuiPoisVBox.setThemedBackgroundColor("#eef");
+                            this.GuiPoisPage.add(this.GuiPoisVBox);
+
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
                                 // qx.core.Init.getApplication().showExternal(linkToRoot);
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
+                                this.GuiPoisVBox.removeAll();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
@@ -110,7 +121,7 @@
                             // Tab 1: Info
                             var HeaderTableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLineInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            HeadLineInfo.add(new qx.ui.basic.Label('<br><big><u><b>Information</b></u></big>').set({rich: true}));
+                            HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Information</b></u></big>').set({rich: true}));
                             HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
                             var TableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
@@ -140,7 +151,7 @@
                             // Tab 2: Bases
                             var HeaderTableBases = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLineBases = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            HeadLineBases.add(new qx.ui.basic.Label('<br><big><u><b>Playerbases</b></u></big>').set({rich: true}));
+                            HeadLineBases.add(new qx.ui.basic.Label('<big><u><b>Playerbases</b></u></big>').set({rich: true}));
                             HeadLineBases.add(new qx.ui.basic.Label('').set({rich: true}));
                             var TableBases = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -211,6 +222,85 @@
                             HeadLineBases.add(TableBases);
                             HeaderTableBases.add(HeadLineBases);
                             this.GuiBasesVBox.add(HeaderTableBases);
+
+                            // Tab 3: POIs
+                            var HeaderTablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLinePois = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLinePois.add(new qx.ui.basic.Label('<big><u><b>POIs</b></u></big>').set({rich: true}));
+                            HeadLinePois.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextTib = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextCry = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextPow = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextInf = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextVeh = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextAir = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextDef = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextTib.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                            TextCry.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
+                            TextPow.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                            TextInf.add(new qx.ui.basic.Label('<b>Infantry</b>').set({rich: true}));
+                            TextVeh.add(new qx.ui.basic.Label('<b>Vehicle</b>').set({rich: true}));
+                            TextAir.add(new qx.ui.basic.Label('<b>Aircraft</b>').set({rich: true}));
+                            TextDef.add(new qx.ui.basic.Label('<b>Defense</b>').set({rich: true}));
+                            var ArrayPois = ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnedPOIs();
+                            ArrayPois.reverse(); // destructive, Originalarray wird gedreht
+                            for (var i in ArrayPois)
+                            {
+                                switch(ArrayPois[i].t)
+                                {
+                                    case 2:
+                                    {
+                                        TextTib.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        TextCry.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        TextPow.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        TextInf.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 6:
+                                    {
+                                        TextVeh.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 7:
+                                    {
+                                        TextAir.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    case 8:
+                                    {
+                                        TextDef.add(new qx.ui.basic.Label(ArrayPois[i].l + ' (<a style="cursor: pointer; color: #1d79ff" onclick="webfrontend.gui.UtilView.centerCoordinatesOnRegionViewWindow(parseInt(' + ArrayPois[i].x + '), parseInt(' + ArrayPois[i].y + '));">' + ArrayPois[i].x + ':' + ArrayPois[i].y + '</a>)').set({rich: true, alignX: "left"}));
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                            ArrayPois.reverse(); // notwendig, weil das Originalarray gedreht wird
+                            TablePois.add(TextTib);
+                            TablePois.add(TextCry);
+                            TablePois.add(TextPow);
+                            TablePois.add(TextInf);
+                            TablePois.add(TextVeh);
+                            TablePois.add(TextAir);
+                            TablePois.add(TextDef);
+                            HeadLinePois.add(TablePois);
+                            HeaderTablePois.add(HeadLinePois);
+                            this.GuiPoisVBox.add(HeaderTablePois);
                         },
                         setCncOptVars: function()
                         {
