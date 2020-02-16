@@ -94,6 +94,16 @@
                             this.GuiPoisVBox.setThemedBackgroundColor("#eef");
                             this.GuiPoisPage.add(this.GuiPoisVBox);
 
+                            // Tab 4: POI-Data
+                            this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
+                            this.GuiPoiDataPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiTab.add(this.GuiPoiDataPage);
+                            this.GuiPoiDataVBox = new qx.ui.container.Composite();
+                            this.GuiPoiDataVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiPoiDataVBox.setThemedPadding(10);
+                            this.GuiPoiDataVBox.setThemedBackgroundColor("#eef");
+                            this.GuiPoiDataPage.add(this.GuiPoiDataVBox);
+
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
@@ -101,6 +111,7 @@
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
+                                this.GuiPoiDataVBox.removeAll();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
@@ -301,6 +312,38 @@
                             HeadLinePois.add(TablePois);
                             HeaderTablePois.add(HeadLinePois);
                             this.GuiPoisVBox.add(HeaderTablePois);
+
+                            // Tab 4: POI-Data
+                            var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLinePoiData = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLinePoiData.add(new qx.ui.basic.Label('<big><u><b>POI-Data</b></u></big>').set({rich: true}));
+                            HeadLinePoiData.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextScorePoints = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextScorePoints.add(new qx.ui.basic.Label('<b>Points</b>').set({rich: true}));
+                            var maxPoiLevelOnWorld = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxCenterLevel();
+                            var scorePointsOfMaxPoiLevelOnWorld = ClientLib.Base.PointOfInterestTypes.GetScoreByLevel(maxPoiLevelOnWorld);
+                            var ArrayScorePoints = [];
+                            var previousScorePoints = -1;
+                            var currentScorePoints = 0;
+                            while (previousScorePoints != currentScorePoints)
+                            {
+                                previousScorePoints = currentScorePoints;
+                                currentScorePoints = ClientLib.Base.PointOfInterestTypes.GetNextScore(previousScorePoints);
+                                if (currentScorePoints != previousScorePoints && (100 * scorePointsOfMaxPoiLevelOnWorld) >= currentScorePoints)
+                                {
+                                    ArrayScorePoints.push(currentScorePoints);
+                                    TextScorePoints.add(new qx.ui.basic.Label(currentScorePoints.toLocaleString()).set({rich: true, alignX: "right"}));
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            TablePoiData.add(TextScorePoints);
+                            HeadLinePoiData.add(TablePoiData);
+                            HeaderTablePoiData.add(HeadLinePoiData);
+                            this.GuiPoiDataVBox.add(HeaderTablePoiData);
                         },
                         setCncOptVars: function()
                         {
