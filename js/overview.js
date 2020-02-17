@@ -191,19 +191,25 @@ function initializeStart()
 
 function getSessionVariables()
 {
-    getLoginStatus();
     var data =
     {
         action: "getSessionVariables"
     };
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
-    .always(function(data)
+    .always(function(_data)
     {
-        ObjectSessionVariables = data;
-        if (ObjectSessionVariables.leoStats_IsAdmin)
+        if (_data[0])
         {
-            $('#LiTabWorldOverview').removeClass('d-none');
+            ObjectSessionVariables = _data[0];
+            if (ObjectSessionVariables.leoStats_IsAdmin)
+            {
+                $('#LiTabWorldOverview').removeClass('d-none');
+            }
+        }
+        else
+        {
+            location.reload();
         }
     });
     $.ajaxSetup({async: true});
@@ -211,16 +217,22 @@ function getSessionVariables()
 
 function getSeasonServerIds()
 {
-    getLoginStatus();
     var data =
     {
         action: "getSeasonServerIds"
     };
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
-    .always(function(data)
+    .always(function(_data)
     {
-        ArraySeasonServerIds = data;
+        if (_data[0])
+        {
+            ArraySeasonServerIds = _data;
+        }
+        else
+        {
+            location.reload();
+        }
     });
     $.ajaxSetup({async: true});
 }
@@ -298,17 +310,23 @@ $(window).resize(function()
 //==================================================
 function getDropDownListData()
 {
-    getLoginStatus();
     var data =
     {
         action: "getDropDownListData"
     };
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
-    .always(function(data)
+    .always(function(_data)
     {
-        ArrayDropDownListData = data[0];
-        ArrayDropDownDefaultOwn = data[1];
+        if (_data[0])
+        {
+            ArrayDropDownListData = _data[0];
+            ArrayDropDownDefaultOwn = _data[1];
+        }
+        else
+        {
+            location.reload();
+        }
     });
     $.ajaxSetup({async: true});
 }
@@ -642,7 +660,6 @@ function manageContentAllianceMembers()
     // if (!ObjectAlliancePlayerData[WorldId + '_' + AllianceId] || !ObjectAlliancePlayerData[WorldId + '_' + AllianceId][0])
     if (!ObjectAlliancePlayerData[WorldId + '_' + AllianceId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getAlliancePlayerData",
@@ -651,9 +668,16 @@ function manageContentAllianceMembers()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectAlliancePlayerData[WorldId + '_' + AllianceId] = data;
+            if (_data[0])
+            {
+                ObjectAlliancePlayerData[WorldId + '_' + AllianceId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -714,7 +738,6 @@ function manageContentAlliance()
     var AllianceId = $('#DropDownListAlliance')[0].value;
     if (!ObjectAllianceData[WorldId + '_' + AllianceId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getAllianceData",
@@ -723,9 +746,16 @@ function manageContentAlliance()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectAllianceData[WorldId + '_' + AllianceId] = data;
+            if (_data[0])
+            {
+                ObjectAllianceData[WorldId + '_' + AllianceId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -752,11 +782,6 @@ function manageContentAllianceBase()
     var type = $('#DropDownAllianceBaseType')[0].value;
     if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId])
     {
-        ObjectAllianceBaseData[WorldId + '_' + AllianceId] = {};
-    }
-    if (!ObjectAllianceBaseData[WorldId + '_' + AllianceId][type])
-    {
-        getLoginStatus();
         var data =
         {
             action: "getAllianceBaseData",
@@ -766,13 +791,20 @@ function manageContentAllianceBase()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectAllianceBaseData[WorldId + '_' + AllianceId][type] = data;
+            if (_data[0])
+            {
+                ObjectAllianceBaseData[WorldId + '_' + AllianceId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
-    var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId][type];
+    var curObjectAllianceBaseData = ObjectAllianceBaseData[WorldId + '_' + AllianceId];
     var maxBaseCount = 0;
     var curBaseCount = 0;
     var lastName = '';
@@ -891,7 +923,6 @@ function manageContentPlayer()
     var AccountId = $('#DropDownListPlayer')[0].value;
     if (!ObjectPlayerData[WorldId + '_' + AccountId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getPlayerData",
@@ -900,9 +931,16 @@ function manageContentPlayer()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectPlayerData[WorldId + '_' + AccountId] = data;
+            if (_data[0])
+            {
+                ObjectPlayerData[WorldId + '_' + AccountId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -944,7 +982,6 @@ function manageContentPlayerBase()
     var AccountId = $('#DropDownListPlayer')[0].value;
     if (!ObjectPlayerBaseData[WorldId + '_' + AccountId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getPlayerBaseData",
@@ -953,9 +990,16 @@ function manageContentPlayerBase()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectPlayerBaseData[WorldId + '_' + AccountId] = data;
+            if (_data[0])
+            {
+                ObjectPlayerBaseData[WorldId + '_' + AccountId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -1018,7 +1062,6 @@ function manageContentAllianceOverview()
     var AllianceId = $('#DropDownListAlliance')[0].value;
     if (!ObjectAllianceOverviewData[WorldId + '_' + AllianceId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getAllianceOverviewData",
@@ -1027,9 +1070,16 @@ function manageContentAllianceOverview()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = data;
+            if (_data[0])
+            {
+                ObjectAllianceOverviewData[WorldId + '_' + AllianceId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -1048,7 +1098,6 @@ function manageContentBase()
     var BaseId = $('#DropDownListBase')[0].value;
     if (!ObjectBaseData[WorldId + '_' + BaseId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getBaseData",
@@ -1057,9 +1106,16 @@ function manageContentBase()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectBaseData[WorldId + '_' + BaseId] = data;
+            if (_data[0])
+            {
+                ObjectBaseData[WorldId + '_' + BaseId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -1091,7 +1147,6 @@ function manageContentWorldOverview()
     var WorldId = $('#DropDownListWorld')[0].value;
     if (!ObjectWorldOverviewData[WorldId.toString()])
     {
-        getLoginStatus();
         var data =
         {
             action: "getWorldOverviewData",
@@ -1099,9 +1154,16 @@ function manageContentWorldOverview()
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectWorldOverviewData[WorldId.toString()] = data;
+            if (_data[0])
+            {
+                ObjectWorldOverviewData[WorldId.toString()] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }
@@ -1332,7 +1394,6 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
 {
     if (!ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId])
     {
-        getLoginStatus();
         var data =
         {
             action: "getNeededMemberRoles",
@@ -1341,9 +1402,16 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data)
-        .always(function(data)
+        .always(function(_data)
         {
-            ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = data;
+            if (_data[0])
+            {
+                ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = _data;
+            }
+            else
+            {
+                location.reload();
+            }
         });
         $.ajaxSetup({async: true});
     }

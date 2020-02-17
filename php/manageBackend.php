@@ -450,7 +450,7 @@ if (!$conn->connect_error)
         }
         case 'getSessionVariables':
         {
-            $UserAnswer = $_SESSION;
+            $UserAnswer = [$_SESSION];
             break;
         }
         case 'getSeasonServerIds':
@@ -692,58 +692,9 @@ if (!$conn->connect_error)
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
-                $type = $_post['type'];
+                $AllianceId = $_post['AllianceId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery =
-                        "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
-                        JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
-                        JOIN login l ON l.AccountId=p.AccountId
-                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-                        JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-                        WHERE ba.Zeit=
-                        (
-                            SELECT ba.Zeit FROM bases ba
-                            WHERE ba.WorldId=p.WorldId
-                            AND ba.BaseId=b.BaseId
-                            ORDER BY ba.Zeit DESC LIMIT 1
-                        )
-                        AND p.WorldId='$WorldId'
-                        AND a.AllianceId=
-                        (
-                            SELECT p.AllianceId FROM relation_player p WHERE p.WorldId='$WorldId' AND p.AccountId='$OwnAccountId'
-                        )
-                        AND
-                        (
-                            IF
-                            (
-                                (SELECT p.MemberRole FROM relation_player p WHERE p.AccountId='$OwnAccountId' AND p.WorldId='$WorldId')<=a.MemberRole,
-                                true,
-                                p.AccountId='$OwnAccountId'
-                            )
-                        )
-                        ORDER BY l.UserName ASC, ba.BaseId ASC;";
-                }
-                else
-                {
-                    $AllianceId = $_post['AllianceId'];
-                    $strQuery =
-                        "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
-                        JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
-                        JOIN login l ON l.AccountId=p.AccountId
-                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-                        WHERE ba.Zeit=
-                        (
-                            SELECT ba.Zeit FROM bases ba
-                            WHERE ba.WorldId=p.WorldId
-                            AND ba.BaseId=b.BaseId
-                            ORDER BY ba.Zeit DESC LIMIT 1
-                        )
-                        AND p.WorldId='$WorldId'
-                        AND p.AllianceId='$AllianceId'
-                        ORDER BY l.UserName ASC, ba.BaseId ASC;";
-                }
+                $strQuery = "CALL getAllianceBaseData('$WorldId', '$AllianceId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {

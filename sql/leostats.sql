@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 17. Feb 2020 um 11:19
+-- Erstellungszeit: 17. Feb 2020 um 16:16
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -57,23 +57,7 @@ WHERE l.WorldId=WorldId
 GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
 
-CREATE PROCEDURE `getAllianceBaseDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  NO SQL
-SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
-JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
-JOIN login l ON l.AccountId=p.AccountId
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-WHERE ba.Zeit=
-(
-    SELECT ba.Zeit FROM bases ba
-    WHERE ba.WorldId=p.WorldId
-    AND ba.BaseId=b.BaseId
-    ORDER BY ba.Zeit DESC LIMIT 1
-)
-AND p.WorldId=WorldId
-AND p.AllianceId=AllianceId
-ORDER BY l.UserName ASC, ba.BaseId ASC$$
-
-CREATE PROCEDURE `getAllianceBaseDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  NO SQL
+CREATE PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
@@ -86,18 +70,45 @@ WHERE ba.Zeit=
 	AND ba.BaseId=b.BaseId
 	ORDER BY ba.Zeit DESC LIMIT 1
 )
-AND p.WorldId=WorldId
-AND a.AllianceId=
-(
-	SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
-)
+AND p.WorldId=_WorldId
+AND a.AllianceId=_AllianceId
 AND
+IF
 (
-	IF
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
 	(
-		(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
-		true,
-		p.AccountId=OwnAccountId
+		(
+			a.AllianceId=
+			(
+				SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=_OwnAccountId AND p.WorldId=_WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
+			)
+		)
+		OR
+		(
+			a.AllianceId=
+			(
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p.MemberRole FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
 	)
 )
 ORDER BY l.UserName ASC, ba.BaseId ASC$$
@@ -758,6 +769,7 @@ CREATE TABLE `login` (
   `AccountId` int(7) UNSIGNED NOT NULL,
   `UserName` varchar(16) COLLATE utf8_bin NOT NULL,
   `Password` char(128) COLLATE utf8_bin NOT NULL,
+  `IsAdmin` tinyint(1) NOT NULL DEFAULT 0,
   `LastTransmission` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `ScriptLocalVersion` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
