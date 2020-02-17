@@ -110,13 +110,13 @@ if (!$conn->connect_error)
         case 'fillMissingLvLDefInTablePlayer':
         {
             $strQuery = "SELECT ba.Zeit, ba.WorldId, b.AccountId, ba.LvLDef FROM bases ba
-                    JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
-                    WHERE ba.ID=
+                    JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
+                    WHERE ba.BaseId=
                     (
-                        SELECT ba2.ID FROM bases ba2
-                        JOIN relation_bases b2 ON b2.WorldId=ba2.WorldId AND b2.BaseId=ba2.ID
+                        SELECT ba2.BaseId FROM bases ba2
+                        JOIN relation_bases b2 ON b2.WorldId=ba2.WorldId AND b2.BaseId=ba2.BaseId
                         WHERE ba2.Zeit=ba.Zeit AND ba2.WorldId=ba.WorldId AND b2.AccountId=b.AccountId
-                        ORDER BY ba2.LvLDef DESC, ba2.ID ASC LIMIT 1
+                        ORDER BY ba2.LvLDef DESC, ba2.BaseId ASC LIMIT 1
                     )
                     AND ba.LvLDef=0
                     ORDER BY ba.Zeit ASC, ba.WorldId ASC, b.AccountId ASC;";
@@ -137,13 +137,13 @@ if (!$conn->connect_error)
         case 'updateWrongLvLOffInTablePlayer':
         {
             $strQuery = "SELECT ba.Zeit, ba.WorldId, b.AccountId, ba.LvLOff FROM bases ba
-                    JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
-                    WHERE ba.ID=
+                    JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
+                    WHERE ba.BaseId=
                     (
-                        SELECT ba2.ID FROM bases ba2
-                        JOIN relation_bases b2 ON b2.WorldId=ba2.WorldId AND b2.BaseId=ba2.ID
+                        SELECT ba2.BaseId FROM bases ba2
+                        JOIN relation_bases b2 ON b2.WorldId=ba2.WorldId AND b2.BaseId=ba2.BaseId
                         WHERE ba2.Zeit=ba.Zeit AND ba2.WorldId=ba.WorldId AND b2.AccountId=b.AccountId
-                        ORDER BY ba2.LvLOff DESC, ba2.ID ASC LIMIT 1
+                        ORDER BY ba2.LvLOff DESC, ba2.BaseId ASC LIMIT 1
                     )
                     ORDER BY ba.Zeit ASC, ba.WorldId ASC, b.AccountId ASC;";
             $result = $conn->query($strQuery);

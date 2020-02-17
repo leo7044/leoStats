@@ -12,6 +12,7 @@ if (!$conn->connect_error)
 {
 	switch ($action)
 	{
+        // InGame - leoStats
 		case 'sendDataFromInGame':
 		{
             $ScriptLocalVersion = time();
@@ -98,7 +99,7 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             // RelationBases and Bases
             $strQueryBasesRelation = "INSERT INTO `relation_bases` (WorldId, AccountId, BaseId, `BaseName`) VALUES ";
-            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `ID`, `BasePoints`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
+            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `BaseId`, `BasePoints`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
             $TimeDay = date("Y-m-d");
             foreach ($ObjectBases as $key => $ObjectBase)
             {
@@ -138,7 +139,7 @@ if (!$conn->connect_error)
                 }
             }
             $strQueryBasesRelation .= " ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AccountId = VALUES(AccountId), BaseId = VALUES(BaseId), BaseName = VALUES(BaseName);";
-            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), ID = VALUES(ID), BasePoints = VALUES(BasePoints), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
+            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), BaseId = VALUES(BaseId), BasePoints = VALUES(BasePoints), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
             $conn->query($strQueryBasesRelation);
             $conn->query($strQueryBases);
             // $strQuery .= $strQueryBasesRelation;
@@ -250,6 +251,172 @@ if (!$conn->connect_error)
             // $conn->multi_query($strQuery);
 			break;
         }
+        // InGame - BaseScanner
+        case 'sendDataFromInGameBaseScanner':
+        {
+            $strQueryLayouts = "INSERT INTO layouts (WorldId, Zeit, AccountId, PlayerName, PosX, PosY, FieldsTib, FieldsCry, Layout, CncOpt, Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2) VALUES ";
+            $WorldId = $_post['WorldId'];
+            $AccountId = 0;
+            if (isset($_post['AccountId']))
+            {
+                $AccountId = $_post['AccountId'];
+            }
+            $PlayerName = $_post['PlayerName'];
+            $ObjectData = $_post['ObjectData'];
+            foreach ($ObjectData as $key => $value)
+            {
+                $Zeit = date('Y-m-d H-i-s', intval($value['Zeit'] /= 1000));
+                $PosX = $value['PosX'];
+                $PosY = $value['PosY'];
+                $FieldsTib = $value['FieldsTib'];
+                $FieldsCry = $value['FieldsCry'];
+                $Layout = $value['Layout'];
+                $EvaluatedFields = $value['EvaluatedFields'];
+                $Tiberium6 = $EvaluatedFields[0];
+                $Tiberium5 = $EvaluatedFields[1];
+                $Tiberium4 = $EvaluatedFields[2];
+                $Tiberium3 = $EvaluatedFields[3];
+                $Tiberium2 = $EvaluatedFields[4];
+                $Tiberium1 = $EvaluatedFields[5];
+                $Crystal6 = $EvaluatedFields[6];
+                $Crystal5 = $EvaluatedFields[7];
+                $Crystal4 = $EvaluatedFields[8];
+                $Crystal3 = $EvaluatedFields[9];
+                $Crystal2 = $EvaluatedFields[10];
+                $Crystal1 = $EvaluatedFields[11];
+                $Mixed6 = $EvaluatedFields[12];
+                $Mixed5 = $EvaluatedFields[13];
+                $Mixed4 = $EvaluatedFields[14];
+                $Mixed3 = $EvaluatedFields[15];
+                $Mixed2 = $EvaluatedFields[16];
+                $Mixed1 = $EvaluatedFields[17];
+                $Power8 = $EvaluatedFields[18];
+                $Power7 = $EvaluatedFields[19];
+                $Power6 = $EvaluatedFields[20];
+                $Power5 = $EvaluatedFields[21];
+                $Power4 = $EvaluatedFields[22];
+                $Power3 = $EvaluatedFields[23];
+                $Power2 = $EvaluatedFields[24];
+                $strLayout = $Layout;
+                $strCncOpt = 'http://cncopt.com/?map=2|N|N|' . $PosX . '_' . $PosY . '|';
+                $strLayout = str_replace('[[', '', $strLayout);
+                $strLayout = str_replace(']]', '', $strLayout);
+                $tmpArrayLayout = explode('],[', $strLayout);
+                $arrayLayout = array();
+                foreach ($tmpArrayLayout as $k => $v)
+                {
+                    $arrayLayout[] = explode(',', $v);
+                }
+                foreach ($arrayLayout as $key1 => $arrayLayoutRow)
+                {
+                    foreach ($arrayLayoutRow as $key2 => $arrayLayoutCol)
+                    {
+                        // echo $arrayLayoutCol . '<br/>';
+                        $letterForCncOpt = '.';
+                        if ($arrayLayoutCol == '1')
+                        {
+                            $letterForCncOpt = 'c';
+                        }
+                        else if ($arrayLayoutCol == '2')
+                        {
+                            $letterForCncOpt = 't';
+                        }
+                        else if ($arrayLayoutCol == '4')
+                        {
+                            $letterForCncOpt = 'j';
+                        }
+                        else if ($arrayLayoutCol == '5')
+                        {
+                            $letterForCncOpt = 'h';
+                        }
+                        else if ($arrayLayoutCol == '6')
+                        {
+                            $letterForCncOpt = 'l';
+                        }
+                        else if ($arrayLayoutCol == '7')
+                        {
+                            $letterForCncOpt = 'k';
+                        }
+                        $strCncOpt .= $letterForCncOpt;
+                    }
+                }
+                if (strlen($strLayout) == 431) // new
+                {
+                    $strCncOpt .= '....................................|newEconomy';
+                }
+                else // old
+                {
+                    $strCncOpt .= '............................................................................................................|newEconomy';
+                }
+                if ($key != count($ObjectData) - 1)
+                {
+                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";
+                }
+                else
+                {
+                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2')";
+                }
+            }
+            $strQueryLayouts .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), AccountId = VALUES(AccountId), PlayerName = VALUES(PlayerName), FieldsTib = VALUES(FieldsTib), FieldsCry = VALUES(FieldsCry), Layout = VALUES(Layout), CncOpt = VALUES(CncOpt), Tiberium6 = VALUES(Tiberium6), Tiberium5 = VALUES(Tiberium5), Tiberium4 = VALUES(Tiberium4), Tiberium3 = VALUES(Tiberium3), Tiberium2 = VALUES(Tiberium2), Crystal6 = VALUES(Crystal6), Crystal5 = VALUES(Crystal5), Crystal4 = VALUES(Crystal4), Crystal3 = VALUES(Crystal3), Crystal2 = VALUES(Crystal2), Mixed6 = VALUES(Mixed6), Mixed5 = VALUES(Mixed5), Mixed4 = VALUES(Mixed4), Mixed3 = VALUES(Mixed3), Mixed2 = VALUES(Mixed2), Power8 = VALUES(Power8), Power7 = VALUES(Power7), Power6 = VALUES(Power6), Power5 = VALUES(Power5), Power4 = VALUES(Power4), Power3 = VALUES(Power3), Power2 = VALUES(Power2);";
+            $conn->multi_query($strQueryLayouts);
+            $UserAnswer = [1, 'BaseScanner-Data successfull transmitted'];
+            break;
+        }
+        // InGame - Reports
+        case 'sendDataFromInGameReport':
+        {
+            $ObjectData = $_post['ObjectData'];
+            $strQueryReports = "INSERT INTO reports (WorldId, AccountId, ReportId, OwnBaseId, AttackTime, TargetLevel, TargetFaction, BattleStatus, GainTib, GainCry, GainCre, GainRp, CostCry, CostRep) VALUES ";
+            foreach ($ObjectData as $key => $value)
+            {
+                $WorldId = $value['WorldId'];
+                $AccountId = $value['AccountId'];
+                $ReportId = $value['ReportId'];
+                $OwnBaseId = $value['OwnBaseId'];
+                $AttackTime = date('Y-m-d H-i-s', intval($value['AttackTime'] /= 1000));
+                $TargetLevel = $value['TargetLevel'];
+                $TargetFaction = $value['TargetFaction'];
+                $BattleStatus = $value['BattleStatus'];
+                $GainTib = $value['GainTib'];
+                $GainCry = $value['GainCry'];
+                $GainCre = $value['GainCre'];
+                $GainRp = $value['GainRp'];
+                $CostCry = $value['CostCry'];
+                $CostRep = $value['CostRep'];
+                if ($key != count($ObjectData) - 1)
+                {
+                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep'),";
+                }
+                else
+                {
+                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep')";
+                }
+            }
+            $strQueryReports .= " ON DUPLICATE KEY UPDATE AccountId = VALUES(AccountId), OwnBaseId = VALUES(OwnBaseId), AttackTime = VALUES(AttackTime), TargetLevel = VALUES(TargetLevel), TargetFaction = VALUES(TargetFaction), BattleStatus = VALUES(BattleStatus), GainTib = VALUES(GainTib), GainCry = VALUES(GainCry), GainCre = VALUES(GainCre), GainRp = VALUES(GainRp), CostCry = VALUES(CostCry), CostRep = VALUES(CostRep);";
+            $conn->multi_query($strQueryReports);
+            $UserAnswer = [1, 'Report-Data successfull transmitted'];
+            break;
+        }
+        case 'getExistingReportIds':
+        {
+            $WorldId = $_post['WorldId'];
+            $AccountId = $_post['AccountId'];
+            $sqlQuery = "SELECT r.ReportId FROM reports r WHERE r.WorldId='$WorldId' AND r.AccountId='$AccountId' ORDER BY r.ReportId DESC LIMIT 1000;";
+            $result = $conn->query($sqlQuery);
+            while ($zeile = $result->fetch_assoc())
+            {
+                array_push($UserAnswer, $zeile);
+            }
+            break;
+        }
+        // InGame - Update-Service (für ältere Versionen als 2020.02.02.2)
+        case 'getCurrentVersionOfLeoStats':
+        {
+            $UserAnswer[0] = 1;
+            $UserAnswer[1] = '2020.02.02.2';
+            break;
+        }
+        // WebSite - Allgemein
         case 'login':
         {
             $UserName = $_post['UserName'];
@@ -533,13 +700,13 @@ if (!$conn->connect_error)
                         "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
                         JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
                         JOIN login l ON l.AccountId=p.AccountId
-                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
                         JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
                         WHERE ba.Zeit=
                         (
                             SELECT ba.Zeit FROM bases ba
                             WHERE ba.WorldId=p.WorldId
-                            AND ba.ID=b.BaseId
+                            AND ba.BaseId=b.BaseId
                             ORDER BY ba.Zeit DESC LIMIT 1
                         )
                         AND p.WorldId='$WorldId'
@@ -556,7 +723,7 @@ if (!$conn->connect_error)
                                 p.AccountId='$OwnAccountId'
                             )
                         )
-                        ORDER BY l.UserName ASC, ba.Id ASC;";
+                        ORDER BY l.UserName ASC, ba.BaseId ASC;";
                 }
                 else
                 {
@@ -565,17 +732,17 @@ if (!$conn->connect_error)
                         "SELECT l.UserName, p.Faction, ba.$type, ba.CnCOpt FROM relation_player p
                         JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
                         JOIN login l ON l.AccountId=p.AccountId
-                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+                        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
                         WHERE ba.Zeit=
                         (
                             SELECT ba.Zeit FROM bases ba
                             WHERE ba.WorldId=p.WorldId
-                            AND ba.ID=b.BaseId
+                            AND ba.BaseId=b.BaseId
                             ORDER BY ba.Zeit DESC LIMIT 1
                         )
                         AND p.WorldId='$WorldId'
                         AND p.AllianceId='$AllianceId'
-                        ORDER BY l.UserName ASC, ba.Id ASC;";
+                        ORDER BY l.UserName ASC, ba.BaseId ASC;";
                 }
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
@@ -585,7 +752,7 @@ if (!$conn->connect_error)
             }
             break;
         }
-        // Administration & settings
+        // WebSite - Administration & settings
         case 'changePassword':
         {
             if (isset($_SESSION['leoStats_AccountId']))
@@ -623,10 +790,10 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
+                    $AccountId = $_post['AccountId'];
                     $PlayerName = $_post['PlayerName'];
-                    $password = hash('sha512', $PlayerName . '_' . $Id);
-                    $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$Id';");
+                    $password = hash('sha512', $PlayerName . '_' . $AccountId);
+                    $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$AccountId';");
                 }
             }
             $UserAnswer = [1, 'done'];
@@ -639,8 +806,8 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
-                    $conn->query("DELETE FROM `login` WHERE AccountId='$Id';");
+                    $AccountId = $_post['AccountId'];
+                    $conn->query("DELETE FROM `login` WHERE AccountId='$AccountId';");
                 }
             }
             $UserAnswer = [1, 'done'];
@@ -785,8 +952,8 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $Id = $_post['Id'];
-                    $conn->query("DELETE FROM `relation_server` WHERE WorldId='$Id';");
+                    $WorldId = $_post['WorldId'];
+                    $conn->query("DELETE FROM `relation_server` WHERE WorldId='$WorldId';");
                 }
             }
             $UserAnswer = [1, 'done'];
@@ -836,117 +1003,19 @@ if (!$conn->connect_error)
             $UserAnswer = [1, 'done'];
             break;
         }
-        // BaseScanner
-        case 'sendDataFromInGameBaseScanner':
+        case 'getLoginStatus':
         {
-            $strQueryLayouts = "INSERT INTO layouts (WorldId, Zeit, AccountId, PlayerName, PosX, PosY, FieldsTib, FieldsCry, Layout, CncOpt, Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2) VALUES ";
-            $WorldId = $_post['WorldId'];
-            $AccountId = 0;
-            if (isset($_post['AccountId']))
+            if (isset($_SESSION['leoStats_AccountId']))
             {
-                $AccountId = $_post['AccountId'];
+                $UserAnswer = [1, 'login'];
             }
-            $PlayerName = $_post['PlayerName'];
-            $ObjectData = $_post['ObjectData'];
-            foreach ($ObjectData as $key => $value)
+            else
             {
-                $Zeit = date('Y-m-d H-i-s', intval($value['Zeit'] /= 1000));
-                $PosX = $value['PosX'];
-                $PosY = $value['PosY'];
-                $FieldsTib = $value['FieldsTib'];
-                $FieldsCry = $value['FieldsCry'];
-                $Layout = $value['Layout'];
-                $EvaluatedFields = $value['EvaluatedFields'];
-                $Tiberium6 = $EvaluatedFields[0];
-                $Tiberium5 = $EvaluatedFields[1];
-                $Tiberium4 = $EvaluatedFields[2];
-                $Tiberium3 = $EvaluatedFields[3];
-                $Tiberium2 = $EvaluatedFields[4];
-                $Tiberium1 = $EvaluatedFields[5];
-                $Crystal6 = $EvaluatedFields[6];
-                $Crystal5 = $EvaluatedFields[7];
-                $Crystal4 = $EvaluatedFields[8];
-                $Crystal3 = $EvaluatedFields[9];
-                $Crystal2 = $EvaluatedFields[10];
-                $Crystal1 = $EvaluatedFields[11];
-                $Mixed6 = $EvaluatedFields[12];
-                $Mixed5 = $EvaluatedFields[13];
-                $Mixed4 = $EvaluatedFields[14];
-                $Mixed3 = $EvaluatedFields[15];
-                $Mixed2 = $EvaluatedFields[16];
-                $Mixed1 = $EvaluatedFields[17];
-                $Power8 = $EvaluatedFields[18];
-                $Power7 = $EvaluatedFields[19];
-                $Power6 = $EvaluatedFields[20];
-                $Power5 = $EvaluatedFields[21];
-                $Power4 = $EvaluatedFields[22];
-                $Power3 = $EvaluatedFields[23];
-                $Power2 = $EvaluatedFields[24];
-                $strLayout = $Layout;
-                $strCncOpt = 'http://cncopt.com/?map=2|N|N|' . $PosX . '_' . $PosY . '|';
-                $strLayout = str_replace('[[', '', $strLayout);
-                $strLayout = str_replace(']]', '', $strLayout);
-                $tmpArrayLayout = explode('],[', $strLayout);
-                $arrayLayout = array();
-                foreach ($tmpArrayLayout as $k => $v)
-                {
-                    $arrayLayout[] = explode(',', $v);
-                }
-                foreach ($arrayLayout as $key1 => $arrayLayoutRow)
-                {
-                    foreach ($arrayLayoutRow as $key2 => $arrayLayoutCol)
-                    {
-                        // echo $arrayLayoutCol . '<br/>';
-                        $letterForCncOpt = '.';
-                        if ($arrayLayoutCol == '1')
-                        {
-                            $letterForCncOpt = 'c';
-                        }
-                        else if ($arrayLayoutCol == '2')
-                        {
-                            $letterForCncOpt = 't';
-                        }
-                        else if ($arrayLayoutCol == '4')
-                        {
-                            $letterForCncOpt = 'j';
-                        }
-                        else if ($arrayLayoutCol == '5')
-                        {
-                            $letterForCncOpt = 'h';
-                        }
-                        else if ($arrayLayoutCol == '6')
-                        {
-                            $letterForCncOpt = 'l';
-                        }
-                        else if ($arrayLayoutCol == '7')
-                        {
-                            $letterForCncOpt = 'k';
-                        }
-                        $strCncOpt .= $letterForCncOpt;
-                    }
-                }
-                if (strlen($strLayout) == 431) // new
-                {
-                    $strCncOpt .= '....................................|newEconomy';
-                }
-                else // old
-                {
-                    $strCncOpt .= '............................................................................................................|newEconomy';
-                }
-                if ($key != count($ObjectData) - 1)
-                {
-                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";
-                }
-                else
-                {
-                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2')";
-                }
+                $UserAnswer = [0, 'logout'];
             }
-            $strQueryLayouts .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), AccountId = VALUES(AccountId), PlayerName = VALUES(PlayerName), FieldsTib = VALUES(FieldsTib), FieldsCry = VALUES(FieldsCry), Layout = VALUES(Layout), CncOpt = VALUES(CncOpt), Tiberium6 = VALUES(Tiberium6), Tiberium5 = VALUES(Tiberium5), Tiberium4 = VALUES(Tiberium4), Tiberium3 = VALUES(Tiberium3), Tiberium2 = VALUES(Tiberium2), Crystal6 = VALUES(Crystal6), Crystal5 = VALUES(Crystal5), Crystal4 = VALUES(Crystal4), Crystal3 = VALUES(Crystal3), Crystal2 = VALUES(Crystal2), Mixed6 = VALUES(Mixed6), Mixed5 = VALUES(Mixed5), Mixed4 = VALUES(Mixed4), Mixed3 = VALUES(Mixed3), Mixed2 = VALUES(Mixed2), Power8 = VALUES(Power8), Power7 = VALUES(Power7), Power6 = VALUES(Power6), Power5 = VALUES(Power5), Power4 = VALUES(Power4), Power3 = VALUES(Power3), Power2 = VALUES(Power2);";
-            $conn->multi_query($strQueryLayouts);
-            $UserAnswer = [1, 'BaseScanner-Data successfull transmitted'];
             break;
         }
+        // Website - BaseScanner
         case 'getLayoutsByWorldIdAndProcedureName':
         {
             if (isset($_SESSION['leoStats_AccountId']))
@@ -996,72 +1065,6 @@ if (!$conn->connect_error)
             }
             break;
         }
-        // Reports
-        case 'sendDataFromInGameReport':
-        {
-            $ObjectData = $_post['ObjectData'];
-            $strQueryReports = "INSERT INTO reports (WorldId, AccountId, ReportId, OwnBaseId, AttackTime, TargetLevel, TargetFaction, BattleStatus, GainTib, GainCry, GainCre, GainRp, CostCry, CostRep) VALUES ";
-            foreach ($ObjectData as $key => $value)
-            {
-                $WorldId = $value['WorldId'];
-                $AccountId = $value['AccountId'];
-                $ReportId = $value['ReportId'];
-                $OwnBaseId = $value['OwnBaseId'];
-                $AttackTime = date('Y-m-d H-i-s', intval($value['AttackTime'] /= 1000));
-                $TargetLevel = $value['TargetLevel'];
-                $TargetFaction = $value['TargetFaction'];
-                $BattleStatus = $value['BattleStatus'];
-                $GainTib = $value['GainTib'];
-                $GainCry = $value['GainCry'];
-                $GainCre = $value['GainCre'];
-                $GainRp = $value['GainRp'];
-                $CostCry = $value['CostCry'];
-                $CostRep = $value['CostRep'];
-                if ($key != count($ObjectData) - 1)
-                {
-                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep'),";
-                }
-                else
-                {
-                    $strQueryReports .= "('$WorldId', '$AccountId', '$ReportId', '$OwnBaseId', '$AttackTime', '$TargetLevel', '$TargetFaction', '$BattleStatus', '$GainTib', '$GainCry', '$GainCre', '$GainRp', '$CostCry', '$CostRep')";
-                }
-            }
-            $strQueryReports .= " ON DUPLICATE KEY UPDATE AccountId = VALUES(AccountId), OwnBaseId = VALUES(OwnBaseId), AttackTime = VALUES(AttackTime), TargetLevel = VALUES(TargetLevel), TargetFaction = VALUES(TargetFaction), BattleStatus = VALUES(BattleStatus), GainTib = VALUES(GainTib), GainCry = VALUES(GainCry), GainCre = VALUES(GainCre), GainRp = VALUES(GainRp), CostCry = VALUES(CostCry), CostRep = VALUES(CostRep);";
-            $conn->multi_query($strQueryReports);
-            $UserAnswer = [1, 'Report-Data successfull transmitted'];
-            break;
-        }
-        case 'getExistingReportIds':
-        {
-            $WorldId = $_post['WorldId'];
-            $AccountId = $_post['AccountId'];
-            $sqlQuery = "SELECT r.ReportId FROM reports r WHERE r.WorldId='$WorldId' AND r.AccountId='$AccountId' ORDER BY r.ReportId DESC LIMIT 1000;";
-            $result = $conn->query($sqlQuery);
-            while ($zeile = $result->fetch_assoc())
-            {
-                array_push($UserAnswer, $zeile);
-            }
-            break;
-        }
-        // Update-Service
-        case 'getLoginStatus':
-        {
-            if (isset($_SESSION['leoStats_AccountId']))
-            {
-                $UserAnswer = [1, 'login'];
-            }
-            else
-            {
-                $UserAnswer = [0, 'logout'];
-            }
-            break;
-        }
-        case 'getCurrentVersionOfLeoStats':
-        {
-            $UserAnswer[0] = 1;
-            $UserAnswer[1] = '2020.02.02.2';
-            break;
-        }
 		default:
 		{
 			$UserAnswer = [0, 'no action'];
@@ -1088,7 +1091,7 @@ function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAc
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
         JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
         WHERE b.WorldId='$WorldId'
         AND a.AllianceId=
         (
@@ -1097,7 +1100,7 @@ function prepareSelectStringOverviewAlliance($typeOfPlayerData, $WorldId, $OwnAc
         AND
         ba.Zeit=
         (
-            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
         );";
     return $strQuery;
 }
@@ -1114,13 +1117,13 @@ function prepareSelectStringOverviewAllianceAdmin($typeOfPlayerData, $WorldId, $
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
         JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
         WHERE b.WorldId='$WorldId'
         AND a.AllianceId='$AllianceId'
         AND
         ba.Zeit=
         (
-            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
         );";
     return $strQuery;
 }
@@ -1137,12 +1140,12 @@ function prepareSelectStringOverviewWorld($typeOfPlayerData, $WorldId)
         "FROM relation_bases b
         JOIN relation_alliance a ON a.WorldId=b.WorldId
         JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
-        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+        JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
         WHERE b.WorldId='$WorldId'
         AND
         ba.Zeit=
         (
-            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+            SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
         );";
     return $strQuery;
 }

@@ -1216,7 +1216,7 @@ function resetPlayer()
         var data =
         {
             action: "resetPlayer",
-            Id: AccountId,
+            AccountId: AccountId,
             PlayerName: playerName
         }
         $.ajaxSetup({async: false});
@@ -1235,7 +1235,7 @@ function deletePlayer()
         var data =
         {
             action: "deletePlayer",
-            Id: AccountId
+            AccountId: AccountId
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data);
@@ -1400,7 +1400,7 @@ function deleteServer()
         var data =
         {
             action: "deleteServer",
-            Id: worldId
+            WorldId: worldId
         }
         $.ajaxSetup({async: false});
         $.post('php/manageBackend.php', data);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 17. Feb 2020 um 08:57
+-- Erstellungszeit: 17. Feb 2020 um 11:19
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -61,29 +61,29 @@ CREATE PROCEDURE `getAllianceBaseDataAsAdmin` (IN `WorldId` INT, IN `AllianceId`
 SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 WHERE ba.Zeit=
 (
     SELECT ba.Zeit FROM bases ba
     WHERE ba.WorldId=p.WorldId
-    AND ba.ID=b.BaseId
+    AND ba.BaseId=b.BaseId
     ORDER BY ba.Zeit DESC LIMIT 1
 )
 AND p.WorldId=WorldId
 AND p.AllianceId=AllianceId
-ORDER BY l.UserName ASC, ba.Id ASC$$
+ORDER BY l.UserName ASC, ba.BaseId ASC$$
 
 CREATE PROCEDURE `getAllianceBaseDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  NO SQL
 SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE ba.Zeit=
 (
 	SELECT ba.Zeit FROM bases ba
 	WHERE ba.WorldId=p.WorldId
-	AND ba.ID=b.BaseId
+	AND ba.BaseId=b.BaseId
 	ORDER BY ba.Zeit DESC LIMIT 1
 )
 AND p.WorldId=WorldId
@@ -100,7 +100,7 @@ AND
 		p.AccountId=OwnAccountId
 	)
 )
-ORDER BY l.UserName ASC, ba.Id ASC$$
+ORDER BY l.UserName ASC, ba.BaseId ASC$$
 
 CREATE PROCEDURE `getAllianceDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
 SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
@@ -178,7 +178,7 @@ ORDER BY l.UserName$$
 
 CREATE PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT)  READS SQL DATA
 SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
 WHERE
 b.WorldId=WorldId
@@ -188,7 +188,7 @@ ORDER BY ba.Zeit ASC$$
 
 CREATE PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
 WHERE
 b.WorldId=WorldId
@@ -274,7 +274,7 @@ ORDER BY al.Zeit ASC, a.AllianceId ASC$$
 
 CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
 SELECT ba.Zeit, b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
-JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
+JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
 WHERE
 b.WorldId=WorldId
 AND
@@ -455,19 +455,19 @@ ORDER BY MAX(p.Zeit) DESC, l.UserName ASC$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 WHERE b.WorldId=WorldId
 AND b.AccountId=AccountId
 AND
 ba.Zeit=
 (
-    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
 )
 ORDER BY b.BaseId$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 WHERE
 b.WorldId=WorldId
 AND
@@ -497,7 +497,7 @@ AccountId IN
 AND
 ba.Zeit=
 (
-    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.ID=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
+    SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1
 )
 ORDER BY b.BaseId$$
 
@@ -686,7 +686,7 @@ CREATE TABLE `alliance` (
 CREATE TABLE `bases` (
   `Zeit` date NOT NULL,
   `WorldId` smallint(3) UNSIGNED NOT NULL,
-  `ID` int(9) UNSIGNED NOT NULL,
+  `BaseId` int(9) UNSIGNED NOT NULL,
   `BasePoints` int(9) UNSIGNED NOT NULL,
   `LvLCY` tinyint(2) UNSIGNED NOT NULL,
   `LvLBase` decimal(4,2) UNSIGNED NOT NULL,
@@ -935,8 +935,8 @@ ALTER TABLE `alliance`
 -- Indizes für die Tabelle `bases`
 --
 ALTER TABLE `bases`
-  ADD PRIMARY KEY (`Zeit`,`WorldId`,`ID`),
-  ADD KEY `WorldId` (`WorldId`,`ID`);
+  ADD PRIMARY KEY (`Zeit`,`WorldId`,`BaseId`),
+  ADD KEY `WorldId` (`WorldId`,`BaseId`);
 
 --
 -- Indizes für die Tabelle `layouts`
@@ -1034,7 +1034,7 @@ ALTER TABLE `alliance`
 -- Constraints der Tabelle `bases`
 --
 ALTER TABLE `bases`
-  ADD CONSTRAINT `bases_ibfk_1` FOREIGN KEY (`WorldId`,`ID`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `bases_ibfk_1` FOREIGN KEY (`WorldId`,`BaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `layouts`
