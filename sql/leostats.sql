@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 13. Feb 2020 um 16:43
+-- Erstellungszeit: 17. Feb 2020 um 08:57
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -177,7 +177,7 @@ pl.AccountId IN
 ORDER BY l.UserName$$
 
 CREATE PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT)  READS SQL DATA
-SELECT ba.Zeit, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
+SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
 WHERE
@@ -187,7 +187,7 @@ b.BaseId=BaseId
 ORDER BY ba.Zeit ASC$$
 
 CREATE PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT ba.Zeit, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
+SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
 WHERE
@@ -223,7 +223,7 @@ BaseId IN
 ORDER BY ba.Zeit ASC$$
 
 CREATE PROCEDURE `getDropDownListDataAsAdmin` ()  READS SQL DATA
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
 JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
@@ -232,7 +232,7 @@ JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
 
 CREATE PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT)  READS SQL DATA
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.Name
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
 JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
@@ -273,7 +273,7 @@ a.WorldId=WorldId
 ORDER BY al.Zeit ASC, a.AllianceId ASC$$
 
 CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
-SELECT ba.Zeit, b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
+SELECT ba.Zeit, b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
 JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.ID
 WHERE
 b.WorldId=WorldId
@@ -454,7 +454,7 @@ GROUP BY l.AccountId
 ORDER BY MAX(p.Zeit) DESC, l.UserName ASC$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
-SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
+SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
 WHERE b.WorldId=WorldId
 AND b.AccountId=AccountId
@@ -466,7 +466,7 @@ ba.Zeit=
 ORDER BY b.BaseId$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT b.BaseId, b.Name, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
+SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.ID=b.BaseId
 WHERE
 b.WorldId=WorldId
@@ -556,27 +556,57 @@ WHERE r.WorldId=WorldId
 GROUP BY r.AccountId
 ORDER BY COUNT(*) DESC, r.AccountId ASC$$
 
-CREATE PROCEDURE `getReportsGroupByAttackTime` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
-SELECT DATE(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
-WHERE r.WorldId=WorldId
-AND r.AccountId=AccountId
-GROUP BY DATE(r.AttackTime)
-ORDER BY DATE(r.AttackTime) ASC$$
-
-CREATE PROCEDURE `getReportsGroupByAttackTimeBaseId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
-SELECT DATE(r.AttackTime), r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
-WHERE r.WorldId=WorldId
-AND r.AccountId=AccountId
-GROUP BY r.OwnBaseId
-ORDER BY r.OwnBaseId ASC$$
-
-CREATE PROCEDURE `getReportsGroupByBaseIdWhereAttackTime` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
+CREATE PROCEDURE `getReportsGroupByBaseIdWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
 SELECT r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
 and DATE(r.AttackTime)=Date
 GROUP BY r.OwnBaseId
 ORDER BY r.OwnBaseId ASC$$
+
+CREATE PROCEDURE `getReportsGroupByDate` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+SELECT DATE(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+GROUP BY DATE(r.AttackTime)
+ORDER BY DATE(r.AttackTime) ASC$$
+
+CREATE PROCEDURE `getReportsGroupByDateBaseId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+SELECT r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+GROUP BY r.OwnBaseId
+ORDER BY r.OwnBaseId ASC$$
+
+CREATE PROCEDURE `getReportsGroupByHourToday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+AND DATE(r.AttackTime)=CURRENT_DATE()
+GROUP BY HOUR(r.AttackTime)
+ORDER BY HOUR(r.AttackTime) ASC$$
+
+CREATE PROCEDURE `getReportsGroupByHourWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
+SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+AND DATE(r.AttackTime)=Date
+GROUP BY HOUR(r.AttackTime)
+ORDER BY HOUR(r.AttackTime) ASC$$
+
+CREATE PROCEDURE `getReportsGroupByHourYesterday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+AND r.AccountId=AccountId
+AND DATE(r.AttackTime)=ADDDATE(CURRENT_DATE(), -1)
+GROUP BY HOUR(r.AttackTime)
+ORDER BY HOUR(r.AttackTime) ASC$$
+
+CREATE PROCEDURE `getReportsGroupByTargetLevel` (IN `WorldId` INT)  NO SQL
+SELECT r.TargetLevel, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
+WHERE r.WorldId=WorldId
+GROUP BY r.TargetLevel
+ORDER BY r.TargetLevel DESC$$
 
 CREATE PROCEDURE `getReportsGroupByWorldId` ()  NO SQL
 SELECT r.WorldId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
@@ -689,7 +719,7 @@ CREATE TABLE `layouts` (
   `FieldsTib` tinyint(1) NOT NULL,
   `FieldsCry` tinyint(1) NOT NULL,
   `Layout` text COLLATE utf8_bin NOT NULL,
-  `CncOpt` varchar(230) COLLATE utf8_bin NOT NULL,
+  `CncOpt` tinytext COLLATE utf8_bin NOT NULL,
   `ReservedBy` int(7) UNSIGNED NOT NULL,
   `Tiberium6` tinyint(1) UNSIGNED NOT NULL,
   `Tiberium5` tinyint(1) UNSIGNED NOT NULL,
@@ -807,7 +837,7 @@ CREATE TABLE `relation_bases` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `AccountId` int(7) UNSIGNED NOT NULL,
   `BaseId` int(9) UNSIGNED NOT NULL,
-  `Name` varchar(19) COLLATE utf8_bin NOT NULL
+  `BaseName` varchar(19) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------

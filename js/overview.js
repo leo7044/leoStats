@@ -418,11 +418,11 @@ function prepareandFillDropDownListDataBase(_activeChanged)
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var AccountId = $('#DropDownListPlayer')[0].value;
     setCookie('AccountId', AccountId);
-    var ArrayDropDownListBase = alasql('SELECT DISTINCT BaseId, Name FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '" AND AccountId="' + AccountId + '"' ,[ArrayDropDownListData]);
+    var ArrayDropDownListBase = alasql('SELECT DISTINCT BaseId, BaseName FROM ? WHERE WorldId="' + WorldId + '" AND AllianceId="' + AllianceId + '" AND AccountId="' + AccountId + '"' ,[ArrayDropDownListData]);
     var strHtml = '';
     for (var key in ArrayDropDownListBase)
     {
-        strHtml += '<option value="' + ArrayDropDownListBase[key].BaseId + '">' + ArrayDropDownListBase[key].Name + '</option>';
+        strHtml += '<option value="' + ArrayDropDownListBase[key].BaseId + '">' + ArrayDropDownListBase[key].BaseName + '</option>';
     }
     $('#DropDownListBase')[0].innerHTML = strHtml;
     if (_activeChanged)
@@ -776,13 +776,11 @@ function manageContentAllianceBase()
     var maxBaseCount = 0;
     var curBaseCount = 0;
     var lastName = '';
-    var nameCount = 0;
     for (key in curObjectAllianceBaseData)
     {
         if (curObjectAllianceBaseData[key]['UserName'] != lastName)
         {
             curBaseCount = 0;
-            nameCount++;
         }
         lastName = curObjectAllianceBaseData[key]['UserName'];
         curBaseCount++;
@@ -801,7 +799,6 @@ function manageContentAllianceBase()
     $('#TableAllianceBaseTheadTr')[0].innerHTML = strHtml;
     lastName = '';
     curBaseCount = 1;
-    var nameCount = -1;
     for (var i = 0; i < curObjectAllianceBaseData.length; i++)
     {
         curObjectAllianceBaseData[i][type] = parseFloat(curObjectAllianceBaseData[i][type]);
@@ -822,7 +819,6 @@ function manageContentAllianceBase()
         {
             if (key != 0)
             {
-                nameCount++;
                 while (curBaseCount <= maxBaseCount)
                 {
                     strHtml += '<td></td>';
@@ -993,12 +989,12 @@ function manageContentPlayerBase()
             }
             else if (keyField == 'CnCOpt')
             {
-                strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyBase][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyBase]['Name'] + '</a></td>';
+                strHtml += '<td><a href="' + ObjectPlayerBaseCur[keyBase][keyField] + '" target="_blank">' + ObjectPlayerBaseCur[keyBase]['BaseName'] + '</a></td>';
             }
             else if (keyField == 'BaseId')
             {
                 ArrayPlayerBaseCurIdsAndNames[0].push(ObjectPlayerBaseCur[keyBase][keyField]);
-                ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyBase]['Name']);
+                ArrayPlayerBaseCurIdsAndNames[1].push(ObjectPlayerBaseCur[keyBase]['BaseName']);
                 delete ObjectPlayerBaseCur[keyBase][keyField];
             }
             else
