@@ -890,14 +890,18 @@ function manageContentAllianceBase()
         else if (procentLvLOff >= 0.00){curColor = ArrayColors[18];}
         else {curColor = '';}
         strHtml += '<td style="text-align: right; background-color: ' + curColor + '; cursor: pointer;" onclick="convertCncOptToArray(\'' + curObjectAllianceBaseData[key]['CnCOpt'] + '\', \'' + curObjectAllianceBaseData[key]['UserName'] + '\', ' + curBaseCount + ');">';
-        if (type == 'LvLOff' || type == 'LvLDef')
+        if (type == 'LvLBase' || type == 'LvLOff' || type == 'LvLDef')
         {
             strHtml += Intl.NumberFormat('en-US', {minimumFractionDigits: 2}).format(curObjectAllianceBaseData[key][type]) + '</td>';
         }
-        else if (type == 'LvLSup')
+        else if (type == 'LvLCY' || type == 'LvLSup' || type == 'LvLDF')
 		{
 			strHtml += curObjectAllianceBaseData[key][type] + '</td>';
-		}
+        }
+        else if (type == 'Rep')
+        {
+            strHtml += String(curObjectAllianceBaseData[key][type]).toTimeFormat() + '</td>';
+        }
 		else
 		{
 			strHtml += Intl.NumberFormat('en-US').format(curObjectAllianceBaseData[key][type]) + '</td>';

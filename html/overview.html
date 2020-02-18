@@ -16,13 +16,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alasql/0.5.5/alasql.min.js"></script> <!-- alasql -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.5/xlsx.core.min.js"></script> <!-- .xlsx-Export -->
         <script src="https://www.gstatic.com/charts/loader.js"></script> <!-- GoogleChart -->      
-		<script src="js/overview.min.js?202002182"></script> <!-- alles eigene -->
+		<script src="js/overview.min.js?202002185"></script> <!-- alles eigene -->
 
 		<!-- CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"> <!-- Bootstrap -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css"> <!-- FontAwesome -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css"> <!-- DataTable -->
-        <link rel="stylesheet" href="css/own.min.css?202002182"> <!-- alles eigene -->
+        <link rel="stylesheet" href="css/own.min.css?202002185"> <!-- alles eigene -->
 	</head>
 	<body>
         <div class="jumbotron text-center">
@@ -128,13 +128,18 @@
                 </div>
                 <div id="ContentAllianceBase" class="tab-pane">
                     <select id="DropDownAllianceBaseType" onchange="manageContentAllianceBase();">
-                        <option id="LvLOff">LvLOff</option>
+                        <option id="LvLCY">LvLCY</option>
+                        <option id="LvLBase">LvLBase</option>
+                        <option id="LvLOff" selected>LvLOff</option>
                         <option id="LvLDef">LvLDef</option>
+                        <option id="LvLDF">LvLDF</option>
                         <option id="LvLSup">LvLSup</option>
                         <option id="Tib" value="Tib">Tiberium</option>
                         <option id="Cry" value="Cry">Crystal</option>
                         <option id="Pow" value="Pow">Power</option>
                         <option id="Cre" value="Cre">Credits</option>
+                        <option id="Rep" value="Rep">RepTime</option>
+                        <option id="BasePoints">BasePoints</option>
                     </select><br/><br/>
                     <div style="overflow-x: auto;">
                         <table id="TableAllianceBase" border="1px">
