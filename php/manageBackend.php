@@ -516,23 +516,14 @@ if (!$conn->connect_error)
             }
             break;
         }
-        case 'getAllianceData':
+        case 'getAllianceDataHistory':
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
+                $AllianceId = $_post['AllianceId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery .= " CALL getAllianceDataAsUser('$WorldId', '$OwnAccountId');";
-                }
-                else
-                {
-                    $AllianceId = $_post['AllianceId'];
-                    $strQuery .= " CALL getAllianceDataAsAdmin('$WorldId', '$AllianceId');";
-
-                }
+                $strQuery = "CALL getAllianceDataHistory('$WorldId', '$AllianceId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {

@@ -740,7 +740,7 @@ function manageContentAlliance()
     {
         var data =
         {
-            action: "getAllianceData",
+            action: "getAllianceDataHistory",
             WorldId: WorldId,
             AllianceId: AllianceId
         }

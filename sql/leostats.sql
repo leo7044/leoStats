@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 18. Feb 2020 um 10:29
+-- Erstellungszeit: 18. Feb 2020 um 13:42
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -122,25 +122,43 @@ IF
 )
 ORDER BY l.UserName ASC, ba.BaseId ASC$$
 
-CREATE PROCEDURE `getAllianceDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
+CREATE PROCEDURE `getAllianceDataHistory` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
 JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE p.WorldId=WorldId
-AND p.AllianceId=AllianceId
-ORDER BY a.Zeit ASC$$
-
-CREATE PROCEDURE `getAllianceDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
-JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE
-p.WorldId=WorldId
+WHERE p.WorldId=_WorldId
+AND p.AllianceId=_AllianceId
 AND
-p.AllianceId=
+IF
 (
-    SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=WorldId AND p.AccountId=OwnAccountId
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
+	(
+		(
+			a.AllianceId=
+			(
+				SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+			)
+		)
+		OR
+		(
+			a.AllianceId=
+			(
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p.MemberRole FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
+	)
 )
-AND
-p.AccountId=OwnAccountId
 ORDER BY a.Zeit ASC$$
 
 CREATE PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
