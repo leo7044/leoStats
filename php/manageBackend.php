@@ -771,15 +771,13 @@ if (!$conn->connect_error)
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 if (in_array($OwnAccountId, $ArrayAdminAccounts))
                 {
-                    $QueryAnswer = [];
                     $WorldId = $_post['WorldId'];
                     $AllianceId = $_post['AllianceId'];
                     $result = $conn->query("SELECT a.WorldId, a.AllianceId, a.MemberRole FROM relation_alliance a WHERE WorldId='$WorldId' AND AllianceId='$AllianceId';");
                     while ($zeile = $result->fetch_assoc())
                     {
-                        array_push($QueryAnswer, $zeile);
+                        array_push($UserAnswer, $zeile);
                     }
-                    $UserAnswer = $QueryAnswer[0];
                 }
             }
             break;
@@ -843,7 +841,7 @@ if (!$conn->connect_error)
             }
             break;
         }
-        case 'deletePlayerFromAlliance':
+        case 'removePlayerFromAlliance':
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
@@ -875,9 +873,8 @@ if (!$conn->connect_error)
                     if ($OwnAllianceId == $AllianceId)
                     {
                         $strQuery =
-                            "DELETE FROM relation_player
+                            "UPDATE relation_player SET AllianceId=0, MemberRole=0
                             WHERE WorldId='$WorldId'
-                            AND AllianceId='$AllianceId'
                             AND AccountId='$AccountId';";
                         $conn->query($strQuery);
                     }
@@ -885,9 +882,8 @@ if (!$conn->connect_error)
                 else
                 {
                     $strQuery =
-                        "DELETE FROM relation_player
+                        "UPDATE relation_player SET AllianceId=0, MemberRole=0
                         WHERE WorldId='$WorldId'
-                        AND AllianceId='$AllianceId'
                         AND AccountId='$AccountId';";
                     $conn->query($strQuery);
                     echo $strQuery;

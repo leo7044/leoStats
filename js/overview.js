@@ -1406,7 +1406,7 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
         {
             if (_data[0])
             {
-                ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = _data;
+                ObjectNeededMemberRoles[_WorldId + '_' + _AllianceId] = _data[0];
             }
             else
             {
@@ -1428,7 +1428,7 @@ function deletePlayerTableCell(_cellId)
         var AllianceId = $('#DropDownListAlliance')[0].value;
         var data =
         {
-            action: "deletePlayerFromAlliance",
+            action: "removePlayerFromAlliance",
             WorldId: WorldId,
             AllianceId: AllianceId,
             AccountId: AccountId

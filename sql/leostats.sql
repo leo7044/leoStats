@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 17. Feb 2020 um 16:16
+-- Erstellungszeit: 18. Feb 2020 um 07:31
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -791,7 +791,7 @@ CREATE TABLE `player` (
   `EventRank` smallint(5) UNSIGNED NOT NULL,
   `GesamtTiberium` bigint(11) UNSIGNED NOT NULL,
   `GesamtCrystal` bigint(11) UNSIGNED NOT NULL,
-  `GesamtPower` bigint(12) UNSIGNED NOT NULL,
+  `GesamtPower` bigint(13) UNSIGNED NOT NULL,
   `GesamtCredits` bigint(12) UNSIGNED NOT NULL,
   `ResearchPoints` bigint(16) UNSIGNED NOT NULL,
   `Credits` bigint(16) UNSIGNED NOT NULL,
@@ -864,6 +864,18 @@ CREATE TABLE `relation_player` (
   `AccountId` int(7) UNSIGNED NOT NULL,
   `Faction` tinyint(1) NOT NULL,
   `MemberRole` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `relation_player_share`
+--
+
+CREATE TABLE `relation_player_share` (
+  `WorldId` smallint(3) UNSIGNED NOT NULL,
+  `AccountIdSet` int(7) UNSIGNED NOT NULL,
+  `AccountIdGet` int(7) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -971,8 +983,7 @@ ALTER TABLE `login`
 --
 ALTER TABLE `player`
   ADD PRIMARY KEY (`Zeit`,`WorldId`,`AccountId`),
-  ADD KEY `AccountId` (`AccountId`) USING BTREE,
-  ADD KEY `WorldId` (`WorldId`) USING BTREE;
+  ADD KEY `WorldId` (`WorldId`,`AccountId`);
 
 --
 -- Indizes für die Tabelle `relation_alliance`
@@ -992,7 +1003,7 @@ ALTER TABLE `relation_alliance_share`
 --
 ALTER TABLE `relation_bases`
   ADD PRIMARY KEY (`WorldId`,`BaseId`),
-  ADD KEY `AccountId` (`AccountId`);
+  ADD KEY `WorldId` (`WorldId`,`AccountId`);
 
 --
 -- Indizes für die Tabelle `relation_player`
@@ -1001,6 +1012,13 @@ ALTER TABLE `relation_player`
   ADD PRIMARY KEY (`WorldId`,`AccountId`),
   ADD KEY `WorldId` (`WorldId`,`AllianceId`),
   ADD KEY `AccountId` (`AccountId`);
+
+--
+-- Indizes für die Tabelle `relation_player_share`
+--
+ALTER TABLE `relation_player_share`
+  ADD PRIMARY KEY (`WorldId`,`AccountIdSet`,`AccountIdGet`),
+  ADD KEY `WorldId` (`WorldId`,`AccountIdGet`);
 
 --
 -- Indizes für die Tabelle `relation_server`
@@ -1013,8 +1031,7 @@ ALTER TABLE `relation_server`
 --
 ALTER TABLE `reports`
   ADD PRIMARY KEY (`WorldId`,`ReportId`),
-  ADD KEY `WorldId` (`WorldId`,`OwnBaseId`) USING BTREE,
-  ADD KEY `AccountId` (`AccountId`) USING BTREE;
+  ADD KEY `WorldId` (`WorldId`,`AccountId`,`OwnBaseId`);
 
 --
 -- Indizes für die Tabelle `substitution`
@@ -1060,8 +1077,7 @@ ALTER TABLE `layouts`
 -- Constraints der Tabelle `player`
 --
 ALTER TABLE `player`
-  ADD CONSTRAINT `player_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `player_ibfk_1` FOREIGN KEY (`WorldId`,`AccountId`) REFERENCES `relation_player` (`WorldId`, `AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_alliance`
@@ -1073,15 +1089,14 @@ ALTER TABLE `relation_alliance`
 -- Constraints der Tabelle `relation_alliance_share`
 --
 ALTER TABLE `relation_alliance_share`
-  ADD CONSTRAINT `relation_alliance_share_ibfk_3` FOREIGN KEY (`WorldId`,`AllianceIdSet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `relation_alliance_share_ibfk_4` FOREIGN KEY (`WorldId`,`AllianceIdGet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `relation_alliance_share_ibfk_1` FOREIGN KEY (`WorldId`,`AllianceIdSet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `relation_alliance_share_ibfk_2` FOREIGN KEY (`WorldId`,`AllianceIdGet`) REFERENCES `relation_alliance` (`WorldId`, `AllianceId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_bases`
 --
 ALTER TABLE `relation_bases`
-  ADD CONSTRAINT `relation_bases_ibfk_1` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `relation_bases_ibfk_2` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `relation_bases_ibfk_1` FOREIGN KEY (`WorldId`,`AccountId`) REFERENCES `relation_player` (`WorldId`, `AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `relation_player`
@@ -1091,11 +1106,17 @@ ALTER TABLE `relation_player`
   ADD CONSTRAINT `relation_player_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints der Tabelle `relation_player_share`
+--
+ALTER TABLE `relation_player_share`
+  ADD CONSTRAINT `relation_player_share_ibfk_1` FOREIGN KEY (`WorldId`,`AccountIdSet`) REFERENCES `relation_player` (`WorldId`, `AccountId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `relation_player_share_ibfk_2` FOREIGN KEY (`WorldId`,`AccountIdGet`) REFERENCES `relation_player` (`WorldId`, `AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints der Tabelle `reports`
 --
 ALTER TABLE `reports`
-  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `reports_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `reports_ibfk_1` FOREIGN KEY (`WorldId`,`AccountId`,`OwnBaseId`) REFERENCES `relation_bases` (`WorldId`, `AccountId`, `BaseId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `substitution`
