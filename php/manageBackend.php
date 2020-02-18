@@ -48,8 +48,7 @@ if (!$conn->connect_error)
                 $Time = date("Y-m-d H:i:s");
                 $strQuery = "INSERT INTO `adminlog`(`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$PlayerName', 'Spieler angelegt', true);";
                 $conn->query($strQuery);
-                $UserAnswer[0] = 0;
-                $UserAnswer[1] = 'UserDidNotChangedPassword';
+                $UserAnswer = [0, 'UserDidNotChangedPassword'];
             }
             else
             {
@@ -66,13 +65,11 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             if (!$password || $password == $PasswordStandard)
             {
-                $UserAnswer[0] = 0;
-                $UserAnswer[1] = 'UserDidNotChangedPassword';
+                $UserAnswer = [0, 'UserDidNotChangedPassword'];
             }
             else
             {
-                $UserAnswer[0] = 1;
-                $UserAnswer[1] = 'UserChangedPassword';
+                $UserAnswer = [1, 'UserChangedPassword'];
             }
             // RelationServer
             $WorldId = $ObjectServer['WorldId'];
@@ -412,8 +409,7 @@ if (!$conn->connect_error)
         // InGame - Update-Service (für ältere Versionen als 2020.02.02.2)
         case 'getCurrentVersionOfLeoStats':
         {
-            $UserAnswer[0] = 1;
-            $UserAnswer[1] = '2020.02.02.2';
+            $UserAnswer = [1, '2020.02.02.2'];
             break;
         }
         // WebSite - Allgemein
@@ -434,15 +430,13 @@ if (!$conn->connect_error)
             }
             if ($AccountId > 0)
             {
-                $UserAnswer[0] = 1;
-                $UserAnswer[1] = 'UserInDb';
+                $UserAnswer = [1, 'UserInDb'];
                 $Time = date("Y-m-d H:i:s");
                 $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$UserName', 'Login erfolgreich', true);");
             }
             else
             {
-                $UserAnswer[0] = 0;
-                $UserAnswer[1] = 'UserNotInDb';
+                $UserAnswer = [0, 'UserNotInDb'];
                 $Time = date("Y-m-d H:i:s");
                 $conn->query("INSERT INTO `adminlog` (`Zeit`, `Initiator`, `Description`, `ShowRow`) VALUES ('$Time', '$UserName', 'Login fehlgeschlagen', true);");
             }
@@ -450,15 +444,21 @@ if (!$conn->connect_error)
         }
         case 'getSessionVariables':
         {
-            $UserAnswer = [$_SESSION];
+            if (isset($_SESSION['leoStats_AccountId']))
+            {
+                $UserAnswer = [$_SESSION];
+            }
             break;
         }
         case 'getSeasonServerIds':
         {
-            $result = $conn->query("SELECT WorldId FROM relation_server WHERE SeasonServer='1';");
-            while ($zeile = $result->fetch_assoc())
+            if (isset($_SESSION['leoStats_AccountId']))
             {
-                array_push($UserAnswer, $zeile['WorldId']);
+                $result = $conn->query("SELECT WorldId FROM relation_server WHERE SeasonServer='1';");
+                while ($zeile = $result->fetch_assoc())
+                {
+                    array_push($UserAnswer, $zeile['WorldId']);
+                }
             }
             break;
         }
@@ -477,8 +477,7 @@ if (!$conn->connect_error)
                     $strQuery .= "CALL getDropDownListDataAsAdmin();";
                 }
                 $result = $conn->query($strQuery);
-                $UserAnswer[0] = [];
-                $UserAnswer[1] = [];
+                $UserAnswer = [[],[]];
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer[0], $zeile);
@@ -723,13 +722,11 @@ if (!$conn->connect_error)
                 }
                 if ($conn->affected_rows > 0)
                 {
-                    $UserAnswer[0] = 1;
-                    $UserAnswer[1] = 'Success';
+                    $UserAnswer = [1, 'Success'];
                 }
                 else
                 {
-                    $UserAnswer[0] = 0;
-                    $UserAnswer[1] = 'Fail';
+                    $UserAnswer = [0, 'Fail'];
                 }
             }
             break;
@@ -830,13 +827,11 @@ if (!$conn->connect_error)
                 }
                 if ($conn->affected_rows > 0)
                 {
-                    $UserAnswer[0] = 1;
-                    $UserAnswer[1] = 'Success';
+                    $UserAnswer = [1, 'Success'];
                 }
                 else
                 {
-                    $UserAnswer[0] = 0;
-                    $UserAnswer[1] = 'Fail';
+                    $UserAnswer = [0, 'Fail'];
                 }
             }
             break;
@@ -1021,8 +1016,7 @@ if (!$conn->connect_error)
 }
 else
 {
-    $UserAnswer[0] = 0;
-    $UserAnswer[1] = 'noDb';
+    $UserAnswer = [0, 'noDb'];
 }
 echo json_encode($UserAnswer);
 

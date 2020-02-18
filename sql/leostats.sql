@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 18. Feb 2020 um 07:31
+-- Erstellungszeit: 18. Feb 2020 um 10:29
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -107,6 +107,15 @@ IF
 				WHERE ash.WorldId=_WorldId and p.AccountId=_OwnAccountId),
 				true,
 				false
+			)
+		)
+		OR
+		(
+			p.AccountId=
+			(
+				SELECT psh.AccountIdSet FROM relation_player_share psh
+				JOIN relation_player p ON p.WorldId=psh.WorldId AND p.AccountId=psh.AccountIdGet
+				WHERE psh.WorldId=_WorldId AND p.AccountId=_OwnAccountId
 			)
 		)
 	)

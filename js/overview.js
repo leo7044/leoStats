@@ -167,7 +167,7 @@ function getLoginStatus()
     {
         if (!data[0])
         {
-            location.reload();
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -209,7 +209,7 @@ function getSessionVariables()
         }
         else
         {
-            location.reload();
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -231,7 +231,7 @@ function getSeasonServerIds()
         }
         else
         {
-            location.reload();
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -325,7 +325,7 @@ function getDropDownListData()
         }
         else
         {
-            location.reload();
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -676,7 +676,7 @@ function manageContentAllianceMembers()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -754,7 +754,7 @@ function manageContentAlliance()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -799,7 +799,7 @@ function manageContentAllianceBase()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -939,7 +939,7 @@ function manageContentPlayer()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -998,7 +998,7 @@ function manageContentPlayerBase()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -1078,7 +1078,7 @@ function manageContentAllianceOverview()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -1114,7 +1114,7 @@ function manageContentBase()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -1162,7 +1162,7 @@ function manageContentWorldOverview()
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
@@ -1410,7 +1410,7 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
             }
             else
             {
-                location.reload();
+                location.href='?logout';
             }
         });
         $.ajaxSetup({async: true});
