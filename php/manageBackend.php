@@ -459,6 +459,10 @@ if (!$conn->connect_error)
                 {
                     array_push($UserAnswer, $zeile['WorldId']);
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -513,6 +517,10 @@ if (!$conn->connect_error)
                 {
                     array_push($UserAnswer, $zeile);
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -528,6 +536,10 @@ if (!$conn->connect_error)
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer, $zeile);
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
                 }
             }
             break;
@@ -553,6 +565,10 @@ if (!$conn->connect_error)
                 {
                     array_push($UserAnswer, $zeile);
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -577,6 +593,10 @@ if (!$conn->connect_error)
                 {
                     array_push($UserAnswer, $zeile);
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -600,6 +620,10 @@ if (!$conn->connect_error)
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer, $zeile);
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
                 }
             }
             break;
@@ -647,6 +671,10 @@ if (!$conn->connect_error)
                         array_push($UserAnswer, $zeile);
                     }
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -674,6 +702,10 @@ if (!$conn->connect_error)
                         array_push($UserAnswer, $zeile);
                     }
                 }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             break;
         }
@@ -689,6 +721,10 @@ if (!$conn->connect_error)
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer, $zeile);
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
                 }
             }
             break;
@@ -766,6 +802,10 @@ if (!$conn->connect_error)
                     {
                         array_push($UserAnswer, $zeile);
                     }
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
                 }
             }
             break;
@@ -953,26 +993,25 @@ if (!$conn->connect_error)
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
-                    $worldId = $_post['worldId'];
-                    $procedureName = $_post['procedureName'];
-                    $minX = $_post['minX'];
-                    $maxX = $_post['maxX'];
-                    $minY = $_post['minY'];
-                    $maxY = $_post['maxY'];
-                    $MinDate = $_post['MinDate'];
-                    $PlayerName = $_post['PlayerName'];
-                    $FieldsTib = $_post['FieldsTib'];
-                    $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
-                    $result = $conn->query($sqlQuery);
-                    while ($zeile = $result->fetch_assoc())
-                    {
-                        array_push($UserAnswer, $zeile);
-                    }
-                /*}
-                else
+                $worldId = $_post['worldId'];
+                $procedureName = $_post['procedureName'];
+                $minX = $_post['minX'];
+                $maxX = $_post['maxX'];
+                $minY = $_post['minY'];
+                $maxY = $_post['maxY'];
+                $MinDate = $_post['MinDate'];
+                $PlayerName = $_post['PlayerName'];
+                $FieldsTib = $_post['FieldsTib'];
+                $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
+                $result = $conn->query($sqlQuery);
+                while ($zeile = $result->fetch_assoc())
                 {
-                    $UserAnswer = [0, 'notAuthorized'];
-                }*/
+                    array_push($UserAnswer, $zeile);
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
+                }
             }
             else
             {
@@ -990,6 +1029,10 @@ if (!$conn->connect_error)
                 while ($zeile = $result->fetch_assoc())
                 {
                     array_push($UserAnswer, $zeile);
+                }
+                if (count($UserAnswer) == 0)
+                {
+                    $UserAnswer = [1, 'login'];
                 }
             }
             else
