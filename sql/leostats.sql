@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 18. Feb 2020 um 13:42
+-- Erstellungszeit: 19. Feb 2020 um 16:14
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -26,7 +26,7 @@ DELIMITER $$
 --
 -- Prozeduren
 --
-CREATE PROCEDURE `compareTwoAlliancesAsAdmin` (IN `WorldId` INT, IN `AllianceId1` INT, IN `AllianceId2` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `compareTwoAlliancesAsAdmin` (IN `WorldId` INT, IN `AllianceId1` INT, IN `AllianceId2` INT)  NO SQL
 SELECT al1.Zeit, al1.TotalScore AS 'Data1', al2.TotalScore AS 'Data2',
 IF (al1.TotalScore >= al2.TotalScore, al1.TotalScore - al2.TotalScore, al2.TotalScore - al1.TotalScore) AS 'Difference'
 FROM relation_alliance a
@@ -37,7 +37,7 @@ AND al1.AllianceId=AllianceId1
 AND al2.AllianceId=AllianceId2
 ORDER BY al1.Zeit ASC$$
 
-CREATE PROCEDURE `compareTwoPlayersAsAdmin` (IN `WorldId` INT, IN `AccountId1` INT, IN `AccountId2` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `compareTwoPlayersAsAdmin` (IN `WorldId` INT, IN `AccountId1` INT, IN `AccountId2` INT)  NO SQL
 SELECT pl1.Zeit, pl1.ScorePoints AS 'Data1', pl2.ScorePoints AS 'Data2',
 IF (pl1.ScorePoints >= pl2.ScorePoints, pl1.ScorePoints - pl2.ScorePoints, pl2.ScorePoints - pl1.ScorePoints) AS 'Difference'
 FROM relation_player p
@@ -48,7 +48,7 @@ AND pl1.AccountId=AccountId1
 AND pl2.AccountId=AccountId2
 ORDER BY pl1.Zeit ASC$$
 
-CREATE PROCEDURE `getAlianceNamesByWorldId` (IN `WorldId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getAlianceNamesByWorldId` (IN `WorldId` INT)  NO SQL
 SELECT a.AllianceName FROM layouts l
 join login lo ON lo.UserName=l.PlayerName
 JOIN relation_player p ON p.WorldId=l.WorldId AND p.AccountId=lo.AccountId
@@ -57,7 +57,7 @@ WHERE l.WorldId=WorldId
 GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
 
-CREATE PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
@@ -122,7 +122,7 @@ IF
 )
 ORDER BY l.UserName ASC, ba.BaseId ASC$$
 
-CREATE PROCEDURE `getAllianceDataHistory` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getAllianceDataHistory` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT DISTINCT a.Zeit, a.AllianceRank, a.EventRank, a.TotalScore, a.AverageScore, a.VP, a.VPh, a.BonusTiberium, a.BonusCrystal, a.BonusPower, a.BonusInfantrie, a.BonusVehicle, a.BonusAir, a.BonusDef, a.ScoreTib, a.ScoreCry, a.ScorePow, a.ScoreInf, a.ScoreVeh, a.ScoreAir, a.ScoreDef, a.RankTib, a.RankCry, a.RankPow, a.RankInf, a.RankVeh, a.RankAir, a.RankDef FROM relation_player p
 JOIN alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE p.WorldId=_WorldId
@@ -161,7 +161,7 @@ IF
 )
 ORDER BY a.Zeit ASC$$
 
-CREATE PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getAlliancePlayerDataAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT)  READS SQL DATA
 SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
@@ -174,7 +174,7 @@ pl.Zeit=
 )
 ORDER BY l.UserName$$
 
-CREATE PROCEDURE `getAlliancePlayerDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getAlliancePlayerDataAsUser` (IN `WorldId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
@@ -214,7 +214,7 @@ pl.AccountId IN
 )
 ORDER BY l.UserName$$
 
-CREATE PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT)  READS SQL DATA
 SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
@@ -224,7 +224,7 @@ AND
 b.BaseId=BaseId
 ORDER BY ba.Zeit ASC$$
 
-CREATE PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
@@ -260,7 +260,7 @@ BaseId IN
 )
 ORDER BY ba.Zeit ASC$$
 
-CREATE PROCEDURE `getDropDownListDataAsAdmin` ()  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getDropDownListDataAsAdmin` ()  READS SQL DATA
 SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
@@ -269,7 +269,7 @@ JOIN login l ON l.AccountId=p.AccountId
 JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
 
-CREATE PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT)  READS SQL DATA
 SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
@@ -297,20 +297,20 @@ AND
 )
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
 
-CREATE PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT)  READS SQL DATA
 SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
 JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE p.AccountId=OwnAccountId
 ORDER BY p.WorldId$$
 
-CREATE PROCEDURE `getHistoryAlliancesAsAdmin` (IN `WorldId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getHistoryAlliancesAsAdmin` (IN `WorldId` INT)  NO SQL
 SELECT al.Zeit, a.AllianceId, a.AllianceName, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef  FROM alliance al
 JOIN relation_alliance a ON a.WorldId=al.WorldId AND a.AllianceId=al.AllianceId
 WHERE
 a.WorldId=WorldId
 ORDER BY al.Zeit ASC, a.AllianceId ASC$$
 
-CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
 SELECT ba.Zeit, b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
 JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
 WHERE
@@ -321,7 +321,7 @@ AND
 IF (BaseId>0, BaseId=b.BaseId, true)
 ORDER BY ba.Zeit ASC, b.BaseId ASC$$
 
-CREATE PROCEDURE `getHistoryPlayersAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT, IN `AccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getHistoryPlayersAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT, IN `AccountId` INT)  NO SQL
 SELECT pl.Zeit, p.AccountId, l.UserName, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, p.MemberRole FROM player pl
 JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
 JOIN login l ON l.AccountId=p.AccountId
@@ -333,7 +333,7 @@ AND
 IF(AccountId>0, AccountId=p.AccountId, true)
 ORDER BY pl.Zeit ASC, p.AccountId ASC$$
 
-CREATE PROCEDURE `getLayouts` (IN `WorldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayouts` (IN `WorldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
 SELECT * FROM layouts l
 WHERE
 IF (worldId > 0, worldId = l.WorldId, true)
@@ -350,23 +350,23 @@ IF (PlayerName <> '', PlayerName=l.PlayerName, true)
 AND
 l.Zeit >= minDate$$
 
-CREATE PROCEDURE `getLayoutsGroupByPlayerName` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsGroupByPlayerName` ()  NO SQL
 SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 GROUP BY lo.UserName
 ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getLayoutsGroupByWorldId` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsGroupByWorldId` ()  NO SQL
 SELECT l.WorldId, s.ServerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
 LEFT JOIN relation_server s ON s.WorldId=l.WorldId
 GROUP BY l.WorldId
 ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getLayoutsGroupByYearMonth` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsGroupByYearMonth` ()  NO SQL
 SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
 
-CREATE PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
@@ -388,7 +388,7 @@ la.Zeit >= minDate
 ORDER BY la.Crystal6 DESC, la.Crystal5 DESC, la.Crystal4 DESC, la.Crystal3 DESC, la.Crystal2 DESC, la.Crystal1 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
@@ -408,7 +408,7 @@ IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
 ORDER by la.Zeit DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
@@ -430,7 +430,7 @@ la.Zeit >= minDate
 ORDER BY la.Mixed6 DESC, la.Mixed5 DESC, la.Mixed4 DESC, la.Mixed3 DESC, la.Mixed2 DESC, la.Mixed1 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
@@ -452,7 +452,7 @@ la.Zeit >= minDate
 ORDER BY la.Power8 DESC, la.Power7 DESC, la.Power6 DESC, la.Power5 DESC, la.Power4 DESC, la.Power3 DESC, la.Power2 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
@@ -474,24 +474,24 @@ la.Zeit >= minDate
 ORDER BY la.Tiberium6 DESC, la.Tiberium5 DESC, la.Tiberium4 DESC, la.Tiberium3 DESC, la.Tiberium2 DESC, la.Tiberium1 DESC
 LIMIT 100$$
 
-CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
 SELECT a.WorldId, s.ServerName, a.AllianceId, a.AllianceName, MAX(al.Zeit) FROM relation_alliance a
 JOIN alliance al ON al.WorldId=a.WorldId AND al.AllianceId=a.AllianceId
 JOIN relation_server s ON s.WorldId=a.WorldId
 GROUP BY a.WorldId, a.AllianceId
 ORDER BY MAX(al.Zeit) DESC, a.WorldId ASC, a.AllianceName ASC$$
 
-CREATE PROCEDURE `getLoginGroupByPasswordChanged` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLoginGroupByPasswordChanged` ()  NO SQL
 SELECT l.Password!=sha2(concat(l.UserName, '_', l.AccountId), 512) AS PasswordChanged, COUNT(*) FROM login l
 GROUP BY PasswordChanged$$
 
-CREATE PROCEDURE `getLoginGroupByPlayer` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getLoginGroupByPlayer` ()  NO SQL
 SELECT l.AccountId, l.UserName, MAX(p.Zeit) FROM login l
 JOIN player p ON p.AccountId=l.AccountId
 GROUP BY l.AccountId
 ORDER BY MAX(p.Zeit) DESC, l.UserName ASC$$
 
-CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 WHERE b.WorldId=WorldId
@@ -503,7 +503,7 @@ ba.Zeit=
 )
 ORDER BY b.BaseId$$
 
-CREATE PROCEDURE `getPlayerBaseDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getPlayerBaseDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 WHERE
@@ -539,7 +539,7 @@ ba.Zeit=
 )
 ORDER BY b.BaseId$$
 
-CREATE PROCEDURE `getPlayerDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getPlayerDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT pl.Zeit, pl.ScorePoints,
 IFNULL(a.AverageScore, 0) AS AverageScore,
 pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
@@ -549,7 +549,7 @@ WHERE pl.WorldId=WorldId
 AND pl.AccountId=AccountId
 ORDER BY pl.Zeit ASC$$
 
-CREATE PROCEDURE `getPlayerDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getPlayerDataAsUser` (IN `WorldId` INT, IN `AccountId` INT, IN `OwnAccountId` INT)  READS SQL DATA
 SELECT pl.Zeit, pl.ScorePoints,
 IFNULL(a.AverageScore, 0) AS AverageScore,
 pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
@@ -588,13 +588,13 @@ AccountId IN
 )
 ORDER BY pl.Zeit ASC$$
 
-CREATE PROCEDURE `getReportsGroupByAccountIdWhereWorldId` (IN `WorldId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByAccountIdWhereWorldId` (IN `WorldId` INT)  NO SQL
 SELECT r.AccountId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 GROUP BY r.AccountId
 ORDER BY COUNT(*) DESC, r.AccountId ASC$$
 
-CREATE PROCEDURE `getReportsGroupByBaseIdWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByBaseIdWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
 SELECT r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
@@ -602,21 +602,21 @@ and DATE(r.AttackTime)=Date
 GROUP BY r.OwnBaseId
 ORDER BY r.OwnBaseId ASC$$
 
-CREATE PROCEDURE `getReportsGroupByDate` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByDate` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
 SELECT DATE(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
 GROUP BY DATE(r.AttackTime)
 ORDER BY DATE(r.AttackTime) ASC$$
 
-CREATE PROCEDURE `getReportsGroupByDateBaseId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByDateBaseId` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
 SELECT r.OwnBaseId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
 GROUP BY r.OwnBaseId
 ORDER BY r.OwnBaseId ASC$$
 
-CREATE PROCEDURE `getReportsGroupByHourToday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByHourToday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
 SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
@@ -624,7 +624,7 @@ AND DATE(r.AttackTime)=CURRENT_DATE()
 GROUP BY HOUR(r.AttackTime)
 ORDER BY HOUR(r.AttackTime) ASC$$
 
-CREATE PROCEDURE `getReportsGroupByHourWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByHourWhereDate` (IN `WorldId` INT, IN `AccountId` INT, IN `Date` DATE)  NO SQL
 SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
@@ -632,7 +632,7 @@ AND DATE(r.AttackTime)=Date
 GROUP BY HOUR(r.AttackTime)
 ORDER BY HOUR(r.AttackTime) ASC$$
 
-CREATE PROCEDURE `getReportsGroupByHourYesterday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByHourYesterday` (IN `WorldId` INT, IN `AccountId` INT)  NO SQL
 SELECT HOUR(r.AttackTime), COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 AND r.AccountId=AccountId
@@ -640,21 +640,21 @@ AND DATE(r.AttackTime)=ADDDATE(CURRENT_DATE(), -1)
 GROUP BY HOUR(r.AttackTime)
 ORDER BY HOUR(r.AttackTime) ASC$$
 
-CREATE PROCEDURE `getReportsGroupByTargetLevel` (IN `WorldId` INT)  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByTargetLevel` (IN `WorldId` INT)  NO SQL
 SELECT r.TargetLevel, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 WHERE r.WorldId=WorldId
 GROUP BY r.TargetLevel
 ORDER BY r.TargetLevel DESC$$
 
-CREATE PROCEDURE `getReportsGroupByWorldId` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getReportsGroupByWorldId` ()  NO SQL
 SELECT r.WorldId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
 GROUP BY r.WorldId
 ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getTransmissionsPerDay` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getTransmissionsPerDay` ()  NO SQL
 SELECT pl.Zeit, count(*) FROM player pl GROUP BY pl.Zeit$$
 
-CREATE PROCEDURE `getTransmissionsPerDayUnique` ()  NO SQL
+CREATE DEFINER=`cncindyserver`@`localhost` PROCEDURE `getTransmissionsPerDayUnique` ()  NO SQL
 SELECT pl.Zeit, COUNT(DISTINCT pl.AccountId)
 FROM player pl
 GROUP BY pl.Zeit
@@ -690,6 +690,9 @@ CREATE TABLE `alliance` (
   `EventRank` smallint(4) UNSIGNED NOT NULL,
   `TotalScore` bigint(12) UNSIGNED NOT NULL,
   `AverageScore` int(10) UNSIGNED NOT NULL,
+  `Shoot` int(11) UNSIGNED NOT NULL,
+  `PvP` int(11) UNSIGNED NOT NULL,
+  `PvE` int(11) UNSIGNED NOT NULL,
   `VP` int(9) UNSIGNED NOT NULL,
   `VPh` mediumint(7) UNSIGNED NOT NULL,
   `BonusTiberium` int(9) UNSIGNED NOT NULL,
@@ -796,7 +799,7 @@ CREATE TABLE `login` (
   `AccountId` int(7) UNSIGNED NOT NULL,
   `UserName` varchar(16) COLLATE utf8_bin NOT NULL,
   `Password` char(128) COLLATE utf8_bin NOT NULL,
-  `IsAdmin` tinyint(1) NOT NULL DEFAULT 0,
+  `IsAdmin` bit(1) NOT NULL DEFAULT b'0',
   `LastTransmission` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `ScriptLocalVersion` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

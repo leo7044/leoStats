@@ -7,8 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                // bitte daran denken, die Client-Version und Server-Version upzudaten (Client ist zwingend wichtig)
-                var scriptVersionLocal = '2020.02.16.3';
+                var scriptVersionLocal = '2020.02.19';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1063,6 +1062,12 @@
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
                                         name : PlayerName
                                     }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfoByName), null);
+                                    if (AllianceId > 0)
+                                    {
+                                        ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicAllianceInfoByName", {
+                                            name : AllianceName
+                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicAllianceInfoByName), null);
+                                    }
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
                                     // ab hier clever Timeouten
@@ -1106,6 +1111,12 @@
                             this.ObjectData.player.Shoot = _data.bd;
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
+                        },
+                        getPublicAllianceInfoByName: function(_context, _data)
+                        {
+                            this.ObjectData.alliance.Shoot = _data.bd;
+                            this.ObjectData.alliance.PvP = _data.bdp;
+                            this.ObjectData.alliance.PvE = _data.bde;
                         },
                         killReportTimeouts: function()
                         {
@@ -1313,7 +1324,7 @@
                         },
                         sendDataFromInGame: function()
                         {
-                            if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined)
+                            if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined && (AllianceId == 0 || this.ObjectData.alliance != undefined && this.ObjectData.alliance.Shoot != undefined))
                             {
                                 // funktioniert nicht
                                 /*var requestLogin = new qx.io.request.Xhr(linkToRoot + 'php/manageBackend.php', 'post');

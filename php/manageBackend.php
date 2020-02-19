@@ -148,6 +148,15 @@ if (!$conn->connect_error)
                 $AllianceEventRank = $ObjectAlliance['AllianceEventRank'];
                 $AllianceTotalScore = $ObjectAlliance['AllianceTotalScore'];
                 $AllianceAverageScore = $ObjectAlliance['AllianceAverageScore'];
+                $AllianceShoot = 0;
+                $AlliancePvP = 0;
+                $AlliancePvE = 0;
+                if (isset($ObjectAlliance['Shoot']))
+                {
+                    $AllianceShoot = $ObjectAlliance['Shoot'];
+                    $AlliancePvP = $ObjectAlliance['PvP'];
+                    $AlliancePvE = $ObjectAlliance['PvE'];
+                }
                 $AllianceVeteranPoints = $ObjectAlliance['AllianceVeteranPoints'];
                 $AllianceProdVetPoints = $ObjectAlliance['AllianceProdVetPoints'];
                 $BonusTiberium = $ObjectAlliance['BonusTiberium'];
@@ -171,7 +180,7 @@ if (!$conn->connect_error)
                 $ScoreVeh = $ObjectAlliance['ScoreVeh'];
                 $ScoreAir = $ObjectAlliance['ScoreAir'];
                 $ScoreDef = $ObjectAlliance['ScoreDef'];
-                $strQuery = "INSERT INTO `alliance`(`Zeit`, `WorldId`, `AllianceId`, `AllianceRank`, `EventRank`, `TotalScore`, `AverageScore`, `VP`, `VPh`, `BonusTiberium`, `BonusCrystal`, `BonusPower`, `BonusInfantrie`, `BonusVehicle`, `BonusAir`, `BonusDef`, `ScoreTib`, `ScoreCry`, `ScorePow`, `ScoreInf`, `ScoreVeh`, `ScoreAir`, `ScoreDef`, `RankTib`, `RankCry`, `RankPow`, `RankInf`, `RankVeh`, `RankAir`, `RankDef`) VALUES ('$TimeDay', '$WorldId', '$AllianceId', '$AllianceRank', '$AllianceEventRank', '$AllianceTotalScore', '$AllianceAverageScore', '$AllianceVeteranPoints', '$AllianceProdVetPoints', '$BonusTiberium', '$BonusCrystal', '$BonusPower', '$BonusInfantrie', '$BonusVehicle', '$BonusAir', '$BonusDef', '$ScoreTib', '$ScoreCry', '$ScorePow', '$ScoreInf', '$ScoreVeh', '$ScoreAir', '$ScoreDef', '$RankTib', '$RankCry', '$RankPow', '$RankInf', '$RankVeh', '$RankAir', '$RankDef') ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceRank = VALUES(AllianceRank), EventRank = VALUES(EventRank), TotalScore = VALUES(TotalScore), AverageScore = VALUES(AverageScore), VP = VALUES(VP), VPh = VALUES(VPh), BonusTiberium = VALUES(BonusTiberium), BonusCrystal = VALUES(BonusCrystal), BonusPower = VALUES(BonusPower), BonusInfantrie = VALUES(BonusInfantrie), BonusVehicle = VALUES(BonusVehicle), BonusAir = VALUES(BonusAir), BonusDef = VALUES(BonusDef), ScoreTib = VALUES(ScoreTib), ScoreCry = VALUES(ScoreCry), ScorePow = VALUES(ScorePow), ScoreInf = VALUES(ScoreInf), ScoreVeh = VALUES(ScoreVeh), ScoreAir = VALUES(ScoreAir), ScoreDef = VALUES(ScoreDef), RankTib = VALUES(RankTib), RankCry = VALUES(RankCry), RankPow = VALUES(RankPow), RankInf = VALUES(RankInf), RankVeh = VALUES(RankVeh), RankAir = VALUES(RankAir), RankDef = VALUES(RankDef);";
+                $strQuery = "INSERT INTO `alliance`(`Zeit`, `WorldId`, `AllianceId`, `AllianceRank`, `EventRank`, `TotalScore`, `AverageScore`, `Shoot`, `PvP`, `PvE`, `VP`, `VPh`, `BonusTiberium`, `BonusCrystal`, `BonusPower`, `BonusInfantrie`, `BonusVehicle`, `BonusAir`, `BonusDef`, `ScoreTib`, `ScoreCry`, `ScorePow`, `ScoreInf`, `ScoreVeh`, `ScoreAir`, `ScoreDef`, `RankTib`, `RankCry`, `RankPow`, `RankInf`, `RankVeh`, `RankAir`, `RankDef`) VALUES ('$TimeDay', '$WorldId', '$AllianceId', '$AllianceRank', '$AllianceEventRank', '$AllianceTotalScore', '$AllianceAverageScore', '$AllianceShoot', '$AlliancePvP', '$AlliancePvE', '$AllianceVeteranPoints', '$AllianceProdVetPoints', '$BonusTiberium', '$BonusCrystal', '$BonusPower', '$BonusInfantrie', '$BonusVehicle', '$BonusAir', '$BonusDef', '$ScoreTib', '$ScoreCry', '$ScorePow', '$ScoreInf', '$ScoreVeh', '$ScoreAir', '$ScoreDef', '$RankTib', '$RankCry', '$RankPow', '$RankInf', '$RankVeh', '$RankAir', '$RankDef') ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AllianceRank = VALUES(AllianceRank), EventRank = VALUES(EventRank), TotalScore = VALUES(TotalScore), AverageScore = VALUES(AverageScore), Shoot = VALUES(Shoot), PvP = VALUES(PvP), PvE = VALUES(PvE), VP = VALUES(VP), VPh = VALUES(VPh), BonusTiberium = VALUES(BonusTiberium), BonusCrystal = VALUES(BonusCrystal), BonusPower = VALUES(BonusPower), BonusInfantrie = VALUES(BonusInfantrie), BonusVehicle = VALUES(BonusVehicle), BonusAir = VALUES(BonusAir), BonusDef = VALUES(BonusDef), ScoreTib = VALUES(ScoreTib), ScoreCry = VALUES(ScoreCry), ScorePow = VALUES(ScorePow), ScoreInf = VALUES(ScoreInf), ScoreVeh = VALUES(ScoreVeh), ScoreAir = VALUES(ScoreAir), ScoreDef = VALUES(ScoreDef), RankTib = VALUES(RankTib), RankCry = VALUES(RankCry), RankPow = VALUES(RankPow), RankInf = VALUES(RankInf), RankVeh = VALUES(RankVeh), RankAir = VALUES(RankAir), RankDef = VALUES(RankDef);";
                 $conn->query($strQuery);
             }
             // Player
@@ -953,26 +962,21 @@ if (!$conn->connect_error)
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
-                    $worldId = $_post['worldId'];
-                    $procedureName = $_post['procedureName'];
-                    $minX = $_post['minX'];
-                    $maxX = $_post['maxX'];
-                    $minY = $_post['minY'];
-                    $maxY = $_post['maxY'];
-                    $MinDate = $_post['MinDate'];
-                    $PlayerName = $_post['PlayerName'];
-                    $FieldsTib = $_post['FieldsTib'];
-                    $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
-                    $result = $conn->query($sqlQuery);
-                    while ($zeile = $result->fetch_assoc())
-                    {
-                        array_push($UserAnswer, $zeile);
-                    }
-                /*}
-                else
+                $worldId = $_post['worldId'];
+                $procedureName = $_post['procedureName'];
+                $minX = $_post['minX'];
+                $maxX = $_post['maxX'];
+                $minY = $_post['minY'];
+                $maxY = $_post['maxY'];
+                $MinDate = $_post['MinDate'];
+                $PlayerName = $_post['PlayerName'];
+                $FieldsTib = $_post['FieldsTib'];
+                $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
+                $result = $conn->query($sqlQuery);
+                while ($zeile = $result->fetch_assoc())
                 {
-                    $UserAnswer = [0, 'notAuthorized'];
-                }*/
+                    array_push($UserAnswer, $zeile);
+                }
             }
             else
             {
