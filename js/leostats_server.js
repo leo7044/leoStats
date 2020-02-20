@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.19';
+                var scriptVersionLocal = '2020.02.20.1';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -94,14 +94,14 @@
                             this.GuiPoisPage.add(this.GuiPoisVBox);
 
                             // Tab 4: POI-Data
-                            this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
+                            /*this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
                             this.GuiPoiDataPage.setLayout(new qx.ui.layout.VBox(5));
                             this.GuiTab.add(this.GuiPoiDataPage);
                             this.GuiPoiDataVBox = new qx.ui.container.Composite();
                             this.GuiPoiDataVBox.setLayout(new qx.ui.layout.VBox(5));
                             this.GuiPoiDataVBox.setThemedPadding(10);
                             this.GuiPoiDataVBox.setThemedBackgroundColor("#eef");
-                            this.GuiPoiDataPage.add(this.GuiPoiDataVBox);
+                            this.GuiPoiDataPage.add(this.GuiPoiDataVBox);*/
 
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
@@ -110,7 +110,7 @@
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
-                                this.GuiPoiDataVBox.removeAll();
+                                // this.GuiPoiDataVBox.removeAll();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
@@ -313,7 +313,7 @@
                             this.GuiPoisVBox.add(HeaderTablePois);
 
                             // Tab 4: POI-Data
-                            var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            /*var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLinePoiData = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePoiData.add(new qx.ui.basic.Label('<big><u><b>POI-Data</b></u></big>').set({rich: true}));
                             HeadLinePoiData.add(new qx.ui.basic.Label('').set({rich: true}));
@@ -342,7 +342,7 @@
                             TablePoiData.add(TextScorePoints);
                             HeadLinePoiData.add(TablePoiData);
                             HeaderTablePoiData.add(HeadLinePoiData);
-                            this.GuiPoiDataVBox.add(HeaderTablePoiData);
+                            this.GuiPoiDataVBox.add(HeaderTablePoiData);*/
                         },
                         setCncOptVars: function()
                         {
@@ -810,7 +810,6 @@
                         {
                             try
                             {
-                                // var AllianceId = ClientLib.Data.MainData.GetInstance().get_Alliance().get_Id();
                                 var PlayerId = ClientLib.Data.MainData.GetInstance().get_Player().get_Id();
                                 if (PlayerId > 0)
                                 {
@@ -1059,14 +1058,14 @@
                                     {
                                         this.ObjectData.substitution.active.push(activeSubs[i].n);
                                     }
-                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfoByName", {
-                                        name : PlayerName
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfoByName), null);
+                                    ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfo", {
+                                        id : PlayerId
+                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfo), null);
                                     if (AllianceId > 0)
                                     {
-                                        ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicAllianceInfoByName", {
-                                            name : AllianceName
-                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicAllianceInfoByName), null);
+                                        ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicAllianceInfo", {
+                                            id : AllianceId
+                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicAllianceInfo), null);
                                     }
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
@@ -1101,7 +1100,7 @@
                                 console.log(e);
                             }
                         },
-                        getPublicPlayerInfoByName: function(_context, _data)
+                        getPublicPlayerInfo: function(_context, _data)
                         {
                             var bases = _data.c;
                             for (var i = 0; i < bases.length; i++)
@@ -1112,7 +1111,7 @@
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
                         },
-                        getPublicAllianceInfoByName: function(_context, _data)
+                        getPublicAllianceInfo: function(_context, _data)
                         {
                             this.ObjectData.alliance.Shoot = _data.bd;
                             this.ObjectData.alliance.PvP = _data.bdp;
@@ -1324,7 +1323,7 @@
                         },
                         sendDataFromInGame: function()
                         {
-                            if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined && (AllianceId == 0 || this.ObjectData.alliance != undefined && this.ObjectData.alliance.Shoot != undefined))
+                            if (this.ObjectData != undefined && this.ObjectData.player != undefined && this.ObjectData.player.Shoot != undefined && this.ObjectData.alliance != undefined && (this.ObjectData.alliance.AllianceId == 0 || this.ObjectData.alliance.Shoot != undefined))
                             {
                                 // funktioniert nicht
                                 /*var requestLogin = new qx.io.request.Xhr(linkToRoot + 'php/manageBackend.php', 'post');
