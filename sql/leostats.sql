@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 20. Feb 2020 um 16:02
+-- Erstellungszeit: 20. Feb 2020 um 16:18
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -81,12 +81,12 @@ IF
 		(
 			a.AllianceId=
 			(
-				SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
 			)
 			AND
 			IF
 			(
-				(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=_OwnAccountId AND p.WorldId=_WorldId)<=a.MemberRole,
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
 				true,
 				p.AccountId=_OwnAccountId
 			)
@@ -96,15 +96,15 @@ IF
 			a.AllianceId=
 			(
 				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
 			)
 			AND
 			IF
 			(
-				(SELECT p.MemberRole FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId and p.AccountId=_OwnAccountId),
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
 				false
 			)
@@ -136,7 +136,7 @@ IF
 		(
 			al.AllianceId=
 			(
-				SELECT p.AllianceId FROM relation_player p WHERE p.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
 			)
 		)
 		OR
@@ -144,17 +144,17 @@ IF
 			al.AllianceId=
 			(
 				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId AND p.AccountId=_OwnAccountId
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
 			)
 			AND
 			IF
 			(
-				(SELECT p.MemberRole FROM relation_player p
-				WHERE p.WorldId=_WorldId
-				AND p.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-				JOIN relation_player p ON p.WorldId=ash.WorldId AND p.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId and p.AccountId=_OwnAccountId),
+				(SELECT p2.MemberRole FROM relation_player p2
+				WHERE p2.WorldId=_WorldId
+				AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
 				false
 			)
@@ -167,6 +167,7 @@ CREATE PROCEDURE `getAlliancePlayerData` (IN `_WorldId` INT, IN `_AllianceId` IN
 SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
 JOIN login l ON l.AccountId=p.AccountId
 JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
 WHERE
 pl.Zeit=
 (
@@ -187,6 +188,13 @@ IF
 			p.AllianceId=
 			(
 				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
 			)
 		)
 		OR
