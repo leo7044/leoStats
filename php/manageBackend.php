@@ -506,17 +506,9 @@ if (!$conn->connect_error)
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
+                $AllianceId = $_post['AllianceId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery .= "CALL getAlliancePlayerDataAsUser('$WorldId', '$OwnAccountId');";
-                }
-                else
-                {
-                    $AllianceId = $_post['AllianceId'];
-                    $strQuery .= "CALL getAlliancePlayerDataAsAdmin('$WorldId', '$AllianceId');";
-                }
+                $strQuery = "CALL getAlliancePlayerData('$WorldId', '$AllianceId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {
