@@ -96,7 +96,7 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             // RelationBases and Bases
             $strQueryBasesRelation = "INSERT INTO `relation_bases` (WorldId, AccountId, BaseId, `BaseName`) VALUES ";
-            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `BaseId`, `BasePoints`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
+            $strQueryBases = "INSERT INTO `bases`(`Zeit`, `WorldId`, `BaseId`, `PosX`, `PosY`, `BasePoints`, `LvLCY`, `LvLBase`, `LvLOff`, `LvLDef`, `LvLDF`, `LvLSup`, `SupArt`, `Tib`, `Cry`, `Pow`, `Cre`, `Rep`, `CnCOpt`) VALUES ";
             $TimeDay = date("Y-m-d");
             foreach ($ObjectBases as $key => $ObjectBase)
             {
@@ -109,6 +109,13 @@ if (!$conn->connect_error)
                 else if (isset($ObjectBase['BaseName'])) // new
                 {
                     $BaseName = $ObjectBase['BaseName'];
+                }
+                $PosX = 0;
+                $PosY = 0;
+                if (isset($ObjectBase['PosX']))
+                {
+                    $PosX = $ObjectBase['PosX'];
+                    $PosY = $ObjectBase['PosY'];
                 }
                 $BasePoints = $ObjectBase['BasePoints'];
                 $LvLCY = $ObjectBase['LvLCY'];
@@ -127,16 +134,16 @@ if (!$conn->connect_error)
                 if ($key != count($ObjectBases) - 1)
                 {
                     $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$BaseName'),";
-                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt'),";
+                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$PosX', '$PosY', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt'),";
                 }
                 else
                 {
                     $strQueryBasesRelation .= "('$WorldId', '$AccountId', '$BaseId', '$BaseName')";
-                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt')";
+                    $strQueryBases .= "('$TimeDay', '$WorldId', '$BaseId', '$PosX', '$PosY', '$BasePoints', '$LvLCY', '$LvLBase', '$LvLOff', '$LvLDef', '$LvLDF', '$LvLSup', '$SupArt', '$Tib', '$Cry', '$Pow', '$Cre', '$Rep', '$CnCOpt')";
                 }
             }
             $strQueryBasesRelation .= " ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AccountId = VALUES(AccountId), BaseId = VALUES(BaseId), BaseName = VALUES(BaseName);";
-            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), BaseId = VALUES(BaseId), BasePoints = VALUES(BasePoints), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
+            $strQueryBases .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), WorldId = VALUES(WorldId), BaseId = VALUES(BaseId), PosX = VALUES(PosX), PosY = VALUES(PosY), BasePoints = VALUES(BasePoints), LvLCY = VALUES(LvLCY), LvLBase = VALUES(LvLBase), LvLOff = VALUES(LvLOff), LvLDef = VALUES(LvLDef), LvLDF = VALUES(LvLDF), LvLSup = VALUES(LvLSup), SupArt = VALUES(SupArt), Tib = VALUES(Tib), Cry = VALUES(Cry), Pow = VALUES(Pow), Cre = VALUES(Cre), Rep = VALUES(Rep), CnCOpt = VALUES(CnCOpt);";
             $conn->query($strQueryBasesRelation);
             $conn->query($strQueryBases);
             // $strQuery .= $strQueryBasesRelation;

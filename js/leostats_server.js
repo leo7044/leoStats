@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.20.1';
+                var scriptVersionLocal = '2020.02.21';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -904,6 +904,8 @@
                                         var base = bases[key];
                                         var BaseId = base.get_Id();
                                         var BaseName = base.get_Name();
+                                        var PosX = base.get_PosX();
+                                        var PosY = base.get_PosY();
                                         var LvLCY = base.get_ConstructionYardLevel();
                                         var LvLBase = base.get_LvlBase();
                                         var LvLOffense = base.get_LvlOffense();
@@ -953,6 +955,8 @@
                                         var ObjectBase = {};
                                         ObjectBase.BaseId = BaseId;
                                         ObjectBase.BaseName = BaseName;
+                                        ObjectBase.PosX = PosX;
+                                        ObjectBase.PosY = PosY;
                                         ObjectBase.LvLCY = LvLCY;
                                         ObjectBase.LvLBase = LvLBase;
                                         ObjectBase.LvLOffense = LvLOffense;
