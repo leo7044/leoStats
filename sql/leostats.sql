@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 20. Feb 2020 um 16:18
+-- Erstellungszeit: 21. Feb 2020 um 15:07
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -123,7 +123,7 @@ IF
 ORDER BY l.UserName ASC, ba.BaseId ASC$$
 
 CREATE PROCEDURE `getAllianceDataHistory` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
-SELECT DISTINCT al.Zeit, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef FROM relation_player p
+SELECT DISTINCT al.Zeit, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.PvP, al.PvE, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef FROM relation_player p
 JOIN alliance al ON al.WorldId=p.WorldId AND al.AllianceId=p.AllianceId
 WHERE p.WorldId=_WorldId
 AND p.AllianceId=_AllianceId
@@ -347,145 +347,67 @@ AND
 IF(AccountId>0, AccountId=p.AccountId, true)
 ORDER BY pl.Zeit ASC, p.AccountId ASC$$
 
-CREATE PROCEDURE `getLayouts` (IN `WorldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT)  NO SQL
-SELECT * FROM layouts l
-WHERE
-IF (worldId > 0, worldId = l.WorldId, true)
-AND
-IF (minPosX > 0, minPosX <= l.PosX, true)
-AND
-IF (maxPosX > 0, maxPosX >= l.PosX, true)
-AND
-IF (minPosY > 0, minPosY <= l.PosY, true)
-AND
-IF (maxPosY > 0, maxPosY >= l.PosY, true)
-AND
-IF (PlayerName <> '', PlayerName=l.PlayerName, true)
-AND
-l.Zeit >= minDate$$
-
-CREATE PROCEDURE `getLayoutsGroupByPlayerName` ()  NO SQL
-SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-GROUP BY lo.UserName
-ORDER BY COUNT(*) DESC$$
-
-CREATE PROCEDURE `getLayoutsGroupByWorldId` ()  NO SQL
+CREATE PROCEDURE `getLayoutNumberGroupByWorldId` ()  NO SQL
 SELECT l.WorldId, s.ServerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
 LEFT JOIN relation_server s ON s.WorldId=l.WorldId
 GROUP BY l.WorldId
 ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getLayoutsGroupByYearMonth` ()  NO SQL
+CREATE PROCEDURE `getLayoutNumberGroupByYearMonth` ()  NO SQL
 SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
 
-CREATE PROCEDURE `getLayoutsOrderByCrystal` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+CREATE PROCEDURE `getLayoutNumerGroupByPlayerName` ()  NO SQL
+SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
-WHERE
-IF (worldId > 0, worldId = la.WorldId, true)
-AND
-IF (minPosX > 0, minPosX <= la.PosX, true)
-AND
-IF (maxPosX > 0, maxPosX >= la.PosX, true)
-AND
-IF (minPosY > 0, minPosY <= la.PosY, true)
-AND
-IF (maxPosY > 0, maxPosY >= la.PosY, true)
-AND
-IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
-AND
-IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
-AND
-la.Zeit >= minDate
-ORDER BY la.Crystal6 DESC, la.Crystal5 DESC, la.Crystal4 DESC, la.Crystal3 DESC, la.Crystal2 DESC, la.Crystal1 DESC
-LIMIT 100$$
+GROUP BY lo.UserName
+ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getLayoutsOrderByDate` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
+CREATE PROCEDURE `getLayouts` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
 JOIN layouts la ON la.AccountId=lo.AccountId
 WHERE
-IF (worldId > 0, worldId = la.WorldId, true)
+IF (_WorldId > 0, _WorldId = la.WorldId, true)
 AND
-IF (minPosX > 0, minPosX <= la.PosX, true)
+IF (_minPosX > 0, _minPosX <= la.PosX, true)
 AND
-IF (maxPosX > 0, maxPosX >= la.PosX, true)
+IF (_maxPosX > 0, _maxPosX >= la.PosX, true)
 AND
-IF (minPosY > 0, minPosY <= la.PosY, true)
+IF (_minPosY > 0, _minPosY <= la.PosY, true)
 AND
-IF (maxPosY > 0, maxPosY >= la.PosY, true)
+IF (_maxPosY > 0, _maxPosY >= la.PosY, true)
 AND
-IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
+IF (_PlayerName <> '', lo.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
 AND
-IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
-ORDER by la.Zeit DESC
-LIMIT 100$$
-
-CREATE PROCEDURE `getLayoutsOrderByMixed` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-WHERE
-IF (worldId > 0, worldId = la.WorldId, true)
+IF (_FieldsTib <> '', _FieldsTib=la.FieldsTib, true)
 AND
-IF (minPosX > 0, minPosX <= la.PosX, true)
-AND
-IF (maxPosX > 0, maxPosX >= la.PosX, true)
-AND
-IF (minPosY > 0, minPosY <= la.PosY, true)
-AND
-IF (maxPosY > 0, maxPosY >= la.PosY, true)
-AND
-IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
-AND
-IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
-AND
-la.Zeit >= minDate
-ORDER BY la.Mixed6 DESC, la.Mixed5 DESC, la.Mixed4 DESC, la.Mixed3 DESC, la.Mixed2 DESC, la.Mixed1 DESC
-LIMIT 100$$
-
-CREATE PROCEDURE `getLayoutsOrderByPower` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-WHERE
-IF (worldId > 0, worldId = la.WorldId, true)
-AND
-IF (minPosX > 0, minPosX <= la.PosX, true)
-AND
-IF (maxPosX > 0, maxPosX >= la.PosX, true)
-AND
-IF (minPosY > 0, minPosY <= la.PosY, true)
-AND
-IF (maxPosY > 0, maxPosY >= la.PosY, true)
-AND
-IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
-AND
-IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
-AND
-la.Zeit >= minDate
-ORDER BY la.Power8 DESC, la.Power7 DESC, la.Power6 DESC, la.Power5 DESC, la.Power4 DESC, la.Power3 DESC, la.Power2 DESC
-LIMIT 100$$
-
-CREATE PROCEDURE `getLayoutsOrderByTiberium` (IN `worldId` INT, IN `minPosX` INT, IN `maxPosX` INT, IN `minPosY` INT, IN `maxPosY` INT, IN `minDate` DATE, IN `PlayerName` TEXT, IN `FieldsTib` INT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-WHERE
-IF (worldId > 0, worldId = la.WorldId, true)
-AND
-IF (minPosX > 0, minPosX <= la.PosX, true)
-AND
-IF (maxPosX > 0, maxPosX >= la.PosX, true)
-AND
-IF (minPosY > 0, minPosY <= la.PosY, true)
-AND
-IF (maxPosY > 0, maxPosY >= la.PosY, true)
-AND
-IF (PlayerName <> '', lo.UserName LIKE CONCAT('%', PlayerName, '%'), true)
-AND
-IF (FieldsTib <> '', FieldsTib=la.FieldsTib, true)
-AND
-la.Zeit >= minDate
-ORDER BY la.Tiberium6 DESC, la.Tiberium5 DESC, la.Tiberium4 DESC, la.Tiberium3 DESC, la.Tiberium2 DESC, la.Tiberium1 DESC
+la.Zeit >= _minDate
+ORDER BY
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium6 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium5 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium4 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium3 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium2 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium1 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal6 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal5 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal4 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal3 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal2 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal1 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed6 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed5 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed4 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed3 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed2 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed1 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power8 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power7 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power6 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power5 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power4 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power3 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
@@ -654,9 +576,10 @@ AND DATE(r.AttackTime)=ADDDATE(CURRENT_DATE(), -1)
 GROUP BY HOUR(r.AttackTime)
 ORDER BY HOUR(r.AttackTime) ASC$$
 
-CREATE PROCEDURE `getReportsGroupByTargetLevel` (IN `WorldId` INT)  NO SQL
-SELECT r.TargetLevel, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(CostCry), SUM(CostRep) FROM reports r
-WHERE r.WorldId=WorldId
+CREATE PROCEDURE `getReportsGroupByTargetLevel` (IN `_WorldId` INT)  NO SQL
+SELECT r.TargetLevel, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(r.GainRp), SUM(r.CostCry), SUM(r.CostRep), ROUND(AVG(r.GainTib), 0), ROUND(AVG(r.GainCry), 0), ROUND(AVG(r.GainCre), 0), ROUND(AVG(r.GainRp), 0), ROUND(AVG(r.CostCry), 0), ROUND(AVG(r.CostRep), 0) FROM reports r
+WHERE
+IF (_WorldId<>'', r.WorldId=_WorldId, true)
 GROUP BY r.TargetLevel
 ORDER BY r.TargetLevel DESC$$
 

@@ -35,7 +35,7 @@ function setDefaultValues()
     SelectionAllianceName.innerHTML = strHtml;*/
 }
 
-function getLayoutsOrderByType(_type)
+function getLayoutsOrderByType(_orderBy)
 {
     var worldId = WorldId.value || 0;
     var minX = MinX.value || 0;
@@ -47,16 +47,16 @@ function getLayoutsOrderByType(_type)
     var fieldsTib = FieldsTib.value || 0;
     var data =
     {
-        action: 'getLayoutsByWorldIdAndProcedureName',
-        worldId: worldId,
-        procedureName: 'getLayoutsOrderBy' + _type,
+        action: 'getLayouts',
+        WorldId: worldId,
         minX: minX,
         maxX: maxX,
         minY: minY,
         maxY: maxY,
         MinDate: minDate,
         PlayerName: playerName,
-        FieldsTib: fieldsTib
+        FieldsTib: fieldsTib,
+        OrderBy: _orderBy
     };
     $.ajaxSetup({async: false});
     $.post('../php/manageBackend.php', data)

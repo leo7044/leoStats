@@ -958,12 +958,11 @@ if (!$conn->connect_error)
             break;
         }
         // Website - BaseScanner
-        case 'getLayoutsByWorldIdAndProcedureName':
+        case 'getLayouts':
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
-                $worldId = $_post['worldId'];
-                $procedureName = $_post['procedureName'];
+                $WorldId = $_post['WorldId'];
                 $minX = $_post['minX'];
                 $maxX = $_post['maxX'];
                 $minY = $_post['minY'];
@@ -971,7 +970,8 @@ if (!$conn->connect_error)
                 $MinDate = $_post['MinDate'];
                 $PlayerName = $_post['PlayerName'];
                 $FieldsTib = $_post['FieldsTib'];
-                $sqlQuery = "CALL $procedureName($worldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib);";
+                $OrderBy = $_post['OrderBy'];
+                $sqlQuery = "CALL getLayouts($WorldId, $minX, $maxX, $minY, $maxY, '$MinDate', '$PlayerName', $FieldsTib, '$OrderBy');";
                 $result = $conn->query($sqlQuery);
                 while ($zeile = $result->fetch_assoc())
                 {

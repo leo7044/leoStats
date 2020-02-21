@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        BaseScanner
-// @version     2020.01.28
+// @version     2020.02.21
 // @author      leo7044 (https://github.com/leo7044)
-// @homepage    https://cnc.indyserver.info/BaseScanner/
-// @downloadURL https://cnc.indyserver.info/BaseScanner/js/BaseScanner.user.js
-// @updateURL   https://cnc.indyserver.info/BaseScanner/js/BaseScanner.user.js
+// @homepage    https://cnc.indyserver.info/
+// @downloadURL https://cnc.indyserver.info/js/leostats.user.js
+// @updateURL   https://cnc.indyserver.info/js/leostats.user.js
 // @description BaseScanner
 // @include     https://cncapp*.alliances.commandandconquer.com/*/index.aspx*
 // @grant       none
