@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.22';
+                var scriptVersionLocal = '2020.02.22.1';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -65,9 +65,16 @@
 
                             // Tab 1: Info
                             this.GuiInfoPage = new qx.ui.tabview.Page("Info");
-                            this.GuiInfoPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiInfoPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiInfoPage);
-                            this.GuiInfoVBox = new qx.ui.container.Composite();
+                            this.GuiInfoVBox = new qx.ui.container.Composite()/*.set({
+                                decorator : new qx.ui.decoration.Decorator().set({
+                                    backgroundRepeat : 'no-repeat',
+                                    backgroundImage : linkToRoot + 'img/icon.png',
+                                    backgroundPositionX : 'center',
+                                    opacity: 0.5
+                                })
+                            })*/;
                             this.GuiInfoVBox.setLayout(new qx.ui.layout.VBox(5));
                             this.GuiInfoVBox.setThemedPadding(10);
                             this.GuiInfoVBox.setThemedBackgroundColor("#eef");
@@ -75,7 +82,7 @@
 
                             // Tab 2: Bases
                             this.GuiBasesPage = new qx.ui.tabview.Page("Bases");
-                            this.GuiBasesPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiBasesPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiBasesPage);
                             this.GuiBasesVBox = new qx.ui.container.Composite();
                             this.GuiBasesVBox.setLayout(new qx.ui.layout.VBox(5));
@@ -85,7 +92,7 @@
 
                             // Tab 3: POIs
                             this.GuiPoisPage = new qx.ui.tabview.Page("POIs");
-                            this.GuiPoisPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiPoisPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoisPage);
                             this.GuiPoisVBox = new qx.ui.container.Composite();
                             this.GuiPoisVBox.setLayout(new qx.ui.layout.VBox(5));
@@ -95,7 +102,7 @@
 
                             // Tab 4: POI-Data
                             /*this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
-                            this.GuiPoiDataPage.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiPoiDataPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoiDataPage);
                             this.GuiPoiDataVBox = new qx.ui.container.Composite();
                             this.GuiPoiDataVBox.setLayout(new qx.ui.layout.VBox(5));
