@@ -888,7 +888,6 @@ if (!$conn->connect_error)
                         WHERE WorldId='$WorldId'
                         AND AccountId='$AccountId';";
                     $conn->query($strQuery);
-                    echo $strQuery;
                 }
             }
             $UserAnswer = [1, 'done'];
