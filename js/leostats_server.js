@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.21';
+                var scriptVersionLocal = '2020.02.22';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -246,13 +246,27 @@
                             var TextVeh = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             var TextAir = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             var TextDef = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            TextTib.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
-                            TextCry.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
-                            TextPow.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
-                            TextInf.add(new qx.ui.basic.Label('<b>Infantry</b>').set({rich: true}));
-                            TextVeh.add(new qx.ui.basic.Label('<b>Vehicle</b>').set({rich: true}));
-                            TextAir.add(new qx.ui.basic.Label('<b>Aircraft</b>').set({rich: true}));
-                            TextDef.add(new qx.ui.basic.Label('<b>Defense</b>').set({rich: true}));
+                            var IconTib = null;
+                            var IconCry = null;
+                            var IconPow = null;
+                            var IconInf = null;
+                            var IconVeh = null;
+                            var IconAir = null;
+                            var IconDef = null;
+                            TextTib.add(IconTib = new qx.ui.basic.Atom('<b>Tiberium</b>' + '', 'webfrontend/ui/common/icn_res_tiberium.png').set({rich: true}));
+                            IconTib.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextCry.add(IconCry = new qx.ui.basic.Atom('<b>Crystal</b>' + '', 'webfrontend/ui/common/icn_res_chrystal.png').set({rich: true}));
+                            IconCry.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextPow.add(IconPow = new qx.ui.basic.Atom('<b>Power</b>' + '', 'webfrontend/ui/common/icn_res_power.png').set({rich: true}));
+                            IconPow.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextInf.add(IconInf = new qx.ui.basic.Atom('<b>Infantry</b>' + '', 'FactionUI/icons/icon_arsnl_off_squad.png').set({rich: true}));
+                            IconInf.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextVeh.add(IconVeh = new qx.ui.basic.Atom('<b>Vehicle</b>' + '', 'FactionUI/icons/icon_arsnl_off_vehicle.png').set({rich: true}));
+                            IconVeh.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextAir.add(IconAir = new qx.ui.basic.Atom('<b>Aircraft</b>' + '', 'FactionUI/icons/icon_arsnl_off_plane.png').set({rich: true}));
+                            IconAir.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                            TextDef.add(IconDef = new qx.ui.basic.Atom('<b>Defense</b>' + '', 'FactionUI/icons/icon_def_army_points.png').set({rich: true}));
+                            IconDef.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
                             var ArrayPois = ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnedPOIs();
                             ArrayPois.reverse(); // destructive, Originalarray wird gedreht
                             for (var i in ArrayPois)
