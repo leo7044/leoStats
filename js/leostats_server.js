@@ -1079,9 +1079,9 @@
                                             LvLSumSup += base.get_SupportData().get_Level();
                                             CountSup++;
                                         }
-                                        var TiberiumPerHour = parseInt(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Tiberium, true, true));
-                                        var CrystalPerHour = parseInt(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Crystal, true, true));
-                                        var PowerPerHour = parseInt(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Power, true, true));
+                                        var TiberiumPerHour = Math.round(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Tiberium, true, true));
+                                        var CrystalPerHour = Math.round(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Crystal, true, true));
+                                        var PowerPerHour = Math.round(base.GetResourceGrowPerHour(ClientLib.Base.EResourceType.Power, true, true));
                                         var CreditsPerHour = parseInt(ClientLib.Base.Resource.GetResourceGrowPerHour(base.get_CityCreditsProduction(), false) + ClientLib.Base.Resource.GetResourceBonusGrowPerHour(base.get_CityCreditsProduction(), false));
                                         ProductionTiberium += TiberiumPerHour;
                                         ProductionCrystal += CrystalPerHour;
