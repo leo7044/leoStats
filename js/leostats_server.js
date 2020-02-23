@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.23.1';
+                var scriptVersionLocal = '2020.02.23.2';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -135,34 +135,82 @@
                             // console.log('open leoStats-Window');
 
                             // Tab 1: Info
-                            var HeaderTableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeaderTableInfoInformation = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));                            
                             var HeadLineInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Information</b></u></big>').set({rich: true}));
+                            // Tabelle: Player
+                            /*HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Player</b></u></big>').set({rich: true}));
                             HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var TableInfo = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TableInfoPlayer = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
                             var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
-                            TextKey.add(new qx.ui.basic.Label('Scriptname').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Name</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerName).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerRank.toLocaleString()).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Creation Date</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label((new  Date(ClientLib.Data.MainData.GetInstance().get_Player().get_CreationDate())).toLocaleString()).set({rich: true}));
+                            if (this.ObjectData.alliance.AllianceId > 0)
+                            {
+                                TextKey.add(new qx.ui.basic.Label('<b>AllianceRole</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_MemberData().d[ClientLib.Data.MainData.GetInstance().get_Player().get_Id()].RoleName).set({rich: true}));
+                            }
+                            TableInfoPlayer.add(TextKey);
+                            TableInfoPlayer.add(TextValue);
+                            HeadLineInfo.add(TableInfoPlayer);
+                            HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));*/
+                            // Tabelle: Alliance
+                            /*if (this.ObjectData.alliance.AllianceId > 0)
+                            {
+                                HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Alliance</b></u></big>').set({rich: true}));
+                                HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
+                                var TableInfoAlliance = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Name</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceName).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceRank.toLocaleString()).set({rich: true}));*/
+                                /*TextKey.add(new qx.ui.basic.Label('<b>Members</b>').set({rich: true}));
+                                var ArrayMemberNames = [];
+                                for (var i = 0; i < ClientLib.Data.MainData.GetInstance().get_Alliance().get_MemberDataAsArray().length; i++)
+                                {
+                                    ArrayMemberNames.push(ClientLib.Data.MainData.GetInstance().get_Alliance().get_MemberDataAsArray()[i].Name);
+                                }
+                                ArrayMemberNames.sort();
+                                TextValue.add(new qx.ui.basic.Label(ArrayMemberNames.join(', ')).set({rich: true, width: 500, selectable: true}));*/
+                                /*TableInfoAlliance.add(TextKey);
+                                TableInfoAlliance.add(TextValue);
+                                HeadLineInfo.add(TableInfoAlliance);
+                                HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
+                            }*/
+                            // Tabelle: Information
+                            HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Information</b></u></big>').set({rich: true}));
+                            HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableInfoInformation = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                            var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Scriptname</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('leoStats').set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('Version').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Version</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label(scriptVersionLocal).set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('Autor').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Autor</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('leo7044').set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('Website').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Website</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('<a href="' + linkToRoot + '" target="_blank">' + linkToRoot + '</a>').set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('BaseScanner').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>BaseScanner</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('<a href="' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '" target="_blank">' + linkToRoot + 'BaseScanner/?WorldId=' + this.ObjectData.server.WorldId + '</a>').set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('E-Mail').set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>E-Mail</b>').set({rich: true}));
                             TextValue.add(new qx.ui.basic.Label('<a href="mailto:cc.ta.leo7044@gmail.com">cc.ta.leo7044@gmail.com</a>').set({rich: true}));
-                            TableInfo.add(TextKey);
-                            TableInfo.add(TextValue);
-                            HeadLineInfo.add(TableInfo);
-                            var FieldInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            FieldInfo.add(new qx.ui.basic.Label('').set({rich: true}));
-                            FieldInfo.add(new qx.ui.basic.Label('<form><input type="button" value="Transmit data" onclick="leoStats.getInstance().getCurrentStats();"/></form>').set({rich: true}));
-                            HeadLineInfo.add(FieldInfo);
-                            HeaderTableInfo.add(HeadLineInfo);
-                            this.GuiInfoVBox.add(HeaderTableInfo);
+                            TableInfoInformation.add(TextKey);
+                            TableInfoInformation.add(TextValue);
+                            HeadLineInfo.add(TableInfoInformation);
+                            // Field: Button
+                            var FieldInfoTransmitData = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            FieldInfoTransmitData.add(new qx.ui.basic.Label('').set({rich: true}));
+                            FieldInfoTransmitData.add(new qx.ui.basic.Label('<form><input type="button" value="Transmit data" onclick="leoStats.getInstance().getCurrentStats();"/></form>').set({rich: true}));
+                            HeadLineInfo.add(FieldInfoTransmitData);
+                            HeaderTableInfoInformation.add(HeadLineInfo);
+                            this.GuiInfoVBox.add(HeaderTableInfoInformation);
 
                             // Tab 2: Bases
                             var HeaderTableBases = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
