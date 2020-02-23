@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.22.1';
+                var scriptVersionLocal = '2020.02.23';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -54,7 +54,6 @@
                             this.GuiFenster.moveTo(590, 48);
 
                             // Tab-Reihe
-                            // original: this.GuiTab = (new qx.ui.tabview.TabView()).set({
                             this.GuiTab = new qx.ui.tabview.TabView().set({
                                 contentPaddingTop: 3,
                                 contentPaddingBottom: 6,
@@ -101,14 +100,14 @@
                             this.GuiPoisPage.add(this.GuiPoisVBox);
 
                             // Tab 4: POI-Data
-                            /*this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
+                            this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
                             this.GuiPoiDataPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoiDataPage);
                             this.GuiPoiDataVBox = new qx.ui.container.Composite();
                             this.GuiPoiDataVBox.setLayout(new qx.ui.layout.VBox(5));
                             this.GuiPoiDataVBox.setThemedPadding(10);
                             this.GuiPoiDataVBox.setThemedBackgroundColor("#eef");
-                            this.GuiPoiDataPage.add(this.GuiPoiDataVBox);*/
+                            this.GuiPoiDataPage.add(this.GuiPoiDataVBox);
 
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
@@ -117,7 +116,7 @@
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
-                                // this.GuiPoiDataVBox.removeAll();
+                                this.GuiPoiDataVBox.removeAll();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
@@ -245,6 +244,7 @@
                             var HeadLinePois = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePois.add(new qx.ui.basic.Label('<big><u><b>POIs</b></u></big>').set({rich: true}));
                             HeadLinePois.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var HeadLinePoisScroll =  new qx.ui.container.Scroll().set({width: 627, height: 560});
                             var TablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextTib = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             var TextCry = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -274,7 +274,11 @@
                             IconAir.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
                             TextDef.add(IconDef = new qx.ui.basic.Atom('<b>Defense</b>' + '', 'FactionUI/icons/icon_def_army_points.png').set({rich: true}));
                             IconDef.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            var ArrayPois = ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnedPOIs();
+                            var ArrayPois = [];
+                            if (this.ObjectData.alliance.AllianceId)
+                            {
+                                ArrayPois = ClientLib.Data.MainData.GetInstance().get_Alliance().get_OwnedPOIs();
+                            }
                             ArrayPois.reverse(); // destructive, Originalarray wird gedreht
                             for (var i in ArrayPois)
                             {
@@ -329,41 +333,104 @@
                             TablePois.add(TextVeh);
                             TablePois.add(TextAir);
                             TablePois.add(TextDef);
-                            HeadLinePois.add(TablePois);
+                            HeadLinePoisScroll.add(TablePois);
+                            HeadLinePois.add(HeadLinePoisScroll);
                             HeaderTablePois.add(HeadLinePois);
                             this.GuiPoisVBox.add(HeaderTablePois);
 
                             // Tab 4: POI-Data
-                            /*var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
-                            var HeadLinePoiData = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            HeadLinePoiData.add(new qx.ui.basic.Label('<big><u><b>POI-Data</b></u></big>').set({rich: true}));
-                            HeadLinePoiData.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var TablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            // Tabelle: Poi-Level:
+                            var HeadLinePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('<big><u><b>POI-Level</b></u></big>').set({rich: true}));
+                            HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var HeadLinePoiDataPoiLevelScroll =  new qx.ui.container.Scroll().set({width: 137, height: 560});
+                            var TablePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextPoiLevel.add(new qx.ui.basic.Label('<b>Level</b>').set({rich: true}));
+                            var TextPoints = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextPoints.add(new qx.ui.basic.Label('<b>Points</b>').set({rich: true}));
+                            var maxPoiLevel = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxCenterLevel();
+                            for (var i = 12; i <= maxPoiLevel; i++)
+                            {
+                                var points = ClientLib.Base.PointOfInterestTypes.GetScoreByLevel(i);
+                                TextPoiLevel.add(new qx.ui.basic.Label(i.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextPoints.add(new qx.ui.basic.Label(points.toLocaleString()).set({rich: true, alignX: "right"}));
+                            }
+                            TablePoiDataPoiLevel.add(TextPoiLevel);
+                            TablePoiDataPoiLevel.add(TextPoints);
+                            HeadLinePoiDataPoiLevelScroll.add(TablePoiDataPoiLevel);
+                            HeadLinePoiDataPoiLevel.add(HeadLinePoiDataPoiLevelScroll);
+                            HeaderTablePoiData.add(HeadLinePoiDataPoiLevel);
+
+                            // Tabelle: Tier
+                            var HeadLinePoiDataTier = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLinePoiDataTier.add(new qx.ui.basic.Label('<big><u><b>POI-Tiers</b></u></big>').set({rich: true}));
+                            HeadLinePoiDataTier.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var HeadLinePoiDataTierScroll =  new qx.ui.container.Scroll().set({width: 237, height: 560});
+                            var TablePoiDataTier = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextScorePoints = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextScorePoints.add(new qx.ui.basic.Label('<b>Points</b>').set({rich: true}));
-                            var maxPoiLevelOnWorld = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxCenterLevel();
-                            var scorePointsOfMaxPoiLevelOnWorld = ClientLib.Base.PointOfInterestTypes.GetScoreByLevel(maxPoiLevelOnWorld);
+                            var TextPoiBonusRes = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextPoiBonusRes.add(new qx.ui.basic.Label('<b>Resources</b>').set({rich: true}));
+                            var TextPoiBonusFight = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextPoiBonusFight.add(new qx.ui.basic.Label('<b>Fight</b>').set({rich: true}));
+                            var poiGlobalBonusFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_POIGlobalBonusFactor();
                             var ArrayScorePoints = [];
                             var previousScorePoints = -1;
                             var currentScorePoints = 0;
+                            var currentPoiBonusRes = 0;
+                            var currentPoiBonusFight = 0;
                             while (previousScorePoints != currentScorePoints)
                             {
                                 previousScorePoints = currentScorePoints;
                                 currentScorePoints = ClientLib.Base.PointOfInterestTypes.GetNextScore(previousScorePoints);
-                                if (currentScorePoints != previousScorePoints && (100 * scorePointsOfMaxPoiLevelOnWorld) >= currentScorePoints)
+                                currentPoiBonusRes = ClientLib.Base.PointOfInterestTypes.GetBoostsByScore(currentScorePoints, ClientLib.Data.Ranking.ERankingType.BonusTiberium, poiGlobalBonusFactor);
+                                currentPoiBonusFight = ClientLib.Base.PointOfInterestTypes.GetBoostsByScore(currentScorePoints, ClientLib.Data.Ranking.ERankingType.BonusInfantry, poiGlobalBonusFactor);
+                                if (currentScorePoints != previousScorePoints)
                                 {
                                     ArrayScorePoints.push(currentScorePoints);
                                     TextScorePoints.add(new qx.ui.basic.Label(currentScorePoints.toLocaleString()).set({rich: true, alignX: "right"}));
+                                    TextPoiBonusRes.add(new qx.ui.basic.Label(currentPoiBonusRes.toLocaleString()).set({rich: true, alignX: "right"}));
+                                    TextPoiBonusFight.add(new qx.ui.basic.Label(currentPoiBonusFight.toLocaleString()).set({rich: true, alignX: "right"}));
                                 }
                                 else
                                 {
                                     break;
                                 }
                             }
-                            TablePoiData.add(TextScorePoints);
-                            HeadLinePoiData.add(TablePoiData);
-                            HeaderTablePoiData.add(HeadLinePoiData);
-                            this.GuiPoiDataVBox.add(HeaderTablePoiData);*/
+                            TablePoiDataTier.add(TextScorePoints);
+                            TablePoiDataTier.add(TextPoiBonusRes);
+                            TablePoiDataTier.add(TextPoiBonusFight);
+                            HeadLinePoiDataTierScroll.add(TablePoiDataTier);
+                            HeadLinePoiDataTier.add(HeadLinePoiDataTierScroll);
+                            HeaderTablePoiData.add(HeadLinePoiDataTier);
+
+                            // Tabelle: Multiplier
+                            if (!this.ObjectData.server.SeasonServer)
+                            {
+                                var HeadLinePoiDataMultiplier = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                HeadLinePoiDataMultiplier.add(new qx.ui.basic.Label('<big><u><b>Multiplier</b></u></big>').set({rich: true}));
+                                HeadLinePoiDataMultiplier.add(new qx.ui.basic.Label('').set({rich: true}));
+                                var HeadLinePoiDataMultiplierScroll =  new qx.ui.container.Scroll().set({width: 113, height: 560});
+                                var TablePoiDataMultiplier = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                var TextRank = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextRank.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
+                                var TextMultiplier = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextMultiplier.add(new qx.ui.basic.Label('<b>Multiplier</b>').set({rich: true}));
+                                for (var i = 1; i <= 40; i++)
+                                {
+                                    var points = ClientLib.Base.PointOfInterestTypes.GetBoostModifierByRank(i);
+                                    TextRank.add(new qx.ui.basic.Label(i.toLocaleString()).set({rich: true, alignX: "right"}));
+                                    TextMultiplier.add(new qx.ui.basic.Label(points.toLocaleString()).set({rich: true, alignX: "right"}));
+                                }
+                                TablePoiDataMultiplier.add(TextRank);
+                                TablePoiDataMultiplier.add(TextMultiplier);
+                                HeadLinePoiDataMultiplierScroll.add(TablePoiDataMultiplier);
+                                HeadLinePoiDataMultiplier.add(HeadLinePoiDataMultiplierScroll);
+                                HeaderTablePoiData.add(HeadLinePoiDataMultiplier);
+                            }
+                            this.GuiPoiDataVBox.add(HeaderTablePoiData);
                         },
                         setCncOptVars: function()
                         {
@@ -865,9 +932,9 @@
                                         }
                                         catch(e){}
                                         // Bonus
-                                        var BonusTiberium = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Tiberium);
-                                        var BonusCrystal = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Crystal);
-                                        var BonusPower = ClientLib.Data.MainData.GetInstance().get_Alliance().GetPOIBonusFromResourceType(ClientLib.Base.EResourceType.Power);
+                                        var BonusTiberium = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POITiberiumBonus();
+                                        var BonusCrystal = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POICrystalBonus();
+                                        var BonusPower = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIPowerBonus();
                                         var BonusInfantrie = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus();
                                         var BonusVehicle = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus();
                                         var BonusAir = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus();
