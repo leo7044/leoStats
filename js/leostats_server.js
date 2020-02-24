@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.24';
+                var scriptVersionLocal = '2020.02.24.1';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -89,7 +89,17 @@
                             this.GuiBasesVBox.setThemedBackgroundColor("#eef");
                             this.GuiBasesPage.add(this.GuiBasesVBox);
 
-                            // Tab 3: POIs
+                            // Tab 3: Player
+                            this.GuiPlayerPage = new qx.ui.tabview.Page("Player");
+                            this.GuiPlayerPage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiPlayerPage);
+                            this.GuiPlayerVBox = new qx.ui.container.Composite();
+                            this.GuiPlayerVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiPlayerVBox.setThemedPadding(10);
+                            this.GuiPlayerVBox.setThemedBackgroundColor("#eef");
+                            this.GuiPlayerPage.add(this.GuiPlayerVBox);
+
+                            // Tab 4: POIs
                             this.GuiPoisPage = new qx.ui.tabview.Page("POIs");
                             this.GuiPoisPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoisPage);
@@ -99,7 +109,7 @@
                             this.GuiPoisVBox.setThemedBackgroundColor("#eef");
                             this.GuiPoisPage.add(this.GuiPoisVBox);
 
-                            // Tab 4: POI-Data
+                            // Tab 5: POI-Data
                             this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
                             this.GuiPoiDataPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoiDataPage);
@@ -115,8 +125,10 @@
                                 // qx.core.Init.getApplication().showExternal(linkToRoot);
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
+                                this.GuiPlayerVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
                                 this.GuiPoiDataVBox.removeAll();
+                                this.getCurrentStats();
                                 this.showGui();
                                 this.GuiFenster.show();
                             }, this);
@@ -130,34 +142,9 @@
                         },
                         showGui: function()
                         {
-                            // get current Information
-                            this.getCurrentStats();
-                            // console.log('open leoStats-Window');
-
                             // Tab 1: Info
                             var HeaderTableInfoInformation = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));                            
                             var HeadLineInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            // Tabelle: Player
-                            /*HeadLineInfo.add(new qx.ui.basic.Label('<big><u><b>Player</b></u></big>').set({rich: true}));
-                            HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var TableInfoPlayer = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
-                            var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
-                            var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
-                            TextKey.add(new qx.ui.basic.Label('<b>Name</b>').set({rich: true}));
-                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerName).set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
-                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerRank.toLocaleString()).set({rich: true}));
-                            TextKey.add(new qx.ui.basic.Label('<b>Creation Date</b>').set({rich: true}));
-                            TextValue.add(new qx.ui.basic.Label((new  Date(ClientLib.Data.MainData.GetInstance().get_Player().get_CreationDate())).toLocaleString()).set({rich: true}));
-                            if (this.ObjectData.alliance.AllianceId > 0)
-                            {
-                                TextKey.add(new qx.ui.basic.Label('<b>AllianceRole</b>').set({rich: true}));
-                                TextValue.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_MemberData().d[ClientLib.Data.MainData.GetInstance().get_Player().get_Id()].RoleName).set({rich: true}));
-                            }
-                            TableInfoPlayer.add(TextKey);
-                            TableInfoPlayer.add(TextValue);
-                            HeadLineInfo.add(TableInfoPlayer);
-                            HeadLineInfo.add(new qx.ui.basic.Label('').set({rich: true}));*/
                             // Tabelle: Alliance
                             /*if (this.ObjectData.alliance.AllianceId > 0)
                             {
@@ -287,7 +274,9 @@
                             HeaderTableBases.add(HeadLineBases);
                             this.GuiBasesVBox.add(HeaderTableBases);
 
-                            // Tab 3: POIs
+                            this.createTabPlayer();
+
+                            // Tab 4: POIs
                             var HeaderTablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLinePois = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePois.add(new qx.ui.basic.Label('<big><u><b>POIs</b></u></big>').set({rich: true}));
@@ -386,7 +375,7 @@
                             HeaderTablePois.add(HeadLinePois);
                             this.GuiPoisVBox.add(HeaderTablePois);
 
-                            // Tab 4: POI-Data
+                            // Tab 5: POI-Data
                             var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             // Tabelle: Poi-Level:
                             var HeadLinePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -479,6 +468,57 @@
                                 HeaderTablePoiData.add(HeadLinePoiDataMultiplier);
                             }
                             this.GuiPoiDataVBox.add(HeaderTablePoiData);
+                        },
+                        createTabPlayer: function()
+                        {
+                            // Tab 3: Player
+                            var HeaderTablePlayer = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLinePlayer = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLinePlayer.add(new qx.ui.basic.Label('<big><u><b>Player</b></u></big>').set({rich: true}));
+                            HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TablePlayer = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                            var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Name</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerName).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerRank.toLocaleString()).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>Creation Date</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label((new  Date(ClientLib.Data.MainData.GetInstance().get_Player().get_CreationDate())).toLocaleString()).set({rich: true}));
+                            TextKey.add(new qx.ui.basic.Label('<b>ScorePoints</b>').set({rich: true}));
+                            TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerScorePoints.toLocaleString()).set({rich: true}));
+                            if (this.ObjectData.server.SeasonServer == true)
+                            {
+                                TextKey.add(new qx.ui.basic.Label('<b>LegacyPoints</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.LegacyPoints.toLocaleString()).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>VeteranPoints</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerVeteranPoints.toLocaleString()).set({rich: true}));
+                            }
+                            if (this.ObjectData.alliance.AllianceId > 0)
+                            {
+                                TextKey.add(new qx.ui.basic.Label('<b>AllianceRole</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_MemberData().d[ClientLib.Data.MainData.GetInstance().get_Player().get_Id()].RoleName).set({rich: true}));
+                            }
+                            if (this.ObjectData.player.Shoot != undefined)
+                            {
+                                TextKey.add(new qx.ui.basic.Label('<b>PvE</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PvE.toLocaleString()).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>PvP</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PvP.toLocaleString()).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Gesamt</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.Shoot.toLocaleString()).set({rich: true}));
+                            }
+                            else
+                            {
+                                setTimeout(function(_self){_self.createTabPlayer();}, 1000, this);
+                            }
+                            TablePlayer.add(TextKey);
+                            TablePlayer.add(TextValue);
+                            HeadLinePlayer.add(TablePlayer);
+                            HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
+                            HeaderTablePlayer.add(HeadLinePlayer);
+                            this.GuiPlayerVBox.removeAll();
+                            this.GuiPlayerVBox.add(HeaderTablePlayer);
                         },
                         setCncOptVars: function()
                         {
