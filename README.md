@@ -44,6 +44,7 @@ The values are stored in a database where only the hoster and I have access - no
 - RepairTime-Storage
 - incoming and outgoing substitutions
 - Funds
+- Battlereports
 #### Bases
 - BaseId (for uniquely identify)
 - BaseName
@@ -104,6 +105,7 @@ Die Werte sind in einer Datenbank gespeichert, wo ausschließlich der Hoster und
 - Repzeit-Speicher
 - eingehende, ausgehende Urlaubsvertretungen
 - Funds
+- Kampfberichte
 #### Basen
 - BasisId (zur eindeutigen Identifizierung)
 - Basisname
