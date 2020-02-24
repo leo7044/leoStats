@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.23.2';
+                var scriptVersionLocal = '2020.02.24';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1518,12 +1518,7 @@
                             this.ArrayIdsForScan = [];
                             this.ScriptIsRunning = false;
                             this.buildGUI();
-                            var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
-                            var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
-                            if (WorldId != 320 && PlayerName != 'leo7044')
-                            {
-                                this.autoScanByClickOnBase();
-                            }
+                            this.autoScanByClickOnBase();
                         },
                         buildGUI: function()
                         {
