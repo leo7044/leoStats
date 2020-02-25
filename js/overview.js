@@ -1104,7 +1104,7 @@ function manageContentBase()
     {
         var data =
         {
-            action: "getBaseData",
+            action: "getBaseDataHistory",
             WorldId: WorldId,
             BaseId: BaseId
         }

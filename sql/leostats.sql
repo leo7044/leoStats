@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 21. Feb 2020 um 15:07
+-- Erstellungszeit: 25. Feb 2020 um 06:49
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -102,7 +102,9 @@ IF
 			AND
 			IF
 			(
-				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				(SELECT p2.MemberRole FROM relation_player p2
+                 WHERE p2.WorldId=_WorldId AND
+                 p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
 				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
 				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
@@ -228,47 +230,59 @@ IF
 )
 ORDER BY l.UserName$$
 
-CREATE PROCEDURE `getBaseDataAsAdmin` (IN `WorldId` INT, IN `BaseId` INT)  READS SQL DATA
-SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
+CREATE PROCEDURE `getBaseDataHistory` (IN `_WorldId` INT, IN `_BaseId` INT, IN `_OwnAccountId` INT)  NO SQL
+SELECT ba.Zeit, ba.PosX, ba.PosY, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, pl.RepMax, ba.CnCOpt FROM relation_bases b
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
-WHERE
-b.WorldId=WorldId
+JOIN player pl ON pl.WorldId=ba.WorldId AND pl.AccountId=b.AccountId AND pl.Zeit=ba.Zeit
+JOIN relation_player p ON p.WorldId=b.WorldId AND p.AccountId=b.AccountId
+JOIN relation_alliance a ON a.WorldId=b.WorldId AND a.AllianceId=p.AllianceId
+WHERE b.WorldId=_WorldId
+AND b.BaseId=_BaseId
 AND
-b.BaseId=BaseId
-ORDER BY ba.Zeit ASC$$
-
-CREATE PROCEDURE `getBaseDataAsUser` (IN `WorldId` INT, IN `BaseId` INT, IN `OwnAccountId` INT)  READS SQL DATA
-SELECT ba.Zeit, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, p.RepMax, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-JOIN player p ON p.WorldId=ba.WorldId AND p.AccountId=b.AccountId AND p.Zeit=ba.Zeit
-WHERE
-b.WorldId=WorldId
-AND
-b.BaseId=BaseId
-AND
-BaseId IN
+IF
 (
-	SELECT b.BaseId FROM relation_bases b
-	JOIN relation_alliance a ON a.WorldId=b.WorldId
-	JOIN relation_player p ON p.WorldId=b.WorldId AND p.AllianceId=a.AllianceId
-	WHERE
-	b.WorldId IN
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
 	(
-		SELECT p.WorldId FROM relation_player p WHERE p.AccountId=OwnAccountId
-	)
-	AND
-	a.AllianceId =
-	(
-		SELECT p.AllianceId FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=b.WorldId
-	)
-	AND
-	(
-		IF
 		(
-			(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=WorldId)<=a.MemberRole,
-			true,
-			p.AccountId=OwnAccountId
+			a.AllianceId=
+			(
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
+			)
+		)
+		OR
+		(
+			a.AllianceId=
+			(
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
+		OR
+		(
+			p.AccountId=
+			(
+				SELECT psh.AccountIdSet FROM relation_player_share psh
+				WHERE psh.WorldId=_WorldId
+				AND psh.AccountIdGet=_OwnAccountId
+			)
 		)
 	)
 )
@@ -347,6 +361,12 @@ AND
 IF(AccountId>0, AccountId=p.AccountId, true)
 ORDER BY pl.Zeit ASC, p.AccountId ASC$$
 
+CREATE PROCEDURE `getLayoutNumberGroupByPlayerName` ()  NO SQL
+SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
+GROUP BY lo.UserName
+ORDER BY COUNT(*) DESC$$
+
 CREATE PROCEDURE `getLayoutNumberGroupByWorldId` ()  NO SQL
 SELECT l.WorldId, s.ServerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
 LEFT JOIN relation_server s ON s.WorldId=l.WorldId
@@ -356,12 +376,6 @@ ORDER BY COUNT(*) DESC$$
 CREATE PROCEDURE `getLayoutNumberGroupByYearMonth` ()  NO SQL
 SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
-
-CREATE PROCEDURE `getLayoutNumerGroupByPlayerName` ()  NO SQL
-SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-GROUP BY lo.UserName
-ORDER BY COUNT(*) DESC$$
 
 CREATE PROCEDURE `getLayouts` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT)  NO SQL
 SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
@@ -665,6 +679,8 @@ CREATE TABLE `bases` (
   `Zeit` date NOT NULL,
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `BaseId` int(9) UNSIGNED NOT NULL,
+  `PosX` smallint(4) UNSIGNED NOT NULL,
+  `PosY` smallint(4) UNSIGNED NOT NULL,
   `BasePoints` int(9) UNSIGNED NOT NULL,
   `LvLCY` tinyint(2) UNSIGNED NOT NULL,
   `LvLBase` decimal(4,2) UNSIGNED NOT NULL,

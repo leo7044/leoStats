@@ -596,22 +596,14 @@ if (!$conn->connect_error)
             }
             break;
         }
-        case 'getBaseData':
+        case 'getBaseDataHistory':
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
                 $BaseId = $_post['BaseId'];
-                $strQuery = '';
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery .= "CALL getBaseDataAsUser('$WorldId', '$BaseId', '$OwnAccountId');";
-                }
-                else
-                {
-                    $strQuery .= "CALL getBaseDataAsAdmin('$WorldId', '$BaseId');";
-                }
+                $strQuery = "CALL getBaseDataHistory('$WorldId', '$BaseId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {

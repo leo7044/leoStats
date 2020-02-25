@@ -7,11 +7,11 @@ if (isset($_REQUEST['logout']))
 }
 else if (isset($_SESSION['leoStats_AccountId']))
 {
-    include_once('html/overview.html');
+    include_once('html/overview_public.html');
 }
 else
 {
-    include_once('html/login.html');
+    include_once('html/login_public.html');
 }
 function logout()
 {
@@ -20,6 +20,5 @@ function logout()
 	unset($_SESSION['leoStats_IsAdmin']);*/
 	session_unset();
 	header("LOCATION: /");
-	include_once('html/login.html');
 }
 ?>
