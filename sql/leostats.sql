@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 25. Feb 2020 um 06:49
+-- Erstellungszeit: 25. Feb 2020 um 13:50
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -103,8 +103,8 @@ IF
 			IF
 			(
 				(SELECT p2.MemberRole FROM relation_player p2
-                 WHERE p2.WorldId=_WorldId AND
-                 p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+                WHERE p2.WorldId=_WorldId AND
+                p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
 				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
 				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
@@ -210,7 +210,9 @@ IF
 			AND
 			IF
 			(
-				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				(SELECT p2.MemberRole FROM relation_player p2
+                WHERE p2.WorldId=_WorldId
+                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
 				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
 				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
@@ -268,7 +270,9 @@ IF
 			AND
 			IF
 			(
-				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				(SELECT p2.MemberRole FROM relation_player p2
+                WHERE p2.WorldId=_WorldId
+                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
 				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
 				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
 				true,
@@ -288,16 +292,7 @@ IF
 )
 ORDER BY ba.Zeit ASC$$
 
-CREATE PROCEDURE `getDropDownListDataAsAdmin` ()  READS SQL DATA
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
-FROM relation_server s
-JOIN relation_alliance a ON a.WorldId=s.WorldId
-JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
-JOIN login l ON l.AccountId=p.AccountId
-JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
-ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
-
-CREATE PROCEDURE `getDropDownListDataAsUser` (IN `OwnAccountId` INT)  READS SQL DATA
+CREATE PROCEDURE `getDropDownListData` (IN `_OwnAccountId` INT)  NO SQL
 SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
 FROM relation_server s
 JOIN relation_alliance a ON a.WorldId=s.WorldId
@@ -305,22 +300,62 @@ JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
 JOIN login l ON l.AccountId=p.AccountId
 JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
 WHERE
-s.WorldId IN
+IF
 (
-	SELECT p.WorldId FROM relation_player p WHERE p.AccountId=OwnAccountId
-)
-AND
-a.AllianceId =
-(
-	SELECT p.AllianceId FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=s.WorldId
-)
-AND
-(
-	IF
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
 	(
-		(SELECT p.MemberRole FROM relation_player p WHERE p.AccountId=OwnAccountId AND p.WorldId=s.WorldId)<=a.MemberRole,
-		true,
-		p.AccountId=OwnAccountId
+		(
+			s.WorldId IN
+			(
+				SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId
+			)
+		)
+		AND
+		(
+			(
+				a.AllianceId=
+				(
+					SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=s.WorldId)<=a.MemberRole,
+					true,
+					p.AccountId=_OwnAccountId
+				)
+			)
+			OR
+			(
+				a.AllianceId=
+				(
+					SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2
+					WHERE p2.WorldId=s.WorldId AND
+					p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=s.WorldId and p2.AccountId=_OwnAccountId),
+					true,
+					false
+				)
+			)
+			OR
+			(
+				p.AccountId=
+				(
+					SELECT psh.AccountIdSet FROM relation_player_share psh
+					WHERE psh.WorldId=s.WorldId
+					AND psh.AccountIdGet=_OwnAccountId
+				)
+			)
+		)
 	)
 )
 ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
