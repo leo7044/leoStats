@@ -735,7 +735,6 @@ if (!$conn->connect_error)
                     $conn->query("UPDATE `login` SET `Password`='$password' WHERE AccountId='$AccountId';");
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deletePlayer':
@@ -749,7 +748,6 @@ if (!$conn->connect_error)
                     $conn->query("DELETE FROM `login` WHERE AccountId='$AccountId';");
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'getNeededMemberRoles':
@@ -874,7 +872,6 @@ if (!$conn->connect_error)
                     $conn->query($strQuery);
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deleteServer':
@@ -888,7 +885,6 @@ if (!$conn->connect_error)
                     $conn->query("DELETE FROM `relation_server` WHERE WorldId='$WorldId';");
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'optimizeAllTables':
@@ -901,7 +897,6 @@ if (!$conn->connect_error)
                     $conn->query("OPTIMIZE TABLES adminlog, alliance, bases, contact, login, player, relation_alliance, relation_bases, relation_player, relation_server, substitution;");
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'getAdminLog':
@@ -918,7 +913,6 @@ if (!$conn->connect_error)
                     }
                 }
             }
-            $UserAnswer = [1, 'done'];
             break;
         }
         case 'deleteElementAdminLog':
@@ -931,19 +925,6 @@ if (!$conn->connect_error)
                     $Id = $_post['Id'];
                     $conn->query("UPDATE adminlog SET `ShowRow`=FALSE WHERE Id='$Id';");
                 }
-            }
-            $UserAnswer = [1, 'done'];
-            break;
-        }
-        case 'getLoginStatus':
-        {
-            if (isset($_SESSION['leoStats_AccountId']))
-            {
-                $UserAnswer = [1, 'login'];
-            }
-            else
-            {
-                $UserAnswer = [0, 'logout'];
             }
             break;
         }

@@ -155,24 +155,6 @@ $(document).ready(function()
     initializeStart();
 });
 
-function getLoginStatus()
-{
-    var data =
-    {
-        action: "getLoginStatus"
-    };
-    $.ajaxSetup({async: false});
-    $.post('php/manageBackend.php', data)
-    .always(function(data)
-    {
-        if (!data[0])
-        {
-            location.href='?logout';
-        }
-    });
-    $.ajaxSetup({async: true});
-}
-
 function initializeStart()
 {
     getSessionVariables();
@@ -1226,23 +1208,26 @@ function resetViewSettingsTabs()
 
 function changePassword()
 {
-    getLoginStatus();
     var ownAccountId = ObjectSessionVariables.leoStats_AccountId;
     var dataUrl = 'action=changePassword&AccountId=' + ownAccountId + '&' + $('#FormChangePassword').serialize();
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', dataUrl)
-    .always(function(data)
+    .always(function(_data)
     {
-        if (data[0])
+        if (_data[0])
         {
             $('#PasswordChangeFail').addClass('d-none');
             $('#PasswordChangeSuccess').removeClass('d-none');
             resetFormChangePassword();
         }
-        else
+        else if (_data[0] == 0)
         {
             $('#PasswordChangeFail').removeClass('d-none');
             $('#PasswordChangeSuccess').addClass('d-none');
+        }
+        else
+        {
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -1274,7 +1259,6 @@ function validatePassword()
 
 function resetPlayer()
 {
-    getLoginStatus();
     var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
     if (confirm('Do you want reset player ' + playerName + '?'))
     {
@@ -1286,14 +1270,20 @@ function resetPlayer()
             PlayerName: playerName
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(_data)
+        {
+            if (!_data[0])
+            {
+                location.href='?logout';
+            }
+        });
         $.ajaxSetup({async: true});
     }
 }
 
 function deletePlayer()
 {
-    getLoginStatus();
     var playerName = $('#DropDownListPlayer')[0][$('#DropDownListPlayer')[0].selectedIndex].innerHTML
     if (confirm('Do you want to delete player ' + playerName + ' from database?'))
     {
@@ -1304,7 +1294,14 @@ function deletePlayer()
             AccountId: AccountId
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(_data)
+        {
+            if (!_data[0])
+            {
+                location.href='?logout';
+            }
+        });
         $.ajaxSetup({async: true});
         initializeStart();
     }
@@ -1357,7 +1354,6 @@ function prepareSettingsServer()
 
 function saveChangeNeededMemberRole()
 {
-    getLoginStatus();
     var WorldId = $('#DropDownListWorld')[0].value;
     var AllianceId = $('#DropDownListAlliance')[0].value;
     var MemberRole = $('#DropDownListMemberRole')[0].value;
@@ -1370,9 +1366,9 @@ function saveChangeNeededMemberRole()
     }
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
-    .always(function(data)
+    .always(function(_data)
     {
-        if (data[0])
+        if (_data[0])
         {
             $('#MemberRoleChangeFail').addClass('d-none');
             $('#MemberRoleChangeSuccess').removeClass('d-none');
@@ -1385,10 +1381,14 @@ function saveChangeNeededMemberRole()
                 ArrayDropDownDefaultOwn[indexWorldId].NeededMemberRole = $('#DropDownListMemberRole')[0].value;
             }
         }
-        else
+        else if (_data[0] == 0)
         {
             $('#MemberRoleChangeFail').removeClass('d-none');
             $('#MemberRoleChangeSuccess').addClass('d-none');
+        }
+        else
+        {
+            location.href='?logout';
         }
     });
     $.ajaxSetup({async: true});
@@ -1423,7 +1423,6 @@ function getNeededMemberRoles(_WorldId, _AllianceId)
 
 function deletePlayerTableCell(_cellId)
 {
-    getLoginStatus();
     var AccountId = _cellId.substr(10, _cellId.length - 10);
     var playerName = $('#TableCellName_' + AccountId)[0].innerHTML;
     if (confirm('Do you want to remove ' + playerName + ' from alliance?'))
@@ -1438,7 +1437,14 @@ function deletePlayerTableCell(_cellId)
             AccountId: AccountId
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(_data)
+        {
+            if (!_data[0])
+            {
+                location.href='?logout';
+            }
+        });
         $.ajaxSetup({async: true});
         initializeStart();
         prepareSettingsAlliance();
@@ -1450,13 +1456,19 @@ function optimizeAllTables()
     $('#LoadingSymbol').removeClass('d-none');
     setTimeout(function()
     {
-        getLoginStatus();
         var data =
         {
             action: "optimizeAllTables"
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(_data)
+        {
+            if (!_data[0])
+            {
+                location.href='?logout';
+            }
+        });
         $.ajaxSetup({async: true});
         $('#LoadingSymbol').addClass('d-none');
     }, 50);
@@ -1464,7 +1476,6 @@ function optimizeAllTables()
 
 function deleteServer()
 {
-    getLoginStatus();
     var serverName = $('#DropDownListWorld')[0][$('#DropDownListWorld')[0].selectedIndex].innerHTML;
     if (confirm('Do you want to delete server ' + serverName + ' from database?'))
     {
@@ -1475,7 +1486,14 @@ function deleteServer()
             WorldId: worldId
         }
         $.ajaxSetup({async: false});
-        $.post('php/manageBackend.php', data);
+        $.post('php/manageBackend.php', data)
+        .always(function(_data)
+        {
+            if (!_data[0])
+            {
+                location.href='?logout';
+            }
+        });
         $.ajaxSetup({async: true});
         initializeStart();
     }
@@ -1483,16 +1501,22 @@ function deleteServer()
 
 function getAdminLog()
 {
-    getLoginStatus();
     var data=
     {
         action: "getAdminLog"
     }
     $.ajaxSetup({async: false});
     $.post('php/manageBackend.php', data)
-    .always(function(data)
+    .always(function(_data)
     {
-        ArrayAdminLog = data;
+        if (_data[0])
+        {
+            ArrayAdminLog = _data;
+        }
+        else
+        {
+            location.href='?logout';
+        }
     });
     $.ajaxSetup({async: true});
 }
@@ -1528,7 +1552,6 @@ function prepareAdminLogTable()
 
 function deleteElementAdminLog(_Id)
 {
-    getLoginStatus();
     $('#TableAdminLog').DataTable().destroy();
     var data=
     {
@@ -1536,7 +1559,14 @@ function deleteElementAdminLog(_Id)
         Id: _Id
     }
     $.ajaxSetup({async: false});
-    $.post('php/manageBackend.php', data);
+    $.post('php/manageBackend.php', data)
+    .always(function(data)
+    {
+        if (!data[0])
+        {
+            location.href='?logout';
+        }
+    });
     $.ajaxSetup({async: true});
     getAdminLog();
     prepareAdminLogTable();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 25. Feb 2020 um 13:50
+-- Erstellungszeit: 27. Feb 2020 um 09:53
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -58,7 +58,7 @@ GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
 
 CREATE PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
-SELECT l.UserName, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+SELECT l.AccountId, l.UserName, b.BaseId, ba.Zeit, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
@@ -456,7 +456,8 @@ CASE _OrderBy WHEN 'Power' THEN la.Power6 END DESC,
 CASE _OrderBy WHEN 'Power' THEN la.Power5 END DESC,
 CASE _OrderBy WHEN 'Power' THEN la.Power4 END DESC,
 CASE _OrderBy WHEN 'Power' THEN la.Power3 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC
+CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC,
+CASE _OrderBy WHEN 'Date' THEN la.Zeit END DESC
 LIMIT 100$$
 
 CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
