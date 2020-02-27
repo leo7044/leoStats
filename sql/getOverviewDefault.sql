@@ -94,8 +94,7 @@ JOIN relation_alliance a ON a.WorldId=b.WorldId
 JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 AND ba.Zeit=(SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1)
-WHERE
-IF (_WorldId > 0, _WorldId = b.WorldId, true)
+WHERE b.WorldId=_WorldId
 AND
 IF (_AllianceId > 0, _AllianceId = p.AllianceId, true)
 AND
