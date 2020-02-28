@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 28. Feb 2020 um 09:52
+-- Erstellungszeit: 28. Feb 2020 um 11:37
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -47,15 +47,6 @@ WHERE p.WorldId=WorldId
 AND pl1.AccountId=AccountId1
 AND pl2.AccountId=AccountId2
 ORDER BY pl1.Zeit ASC$$
-
-CREATE PROCEDURE `getAlianceNamesByWorldId` (IN `WorldId` INT)  NO SQL
-SELECT a.AllianceName FROM layouts l
-join login lo ON lo.UserName=l.PlayerName
-JOIN relation_player p ON p.WorldId=l.WorldId AND p.AccountId=lo.AccountId
-JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE l.WorldId=WorldId
-GROUP BY a.AllianceName
-ORDER BY a.AllianceName$$
 
 CREATE PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT l.AccountId, l.UserName, b.BaseId, b.BaseName, ba.Zeit, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
@@ -816,9 +807,9 @@ IF(AccountId>0, AccountId=p.AccountId, true)
 ORDER BY pl.Zeit ASC, p.AccountId ASC$$
 
 CREATE PROCEDURE `getLayoutNumberGroupByPlayerName` ()  NO SQL
-SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-GROUP BY lo.UserName
+SELECT l.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login l
+JOIN layouts la ON la.AccountId=l.AccountId
+GROUP BY l.UserName
 ORDER BY COUNT(*) DESC$$
 
 CREATE PROCEDURE `getLayoutNumberGroupByWorldId` ()  NO SQL
@@ -832,8 +823,8 @@ SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
 GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
 
 CREATE PROCEDURE `getLayouts` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
+SELECT la.WorldId, la.Zeit, l.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login l
+JOIN layouts la ON la.AccountId=l.AccountId
 WHERE
 IF (_WorldId > 0, _WorldId = la.WorldId, true)
 AND
@@ -845,11 +836,120 @@ IF (_minPosY > 0, _minPosY <= la.PosY, true)
 AND
 IF (_maxPosY > 0, _maxPosY >= la.PosY, true)
 AND
-IF (_PlayerName <> '', lo.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
+IF (_PlayerName <> '', l.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
 AND
 IF (_FieldsTib <> '', _FieldsTib=la.FieldsTib, true)
 AND
 la.Zeit >= _minDate
+ORDER BY
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium6 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium5 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium4 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium3 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium2 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium1 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal6 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal5 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal4 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal3 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal2 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal1 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed6 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed5 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed4 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed3 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed2 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed1 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power8 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power7 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power6 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power5 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power4 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power3 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC,
+CASE _OrderBy WHEN 'Date' THEN la.Zeit END DESC
+LIMIT 100$$
+
+CREATE PROCEDURE `getLayoutsSecurity` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT, IN `_OwnAccountId` INT)  NO SQL
+SELECT la.WorldId, la.Zeit, l.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login l
+JOIN layouts la ON la.AccountId=l.AccountId
+JOIN relation_player p ON p.WorldId=la.WorldId AND p.AccountId=l.AccountId
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE
+la.WorldId=_WorldId
+AND
+IF (_minPosX > 0, _minPosX <= la.PosX, true)
+AND
+IF (_maxPosX > 0, _maxPosX >= la.PosX, true)
+AND
+IF (_minPosY > 0, _minPosY <= la.PosY, true)
+AND
+IF (_maxPosY > 0, _maxPosY >= la.PosY, true)
+AND
+IF (_PlayerName <> '', l.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
+AND
+IF (_FieldsTib <> '', _FieldsTib=la.FieldsTib, true)
+AND
+la.Zeit >= _minDate
+AND
+IF
+(
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
+	(
+		(
+			p.WorldId IN
+			(
+				SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId
+			)
+		)
+		AND
+		(
+			(
+				p.AllianceId=
+				(
+					SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=p.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=p.WorldId)<=a.MemberRole,
+					true,
+					p.AccountId=_OwnAccountId
+				)
+			)
+			OR
+			(
+				p.AllianceId=
+				(
+					SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=p.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2
+					WHERE p2.WorldId=p.WorldId AND
+					p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=p.WorldId AND p2.AccountId=_OwnAccountId),
+					true,
+					false
+				)
+			)
+			OR
+			(
+				p.AccountId=
+				(
+					SELECT psh.AccountIdSet FROM relation_player_share psh
+					WHERE psh.WorldId=p.WorldId
+					AND psh.AccountIdGet=_OwnAccountId
+				)
+			)
+		)
+	)
+)
 ORDER BY
 CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium6 END DESC,
 CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium5 END DESC,
