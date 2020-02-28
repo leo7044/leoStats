@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.24.1';
+                var scriptVersionLocal = '2020.02.28';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -2725,10 +2725,9 @@
                         {
                             var WorldId = ClientLib.Data.MainData.GetInstance().get_Server().get_WorldId();
                             var AccountId = ClientLib.Data.MainData.GetInstance().get_Player().get_AccountId();
-                            var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
                             var layout = this.ArrayLayouts[this.ArrayLayouts.length - 1];
                             var ArrayLayout = [layout];
-                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, AccountId: AccountId, PlayerName: PlayerName, ScriptVersionLocal: scriptVersionLocal};
+                            var ObjectSend = {action:"sendDataFromInGameBaseScanner", ObjectData:ArrayLayout, WorldId: WorldId, AccountId: AccountId, ScriptVersionLocal: scriptVersionLocal};
                             $.post(linkToRoot + 'php/manageBackend.php', ObjectSend);
                         },
                         stopScan: function()

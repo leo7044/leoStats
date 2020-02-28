@@ -275,14 +275,13 @@ if (!$conn->connect_error)
         // InGame - BaseScanner
         case 'sendDataFromInGameBaseScanner':
         {
-            $strQueryLayouts = "INSERT INTO layouts (WorldId, Zeit, AccountId, PlayerName, PosX, PosY, FieldsTib, FieldsCry, Layout, CncOpt, Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2) VALUES ";
+            $strQueryLayouts = "INSERT INTO layouts (WorldId, Zeit, AccountId, PosX, PosY, FieldsTib, FieldsCry, Layout, CncOpt, Tiberium6, Tiberium5, Tiberium4, Tiberium3, Tiberium2, Tiberium1, Crystal6, Crystal5, Crystal4, Crystal3, Crystal2, Crystal1, Mixed6, Mixed5, Mixed4, Mixed3, Mixed2, Mixed1, Power8, Power7, Power6, Power5, Power4, Power3, Power2) VALUES ";
             $WorldId = $_post['WorldId'];
             $AccountId = 0;
             if (isset($_post['AccountId']))
             {
                 $AccountId = $_post['AccountId'];
             }
-            $PlayerName = $_post['PlayerName'];
             $ObjectData = $_post['ObjectData'];
             foreach ($ObjectData as $key => $value)
             {
@@ -371,11 +370,11 @@ if (!$conn->connect_error)
                 }
                 if ($key != count($ObjectData) - 1)
                 {
-                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";
+                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";
                 }
                 else
                 {
-                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PlayerName', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2')";
+                    $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2')";
                 }
             }
             $strQueryLayouts .= " ON DUPLICATE KEY UPDATE Zeit = VALUES(Zeit), AccountId = VALUES(AccountId), PlayerName = VALUES(PlayerName), FieldsTib = VALUES(FieldsTib), FieldsCry = VALUES(FieldsCry), Layout = VALUES(Layout), CncOpt = VALUES(CncOpt), Tiberium6 = VALUES(Tiberium6), Tiberium5 = VALUES(Tiberium5), Tiberium4 = VALUES(Tiberium4), Tiberium3 = VALUES(Tiberium3), Tiberium2 = VALUES(Tiberium2), Crystal6 = VALUES(Crystal6), Crystal5 = VALUES(Crystal5), Crystal4 = VALUES(Crystal4), Crystal3 = VALUES(Crystal3), Crystal2 = VALUES(Crystal2), Mixed6 = VALUES(Mixed6), Mixed5 = VALUES(Mixed5), Mixed4 = VALUES(Mixed4), Mixed3 = VALUES(Mixed3), Mixed2 = VALUES(Mixed2), Power8 = VALUES(Power8), Power7 = VALUES(Power7), Power6 = VALUES(Power6), Power5 = VALUES(Power5), Power4 = VALUES(Power4), Power3 = VALUES(Power3), Power2 = VALUES(Power2);";

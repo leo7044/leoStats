@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 27. Feb 2020 um 17:14
+-- Erstellungszeit: 28. Feb 2020 um 09:52
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -58,7 +58,7 @@ GROUP BY a.AllianceName
 ORDER BY a.AllianceName$$
 
 CREATE PROCEDURE `getAllianceBaseData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
-SELECT l.AccountId, l.UserName, b.BaseId, ba.Zeit, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
+SELECT l.AccountId, l.UserName, b.BaseId, b.BaseName, ba.Zeit, p.Faction, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_player p
 JOIN relation_bases b ON b.WorldId=p.WorldId AND b.AccountId=p.AccountId
 JOIN login l ON l.AccountId=p.AccountId
 JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
@@ -71,7 +71,8 @@ WHERE ba.Zeit=
 	ORDER BY ba.Zeit DESC LIMIT 1
 )
 AND p.WorldId=_WorldId
-AND a.AllianceId=_AllianceId
+AND
+IF (_AllianceId > 0, _AllianceId = a.AllianceId, true)
 AND
 IF
 (
@@ -165,319 +166,7 @@ IF
 )
 ORDER BY al.Zeit ASC$$
 
-CREATE PROCEDURE `getAlliancePlayerData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
-SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM relation_player p
-JOIN login l ON l.AccountId=p.AccountId
-JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
-JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE
-pl.Zeit=
-(
-	SELECT pl.Zeit FROM player pl
-	WHERE pl.WorldId=p.WorldId
-	AND pl.AccountId=p.AccountId
-	ORDER BY pl.Zeit DESC LIMIT 1
-)
-AND p.WorldId=_WorldId
-AND p.AllianceId=_AllianceId
-AND
-IF
-(
-	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
-	true,
-	(
-		(
-			p.AllianceId=
-			(
-				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
-			)
-			AND
-			IF
-			(
-				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
-				true,
-				p.AccountId=_OwnAccountId
-			)
-		)
-		OR
-		(
-			p.AllianceId=
-			(
-				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
-			)
-			AND
-			IF
-			(
-				(SELECT p2.MemberRole FROM relation_player p2
-                WHERE p2.WorldId=_WorldId
-                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
-				true,
-				false
-			)
-		)
-		OR
-		(
-			p.AccountId=
-			(
-				SELECT psh.AccountIdSet FROM relation_player_share psh
-				WHERE psh.WorldId=_WorldId
-				AND psh.AccountIdGet=_OwnAccountId
-			)
-		)
-	)
-)
-ORDER BY l.UserName$$
-
-CREATE PROCEDURE `getBaseDataHistory` (IN `_WorldId` INT, IN `_BaseId` INT, IN `_OwnAccountId` INT)  NO SQL
-SELECT ba.Zeit, ba.PosX, ba.PosY, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, pl.RepMax, ba.CnCOpt FROM relation_bases b
-JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
-JOIN player pl ON pl.WorldId=ba.WorldId AND pl.AccountId=b.AccountId AND pl.Zeit=ba.Zeit
-JOIN relation_player p ON p.WorldId=b.WorldId AND p.AccountId=b.AccountId
-JOIN relation_alliance a ON a.WorldId=b.WorldId AND a.AllianceId=p.AllianceId
-WHERE b.WorldId=_WorldId
-AND b.BaseId=_BaseId
-AND
-IF
-(
-	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
-	true,
-	(
-		(
-			a.AllianceId=
-			(
-				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
-			)
-			AND
-			IF
-			(
-				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
-				true,
-				p.AccountId=_OwnAccountId
-			)
-		)
-		OR
-		(
-			a.AllianceId=
-			(
-				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
-			)
-			AND
-			IF
-			(
-				(SELECT p2.MemberRole FROM relation_player p2
-                WHERE p2.WorldId=_WorldId
-                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
-				true,
-				false
-			)
-		)
-		OR
-		(
-			p.AccountId=
-			(
-				SELECT psh.AccountIdSet FROM relation_player_share psh
-				WHERE psh.WorldId=_WorldId
-				AND psh.AccountIdGet=_OwnAccountId
-			)
-		)
-	)
-)
-ORDER BY ba.Zeit ASC$$
-
-CREATE PROCEDURE `getDropDownListData` (IN `_OwnAccountId` INT)  NO SQL
-SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
-FROM relation_server s
-JOIN relation_alliance a ON a.WorldId=s.WorldId
-JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
-JOIN login l ON l.AccountId=p.AccountId
-JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
-WHERE
-IF
-(
-	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
-	true,
-	(
-		(
-			s.WorldId IN
-			(
-				SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId
-			)
-		)
-		AND
-		(
-			(
-				a.AllianceId=
-				(
-					SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
-				)
-				AND
-				IF
-				(
-					(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=s.WorldId)<=a.MemberRole,
-					true,
-					p.AccountId=_OwnAccountId
-				)
-			)
-			OR
-			(
-				a.AllianceId=
-				(
-					SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-					WHERE ash.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
-				)
-				AND
-				IF
-				(
-					(SELECT p2.MemberRole FROM relation_player p2
-					WHERE p2.WorldId=s.WorldId AND
-					p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-					WHERE ash.WorldId=s.WorldId and p2.AccountId=_OwnAccountId),
-					true,
-					false
-				)
-			)
-			OR
-			(
-				p.AccountId=
-				(
-					SELECT psh.AccountIdSet FROM relation_player_share psh
-					WHERE psh.WorldId=s.WorldId
-					AND psh.AccountIdGet=_OwnAccountId
-				)
-			)
-		)
-	)
-)
-ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
-
-CREATE PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT)  READS SQL DATA
-SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
-JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
-WHERE p.AccountId=OwnAccountId
-ORDER BY p.WorldId$$
-
-CREATE PROCEDURE `getHistoryAlliancesAsAdmin` (IN `WorldId` INT)  NO SQL
-SELECT al.Zeit, a.AllianceId, a.AllianceName, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef  FROM alliance al
-JOIN relation_alliance a ON a.WorldId=al.WorldId AND a.AllianceId=al.AllianceId
-WHERE
-a.WorldId=WorldId
-ORDER BY al.Zeit ASC, a.AllianceId ASC$$
-
-CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
-SELECT ba.Zeit, b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
-JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
-WHERE
-b.WorldId=WorldId
-AND
-IF (AccountId>0, AccountId=b.AccountId, true)
-AND
-IF (BaseId>0, BaseId=b.BaseId, true)
-ORDER BY ba.Zeit ASC, b.BaseId ASC$$
-
-CREATE PROCEDURE `getHistoryPlayersAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT, IN `AccountId` INT)  NO SQL
-SELECT pl.Zeit, p.AccountId, l.UserName, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, p.MemberRole FROM player pl
-JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
-JOIN login l ON l.AccountId=p.AccountId
-WHERE
-p.WorldId=WorldId
-AND
-IF(AllianceId>0, AllianceId=p.AllianceId, true)
-AND
-IF(AccountId>0, AccountId=p.AccountId, true)
-ORDER BY pl.Zeit ASC, p.AccountId ASC$$
-
-CREATE PROCEDURE `getLayoutNumberGroupByPlayerName` ()  NO SQL
-SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-GROUP BY lo.UserName
-ORDER BY COUNT(*) DESC$$
-
-CREATE PROCEDURE `getLayoutNumberGroupByWorldId` ()  NO SQL
-SELECT l.WorldId, s.ServerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
-LEFT JOIN relation_server s ON s.WorldId=l.WorldId
-GROUP BY l.WorldId
-ORDER BY COUNT(*) DESC$$
-
-CREATE PROCEDURE `getLayoutNumberGroupByYearMonth` ()  NO SQL
-SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
-GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
-
-CREATE PROCEDURE `getLayouts` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT)  NO SQL
-SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
-JOIN layouts la ON la.AccountId=lo.AccountId
-WHERE
-IF (_WorldId > 0, _WorldId = la.WorldId, true)
-AND
-IF (_minPosX > 0, _minPosX <= la.PosX, true)
-AND
-IF (_maxPosX > 0, _maxPosX >= la.PosX, true)
-AND
-IF (_minPosY > 0, _minPosY <= la.PosY, true)
-AND
-IF (_maxPosY > 0, _maxPosY >= la.PosY, true)
-AND
-IF (_PlayerName <> '', lo.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
-AND
-IF (_FieldsTib <> '', _FieldsTib=la.FieldsTib, true)
-AND
-la.Zeit >= _minDate
-ORDER BY
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium6 END DESC,
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium5 END DESC,
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium4 END DESC,
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium3 END DESC,
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium2 END DESC,
-CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium1 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal6 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal5 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal4 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal3 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal2 END DESC,
-CASE _OrderBy WHEN 'Crystal' THEN la.Crystal1 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed6 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed5 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed4 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed3 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed2 END DESC,
-CASE _OrderBy WHEN 'Mixed' THEN la.Mixed1 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power8 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power7 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power6 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power5 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power4 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power3 END DESC,
-CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC,
-CASE _OrderBy WHEN 'Date' THEN la.Zeit END DESC
-LIMIT 100$$
-
-CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
-SELECT a.WorldId, s.ServerName, a.AllianceId, a.AllianceName, MAX(al.Zeit) FROM relation_alliance a
-JOIN alliance al ON al.WorldId=a.WorldId AND al.AllianceId=a.AllianceId
-JOIN relation_server s ON s.WorldId=a.WorldId
-GROUP BY a.WorldId, a.AllianceId
-ORDER BY MAX(al.Zeit) DESC, a.WorldId ASC, a.AllianceName ASC$$
-
-CREATE PROCEDURE `getLoginGroupByPasswordChanged` ()  NO SQL
-SELECT l.Password!=sha2(CONCAT(l.UserName, '_', l.AccountId), 512) AS PasswordChanged, COUNT(*) FROM login l
-GROUP BY PasswordChanged$$
-
-CREATE PROCEDURE `getLoginGroupByPlayer` ()  NO SQL
-SELECT l.AccountId, l.UserName, MAX(p.Zeit) FROM login l
-JOIN player p ON p.AccountId=l.AccountId
-GROUP BY l.AccountId
-ORDER BY MAX(p.Zeit) DESC, l.UserName ASC$$
-
-CREATE PROCEDURE `getOverview` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
+CREATE PROCEDURE `getAllianceOverview` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT SUM(CASE WHEN ba.LvLBase BETWEEN 0 AND 0.99 THEN 1 ELSE 0 END) AS LvLBase0,
 SUM(CASE WHEN ba.LvLOff BETWEEN 0 AND 0.99 THEN 1 ELSE 0 END) AS LvLOff0,
 SUM(CASE WHEN ba.LvLDef BETWEEN 0 AND 0.99 THEN 1 ELSE 0 END) AS LvLDef0,
@@ -884,7 +573,7 @@ IF
     )
 )$$
 
-CREATE PROCEDURE `getOverviewByColName` (IN `_ColName` TEXT, IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
+CREATE PROCEDURE `getAllianceOverviewByColName` (IN `_ColName` TEXT, IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
 BEGIN
 	SET @sqlQuery:=
     CONCAT('SELECT SUM(CASE WHEN ba.',_ColName,' BETWEEN 0 AND 0.99 THEN 1 ELSE 0 END) AS ',_ColName,'0, SUM(CASE WHEN ba.',_ColName,' BETWEEN 1 AND 1.99 THEN 1 ELSE 0 END) AS ',_ColName,'1, SUM(CASE WHEN ba.',_ColName,' BETWEEN 2 AND 2.99 THEN 1 ELSE 0 END) AS ',_ColName,'2, SUM(CASE WHEN ba.',_ColName,' BETWEEN 3 AND 3.99 THEN 1 ELSE 0 END) AS ',_ColName,'3, SUM(CASE WHEN ba.',_ColName,' BETWEEN 4 AND 4.99 THEN 1 ELSE 0 END) AS ',_ColName,'4, SUM(CASE WHEN ba.',_ColName,' BETWEEN 5 AND 5.99 THEN 1 ELSE 0 END) AS ',_ColName,'5, SUM(CASE WHEN ba.',_ColName,' BETWEEN 6 AND 6.99 THEN 1 ELSE 0 END) AS ',_ColName,'6, SUM(CASE WHEN ba.',_ColName,' BETWEEN 7 AND 7.99 THEN 1 ELSE 0 END) AS ',_ColName,'7, SUM(CASE WHEN ba.',_ColName,' BETWEEN 8 AND 8.99 THEN 1 ELSE 0 END) AS ',_ColName,'8, SUM(CASE WHEN ba.',_ColName,' BETWEEN 9 AND 9.99 THEN 1 ELSE 0 END) AS ',_ColName,'9, SUM(CASE WHEN ba.',_ColName,' BETWEEN 10 AND 10.99 THEN 1 ELSE 0 END) AS ',_ColName,'10, SUM(CASE WHEN ba.',_ColName,' BETWEEN 11 AND 11.99 THEN 1 ELSE 0 END) AS ',_ColName,'11, SUM(CASE WHEN ba.',_ColName,' BETWEEN 12 AND 12.99 THEN 1 ELSE 0 END) AS ',_ColName,'12, SUM(CASE WHEN ba.',_ColName,' BETWEEN 13 AND 13.99 THEN 1 ELSE 0 END) AS ',_ColName,'13, SUM(CASE WHEN ba.',_ColName,' BETWEEN 14 AND 14.99 THEN 1 ELSE 0 END) AS ',_ColName,'14, SUM(CASE WHEN ba.',_ColName,' BETWEEN 15 AND 15.99 THEN 1 ELSE 0 END) AS ',_ColName,'15, SUM(CASE WHEN ba.',_ColName,' BETWEEN 16 AND 16.99 THEN 1 ELSE 0 END) AS ',_ColName,'16, SUM(CASE WHEN ba.',_ColName,' BETWEEN 17 AND 17.99 THEN 1 ELSE 0 END) AS ',_ColName,'17, SUM(CASE WHEN ba.',_ColName,' BETWEEN 18 AND 18.99 THEN 1 ELSE 0 END) AS ',_ColName,'18, SUM(CASE WHEN ba.',_ColName,' BETWEEN 19 AND 19.99 THEN 1 ELSE 0 END) AS ',_ColName,'19, SUM(CASE WHEN ba.',_ColName,' BETWEEN 20 AND 20.99 THEN 1 ELSE 0 END) AS ',_ColName,'20, SUM(CASE WHEN ba.',_ColName,' BETWEEN 21 AND 21.99 THEN 1 ELSE 0 END) AS ',_ColName,'21, SUM(CASE WHEN ba.',_ColName,' BETWEEN 22 AND 22.99 THEN 1 ELSE 0 END) AS ',_ColName,'22, SUM(CASE WHEN ba.',_ColName,' BETWEEN 23 AND 23.99 THEN 1 ELSE 0 END) AS ',_ColName,'23, SUM(CASE WHEN ba.',_ColName,' BETWEEN 24 AND 24.99 THEN 1 ELSE 0 END) AS ',_ColName,'24, SUM(CASE WHEN ba.',_ColName,' BETWEEN 25 AND 25.99 THEN 1 ELSE 0 END) AS ',_ColName,'25, SUM(CASE WHEN ba.',_ColName,' BETWEEN 26 AND 26.99 THEN 1 ELSE 0 END) AS ',_ColName,'26, SUM(CASE WHEN ba.',_ColName,' BETWEEN 27 AND 27.99 THEN 1 ELSE 0 END) AS ',_ColName,'27, SUM(CASE WHEN ba.',_ColName,' BETWEEN 28 AND 28.99 THEN 1 ELSE 0 END) AS ',_ColName,'28, SUM(CASE WHEN ba.',_ColName,' BETWEEN 29 AND 29.99 THEN 1 ELSE 0 END) AS ',_ColName,'29, SUM(CASE WHEN ba.',_ColName,' BETWEEN 30 AND 30.99 THEN 1 ELSE 0 END) AS ',_ColName,'30, SUM(CASE WHEN ba.',_ColName,' BETWEEN 31 AND 31.99 THEN 1 ELSE 0 END) AS ',_ColName,'31, SUM(CASE WHEN ba.',_ColName,' BETWEEN 32 AND 32.99 THEN 1 ELSE 0 END) AS ',_ColName,'32, SUM(CASE WHEN ba.',_ColName,' BETWEEN 33 AND 33.99 THEN 1 ELSE 0 END) AS ',_ColName,'33, SUM(CASE WHEN ba.',_ColName,' BETWEEN 34 AND 34.99 THEN 1 ELSE 0 END) AS ',_ColName,'34, SUM(CASE WHEN ba.',_ColName,' BETWEEN 35 AND 35.99 THEN 1 ELSE 0 END) AS ',_ColName,'35, SUM(CASE WHEN ba.',_ColName,' BETWEEN 36 AND 36.99 THEN 1 ELSE 0 END) AS ',_ColName,'36, SUM(CASE WHEN ba.',_ColName,' BETWEEN 37 AND 37.99 THEN 1 ELSE 0 END) AS ',_ColName,'37, SUM(CASE WHEN ba.',_ColName,' BETWEEN 38 AND 38.99 THEN 1 ELSE 0 END) AS ',_ColName,'38, SUM(CASE WHEN ba.',_ColName,' BETWEEN 39 AND 39.99 THEN 1 ELSE 0 END) AS ',_ColName,'39, SUM(CASE WHEN ba.',_ColName,' BETWEEN 40 AND 40.99 THEN 1 ELSE 0 END) AS ',_ColName,'40, SUM(CASE WHEN ba.',_ColName,' BETWEEN 41 AND 41.99 THEN 1 ELSE 0 END) AS ',_ColName,'41, SUM(CASE WHEN ba.',_ColName,' BETWEEN 42 AND 42.99 THEN 1 ELSE 0 END) AS ',_ColName,'42, SUM(CASE WHEN ba.',_ColName,' BETWEEN 43 AND 43.99 THEN 1 ELSE 0 END) AS ',_ColName,'43, SUM(CASE WHEN ba.',_ColName,' BETWEEN 44 AND 44.99 THEN 1 ELSE 0 END) AS ',_ColName,'44, SUM(CASE WHEN ba.',_ColName,' BETWEEN 45 AND 45.99 THEN 1 ELSE 0 END) AS ',_ColName,'45, SUM(CASE WHEN ba.',_ColName,' BETWEEN 46 AND 46.99 THEN 1 ELSE 0 END) AS ',_ColName,'46, SUM(CASE WHEN ba.',_ColName,' BETWEEN 47 AND 47.99 THEN 1 ELSE 0 END) AS ',_ColName,'47, SUM(CASE WHEN ba.',_ColName,' BETWEEN 48 AND 48.99 THEN 1 ELSE 0 END) AS ',_ColName,'48, SUM(CASE WHEN ba.',_ColName,' BETWEEN 49 AND 49.99 THEN 1 ELSE 0 END) AS ',_ColName,'49, SUM(CASE WHEN ba.',_ColName,' BETWEEN 50 AND 50.99 THEN 1 ELSE 0 END) AS ',_ColName,'50, SUM(CASE WHEN ba.',_ColName,' BETWEEN 51 AND 51.99 THEN 1 ELSE 0 END) AS ',_ColName,'51, SUM(CASE WHEN ba.',_ColName,' BETWEEN 52 AND 52.99 THEN 1 ELSE 0 END) AS ',_ColName,'52, SUM(CASE WHEN ba.',_ColName,' BETWEEN 53 AND 53.99 THEN 1 ELSE 0 END) AS ',_ColName,'53, SUM(CASE WHEN ba.',_ColName,' BETWEEN 54 AND 54.99 THEN 1 ELSE 0 END) AS ',_ColName,'54, SUM(CASE WHEN ba.',_ColName,' BETWEEN 55 AND 55.99 THEN 1 ELSE 0 END) AS ',_ColName,'55, SUM(CASE WHEN ba.',_ColName,' BETWEEN 56 AND 56.99 THEN 1 ELSE 0 END) AS ',_ColName,'56, SUM(CASE WHEN ba.',_ColName,' BETWEEN 57 AND 57.99 THEN 1 ELSE 0 END) AS ',_ColName,'57, SUM(CASE WHEN ba.',_ColName,' BETWEEN 58 AND 58.99 THEN 1 ELSE 0 END) AS ',_ColName,'58, SUM(CASE WHEN ba.',_ColName,' BETWEEN 59 AND 59.99 THEN 1 ELSE 0 END) AS ',_ColName,'59, SUM(CASE WHEN ba.',_ColName,' BETWEEN 60 AND 60.99 THEN 1 ELSE 0 END) AS ',_ColName,'60, SUM(CASE WHEN ba.',_ColName,' BETWEEN 61 AND 61.99 THEN 1 ELSE 0 END) AS ',_ColName,'61, SUM(CASE WHEN ba.',_ColName,' BETWEEN 62 AND 62.99 THEN 1 ELSE 0 END) AS ',_ColName,'62, SUM(CASE WHEN ba.',_ColName,' BETWEEN 63 AND 63.99 THEN 1 ELSE 0 END) AS ',_ColName,'63, SUM(CASE WHEN ba.',_ColName,' BETWEEN 64 AND 64.99 THEN 1 ELSE 0 END) AS ',_ColName,'64, SUM(CASE WHEN ba.',_ColName,' BETWEEN 65 AND 65.99 THEN 1 ELSE 0 END) AS ',_ColName,'65, SUM(CASE WHEN ba.',_ColName,' BETWEEN 66 AND 66.99 THEN 1 ELSE 0 END) AS ',_ColName,'66, SUM(CASE WHEN ba.',_ColName,' BETWEEN 67 AND 67.99 THEN 1 ELSE 0 END) AS ',_ColName,'67, SUM(CASE WHEN ba.',_ColName,' BETWEEN 68 AND 68.99 THEN 1 ELSE 0 END) AS ',_ColName,'68, SUM(CASE WHEN ba.',_ColName,' BETWEEN 69 AND 69.99 THEN 1 ELSE 0 END) AS ',_ColName,'69, SUM(CASE WHEN ba.',_ColName,' BETWEEN 70 AND 70.99 THEN 1 ELSE 0 END) AS ',_ColName,'70, SUM(CASE WHEN ba.',_ColName,' BETWEEN 71 AND 71.99 THEN 1 ELSE 0 END) AS ',_ColName,'71, SUM(CASE WHEN ba.',_ColName,' BETWEEN 72 AND 72.99 THEN 1 ELSE 0 END) AS ',_ColName,'72, SUM(CASE WHEN ba.',_ColName,' BETWEEN 73 AND 73.99 THEN 1 ELSE 0 END) AS ',_ColName,'73, SUM(CASE WHEN ba.',_ColName,' BETWEEN 74 AND 74.99 THEN 1 ELSE 0 END) AS ',_ColName,'74, SUM(CASE WHEN ba.',_ColName,' BETWEEN 75 AND 75.99 THEN 1 ELSE 0 END) AS ',_ColName,'75, SUM(CASE WHEN ba.',_ColName,' BETWEEN 76 AND 76.99 THEN 1 ELSE 0 END) AS ',_ColName,'76, SUM(CASE WHEN ba.',_ColName,' BETWEEN 77 AND 77.99 THEN 1 ELSE 0 END) AS ',_ColName,'77, SUM(CASE WHEN ba.',_ColName,' BETWEEN 78 AND 78.99 THEN 1 ELSE 0 END) AS ',_ColName,'78, SUM(CASE WHEN ba.',_ColName,' BETWEEN 79 AND 79.99 THEN 1 ELSE 0 END) AS ',_ColName,'79, SUM(CASE WHEN ba.',_ColName,' BETWEEN 80 AND 80.99 THEN 1 ELSE 0 END) AS ',_ColName,'80, SUM(CASE WHEN ba.',_ColName,' BETWEEN 81 AND 81.99 THEN 1 ELSE 0 END) AS ',_ColName,'81, SUM(CASE WHEN ba.',_ColName,' BETWEEN 82 AND 82.99 THEN 1 ELSE 0 END) AS ',_ColName,'82 FROM relation_bases b JOIN relation_alliance a ON a.WorldId=b.WorldId JOIN relation_player p ON p.WorldId=b.WorldId and p.AllianceId=a.AllianceId AND p.AccountId=b.AccountId JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId AND ba.Zeit=(SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1) WHERE b.WorldId=',_WorldId,' AND IF(',_AllianceId,' > 0, ',_AllianceId,' = p.AllianceId, true) AND IF ( (SELECT ',_OwnAccountId,' IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)), true, ( ( b.WorldId IN ( SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=',_OwnAccountId,') ) AND ( ( a.AllianceId= ( SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=b.WorldId AND p2.AccountId=',_OwnAccountId,' ) AND IF ( (SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=',_OwnAccountId,' AND p2.WorldId=b.WorldId)<=a.MemberRole, true, p.AccountId=',_OwnAccountId,' ) ) OR ( a.AllianceId= ( SELECT ash.AllianceIdSet FROM relation_alliance_share ash JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet WHERE ash.WorldId=b.WorldId AND p2.AccountId=',_OwnAccountId,' ) AND IF ( (SELECT p2.MemberRole FROM relation_player p2 WHERE p2.WorldId=b.WorldId AND p2.AccountId=',_OwnAccountId,')<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet WHERE ash.WorldId=b.WorldId and p2.AccountId=',_OwnAccountId,'), true, false ) ) OR ( p.AccountId= ( SELECT psh.AccountIdSet FROM relation_player_share psh WHERE psh.WorldId=b.WorldId AND psh.AccountIdGet=',_OwnAccountId,' ) ) ) ) );');
@@ -892,6 +581,320 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END$$
+
+CREATE PROCEDURE `getAlliancePlayerData` (IN `_WorldId` INT, IN `_AllianceId` INT, IN `_OwnAccountId` INT)  NO SQL
+SELECT l.AccountId, l.UserName, pl.Zeit, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, IFNULL(su.PlayerNameGet, '') AS 'Substitution' FROM relation_player p
+JOIN login l ON l.AccountId=p.AccountId
+JOIN player pl ON pl.WorldId=p.WorldId AND pl.AccountId=p.AccountId
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+LEFT JOIN substitution su ON su.WorldId=p.WorldId AND su.PlayerNameSet=l.UserName
+WHERE
+pl.Zeit=
+(
+	SELECT pl.Zeit FROM player pl
+	WHERE pl.WorldId=p.WorldId
+	AND pl.AccountId=p.AccountId
+	ORDER BY pl.Zeit DESC LIMIT 1
+)
+AND p.WorldId=_WorldId
+AND
+IF (_AllianceId > 0, _AllianceId = p.AllianceId, true)
+AND
+IF
+(
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
+	(
+		(
+			p.AllianceId=
+			(
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
+			)
+		)
+		OR
+		(
+			p.AllianceId=
+			(
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2
+                WHERE p2.WorldId=_WorldId
+                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
+		OR
+		(
+			p.AccountId=
+			(
+				SELECT psh.AccountIdSet FROM relation_player_share psh
+				WHERE psh.WorldId=_WorldId
+				AND psh.AccountIdGet=_OwnAccountId
+			)
+		)
+	)
+)
+ORDER BY l.UserName$$
+
+CREATE PROCEDURE `getBaseDataHistory` (IN `_WorldId` INT, IN `_BaseId` INT, IN `_OwnAccountId` INT)  NO SQL
+SELECT ba.Zeit, ba.PosX, ba.PosY, ba.BasePoints, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, pl.RepMax, ba.CnCOpt FROM relation_bases b
+JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
+JOIN player pl ON pl.WorldId=ba.WorldId AND pl.AccountId=b.AccountId AND pl.Zeit=ba.Zeit
+JOIN relation_player p ON p.WorldId=b.WorldId AND p.AccountId=b.AccountId
+JOIN relation_alliance a ON a.WorldId=b.WorldId AND a.AllianceId=p.AllianceId
+WHERE b.WorldId=_WorldId
+AND b.BaseId=_BaseId
+AND
+IF
+(
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
+	(
+		(
+			a.AllianceId=
+			(
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=_WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
+			)
+		)
+		OR
+		(
+			a.AllianceId=
+			(
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId AND p2.AccountId=_OwnAccountId
+			)
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2
+                WHERE p2.WorldId=_WorldId
+                AND p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=_WorldId and p2.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
+		OR
+		(
+			p.AccountId=
+			(
+				SELECT psh.AccountIdSet FROM relation_player_share psh
+				WHERE psh.WorldId=_WorldId
+				AND psh.AccountIdGet=_OwnAccountId
+			)
+		)
+	)
+)
+ORDER BY ba.Zeit ASC$$
+
+CREATE PROCEDURE `getDropDownListData` (IN `_OwnAccountId` INT)  NO SQL
+SELECT s.WorldId, s.ServerName, a.AllianceId, a.AllianceName, p.AccountId, l.UserName, b.BaseId, b.BaseName
+FROM relation_server s
+JOIN relation_alliance a ON a.WorldId=s.WorldId
+JOIN relation_player p ON p.WorldId=s.WorldId AND p.AllianceId=a.AllianceId
+JOIN login l ON l.AccountId=p.AccountId
+JOIN relation_bases b ON b.AccountId=p.AccountId AND b.WorldId=s.WorldId
+WHERE
+IF
+(
+	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
+	true,
+	(
+		(
+			s.WorldId IN
+			(
+				SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId
+			)
+		)
+		AND
+		(
+			(
+				a.AllianceId=
+				(
+					SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=s.WorldId)<=a.MemberRole,
+					true,
+					p.AccountId=_OwnAccountId
+				)
+			)
+			OR
+			(
+				a.AllianceId=
+				(
+					SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=s.WorldId AND p2.AccountId=_OwnAccountId
+				)
+				AND
+				IF
+				(
+					(SELECT p2.MemberRole FROM relation_player p2
+					WHERE p2.WorldId=s.WorldId AND
+					p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+					WHERE ash.WorldId=s.WorldId and p2.AccountId=_OwnAccountId),
+					true,
+					false
+				)
+			)
+			OR
+			(
+				p.AccountId=
+				(
+					SELECT psh.AccountIdSet FROM relation_player_share psh
+					WHERE psh.WorldId=s.WorldId
+					AND psh.AccountIdGet=_OwnAccountId
+				)
+			)
+		)
+	)
+)
+ORDER BY s.ServerName, a.AllianceName, l.UserName, b.BaseId ASC$$
+
+CREATE PROCEDURE `getDropDownListDataMemberRoles` (IN `OwnAccountId` INT)  READS SQL DATA
+SELECT p.WorldId, p.AllianceId, p.AccountId, a.MemberRole AS NeededMemberRole, p.MemberRole FROM relation_player p
+JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
+WHERE p.AccountId=OwnAccountId
+ORDER BY p.WorldId$$
+
+CREATE PROCEDURE `getHistoryAlliancesAsAdmin` (IN `WorldId` INT)  NO SQL
+SELECT al.Zeit, a.AllianceId, a.AllianceName, al.AllianceRank, al.EventRank, al.TotalScore, al.AverageScore, al.VP, al.VPh, al.BonusTiberium, al.BonusCrystal, al.BonusPower, al.BonusInfantrie, al.BonusVehicle, al.BonusAir, al.BonusDef, al.ScoreTib, al.ScoreCry, al.ScorePow, al.ScoreInf, al.ScoreVeh, al.ScoreAir, al.ScoreDef, al.RankTib, al.RankCry, al.RankPow, al.RankInf, al.RankVeh, al.RankAir, al.RankDef  FROM alliance al
+JOIN relation_alliance a ON a.WorldId=al.WorldId AND a.AllianceId=al.AllianceId
+WHERE
+a.WorldId=WorldId
+ORDER BY al.Zeit ASC, a.AllianceId ASC$$
+
+CREATE PROCEDURE `getHistoryBasesAsAdmin` (IN `WorldId` INT, IN `AccountId` INT, IN `BaseId` INT)  NO SQL
+SELECT ba.Zeit, b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep FROM bases ba
+JOIN relation_bases b ON b.WorldId=ba.WorldId AND b.BaseId=ba.BaseId
+WHERE
+b.WorldId=WorldId
+AND
+IF (AccountId>0, AccountId=b.AccountId, true)
+AND
+IF (BaseId>0, BaseId=b.BaseId, true)
+ORDER BY ba.Zeit ASC, b.BaseId ASC$$
+
+CREATE PROCEDURE `getHistoryPlayersAsAdmin` (IN `WorldId` INT, IN `AllianceId` INT, IN `AccountId` INT)  NO SQL
+SELECT pl.Zeit, p.AccountId, l.UserName, pl.ScorePoints, pl.CountBases, pl.CountSup, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvE, pl.LvLOff, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds, p.MemberRole FROM player pl
+JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
+JOIN login l ON l.AccountId=p.AccountId
+WHERE
+p.WorldId=WorldId
+AND
+IF(AllianceId>0, AllianceId=p.AllianceId, true)
+AND
+IF(AccountId>0, AccountId=p.AccountId, true)
+ORDER BY pl.Zeit ASC, p.AccountId ASC$$
+
+CREATE PROCEDURE `getLayoutNumberGroupByPlayerName` ()  NO SQL
+SELECT lo.UserName, COUNT(*), MAX(la.Zeit) AS LastScan FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
+GROUP BY lo.UserName
+ORDER BY COUNT(*) DESC$$
+
+CREATE PROCEDURE `getLayoutNumberGroupByWorldId` ()  NO SQL
+SELECT l.WorldId, s.ServerName, COUNT(*), MAX(l.Zeit) AS LastScan FROM layouts l
+LEFT JOIN relation_server s ON s.WorldId=l.WorldId
+GROUP BY l.WorldId
+ORDER BY COUNT(*) DESC$$
+
+CREATE PROCEDURE `getLayoutNumberGroupByYearMonth` ()  NO SQL
+SELECT str_to_date(l.Zeit, '%Y-%m'), COUNT(*) FROM layouts l
+GROUP BY str_to_date(l.Zeit, '%Y-%m')$$
+
+CREATE PROCEDURE `getLayouts` (IN `_WorldId` INT, IN `_minPosX` INT, IN `_maxPosX` INT, IN `_minPosY` INT, IN `_maxPosY` INT, IN `_minDate` DATE, IN `_PlayerName` TEXT, IN `_FieldsTib` INT, IN `_OrderBy` TEXT)  NO SQL
+SELECT la.WorldId, la.Zeit, lo.UserName, la.PosX, la.PosY, la.Layout, la.CncOpt FROM login lo
+JOIN layouts la ON la.AccountId=lo.AccountId
+WHERE
+IF (_WorldId > 0, _WorldId = la.WorldId, true)
+AND
+IF (_minPosX > 0, _minPosX <= la.PosX, true)
+AND
+IF (_maxPosX > 0, _maxPosX >= la.PosX, true)
+AND
+IF (_minPosY > 0, _minPosY <= la.PosY, true)
+AND
+IF (_maxPosY > 0, _maxPosY >= la.PosY, true)
+AND
+IF (_PlayerName <> '', lo.UserName LIKE CONCAT('%', _PlayerName, '%'), true)
+AND
+IF (_FieldsTib <> '', _FieldsTib=la.FieldsTib, true)
+AND
+la.Zeit >= _minDate
+ORDER BY
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium6 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium5 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium4 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium3 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium2 END DESC,
+CASE _OrderBy WHEN 'Tiberium' THEN la.Tiberium1 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal6 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal5 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal4 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal3 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal2 END DESC,
+CASE _OrderBy WHEN 'Crystal' THEN la.Crystal1 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed6 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed5 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed4 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed3 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed2 END DESC,
+CASE _OrderBy WHEN 'Mixed' THEN la.Mixed1 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power8 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power7 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power6 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power5 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power4 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power3 END DESC,
+CASE _OrderBy WHEN 'Power' THEN la.Power2 END DESC,
+CASE _OrderBy WHEN 'Date' THEN la.Zeit END DESC
+LIMIT 100$$
+
+CREATE PROCEDURE `getLoginGroupByAlliance` ()  NO SQL
+SELECT a.WorldId, s.ServerName, a.AllianceId, a.AllianceName, MAX(al.Zeit) FROM relation_alliance a
+JOIN alliance al ON al.WorldId=a.WorldId AND al.AllianceId=a.AllianceId
+JOIN relation_server s ON s.WorldId=a.WorldId
+GROUP BY a.WorldId, a.AllianceId
+ORDER BY MAX(al.Zeit) DESC, a.WorldId ASC, a.AllianceName ASC$$
+
+CREATE PROCEDURE `getLoginGroupByPasswordChanged` ()  NO SQL
+SELECT l.Password!=sha2(CONCAT(l.UserName, '_', l.AccountId), 512) AS PasswordChanged, COUNT(*) FROM login l
+GROUP BY PasswordChanged$$
+
+CREATE PROCEDURE `getLoginGroupByPlayer` ()  NO SQL
+SELECT l.AccountId, l.UserName, MAX(p.Zeit) FROM login l
+JOIN player p ON p.AccountId=l.AccountId
+GROUP BY l.AccountId
+ORDER BY MAX(p.Zeit) DESC, l.UserName ASC$$
 
 CREATE PROCEDURE `getPlayerBaseDataAsAdmin` (IN `WorldId` INT, IN `AccountId` INT)  READS SQL DATA
 SELECT b.BaseId, b.BaseName, ba.LvLCY, ba.LvLBase, ba.LvLOff, ba.LvLDef, ba.LvLDF, ba.LvLSup, ba.SupArt, ba.Tib, ba.Cry, ba.Pow, ba.Cre, ba.Rep, ba.CnCOpt FROM relation_bases b
@@ -1159,7 +1162,6 @@ CREATE TABLE `layouts` (
   `WorldId` smallint(3) UNSIGNED NOT NULL,
   `Zeit` datetime NOT NULL,
   `AccountId` int(7) UNSIGNED NOT NULL,
-  `PlayerName` varchar(16) COLLATE utf8_bin NOT NULL,
   `PosX` smallint(4) UNSIGNED NOT NULL,
   `PosY` smallint(4) UNSIGNED NOT NULL,
   `FieldsTib` tinyint(1) NOT NULL,
@@ -1402,16 +1404,14 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD PRIMARY KEY (`WorldId`,`PosX`,`PosY`),
-  ADD KEY `PlayerName` (`PlayerName`),
-  ADD KEY `ReservedBy` (`ReservedBy`) USING BTREE,
-  ADD KEY `AccountId` (`AccountId`) USING BTREE;
+  ADD KEY `AccountId` (`AccountId`),
+  ADD KEY `ReservedBy` (`ReservedBy`);
 
 --
 -- Indizes für die Tabelle `login`
 --
 ALTER TABLE `login`
-  ADD PRIMARY KEY (`AccountId`),
-  ADD KEY `UserName` (`UserName`);
+  ADD PRIMARY KEY (`AccountId`);
 
 --
 -- Indizes für die Tabelle `player`
@@ -1505,8 +1505,8 @@ ALTER TABLE `bases`
 --
 ALTER TABLE `layouts`
   ADD CONSTRAINT `layouts_ibfk_1` FOREIGN KEY (`WorldId`) REFERENCES `relation_server` (`WorldId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `layouts_ibfk_3` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `layouts_ibfk_2` FOREIGN KEY (`AccountId`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `layouts_ibfk_3` FOREIGN KEY (`ReservedBy`) REFERENCES `login` (`AccountId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints der Tabelle `player`
