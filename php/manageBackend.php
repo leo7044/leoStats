@@ -546,15 +546,7 @@ if (!$conn->connect_error)
                 $WorldId = $_post['WorldId'];
                 $AccountId = $_post['AccountId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery .= "CALL getPlayerBaseDataAsUser('$WorldId', '$AccountId', '$OwnAccountId');";
-                }
-                else
-                {
-                    $strQuery .= "CALL getPlayerBaseDataAsAdmin('$WorldId', '$AccountId');";
-                }
+                $strQuery = "CALL getPlayerBaseData('$WorldId', '$AccountId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {
@@ -570,15 +562,7 @@ if (!$conn->connect_error)
                 $WorldId = $_post['WorldId'];
                 $AccountId = $_post['AccountId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = '';
-                if (!in_array($OwnAccountId, $ArrayAdminAccounts))
-                {
-                    $strQuery .= "CALL getPlayerDataAsUser('$WorldId', '$AccountId', '$OwnAccountId');";
-                }
-                else
-                {
-                    $strQuery .= "CALL getPlayerDataAsAdmin('$WorldId', '$AccountId');";
-                }
+                $strQuery = "CALL getPlayerData('$WorldId', '$AccountId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {

@@ -96,63 +96,54 @@ JOIN bases ba ON ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId
 AND ba.Zeit=(SELECT ba.Zeit FROM bases ba WHERE ba.WorldId=b.WorldId AND ba.BaseId=b.BaseId ORDER BY ba.Zeit DESC LIMIT 1)
 WHERE b.WorldId=_WorldId
 AND
-IF (_AllianceId > 0, _AllianceId = p.AllianceId, true)
+IF (_AllianceId > -1, _AllianceId = p.AllianceId, true)
 AND
 IF
 (
 	(SELECT _OwnAccountId IN (SELECT l.AccountId FROM login l WHERE l.IsAdmin=true)),
 	true,
 	(
-        (
-            b.WorldId IN
+		(
+			a.AllianceId=
 			(
-				SELECT p2.WorldId FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId
+				SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=b.WorldId AND p2.AccountId=_OwnAccountId
 			)
-        )
-        AND
-        (
-        	(
-				a.AllianceId=
-				(
-					SELECT p2.AllianceId FROM relation_player p2 WHERE p2.WorldId=b.WorldId AND p2.AccountId=_OwnAccountId
-				)
-				AND
-				IF
-				(
-					(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=b.WorldId)<=a.MemberRole,
-					true,
-					p.AccountId=_OwnAccountId
-				)
-			)
-			OR
+			AND
+			IF
 			(
-				a.AllianceId=
-				(
-					SELECT ash.AllianceIdSet FROM relation_alliance_share ash
-					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-					WHERE ash.WorldId=b.WorldId AND p2.AccountId=_OwnAccountId
-				)
-				AND
-				IF
-				(
-					(SELECT p2.MemberRole FROM relation_player p2
-					WHERE p2.WorldId=b.WorldId AND
-					p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
-					JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
-					WHERE ash.WorldId=b.WorldId and p2.AccountId=_OwnAccountId),
-					true,
-					false
-				)
+				(SELECT p2.MemberRole FROM relation_player p2 WHERE p2.AccountId=_OwnAccountId AND p2.WorldId=b.WorldId)<=a.MemberRole,
+				true,
+				p.AccountId=_OwnAccountId
 			)
-			OR
+		)
+		OR
+		(
+			a.AllianceId=
 			(
-				p.AccountId=
-				(
-					SELECT psh.AccountIdSet FROM relation_player_share psh
-					WHERE psh.WorldId=b.WorldId
-					AND psh.AccountIdGet=_OwnAccountId
-				)
+				SELECT ash.AllianceIdSet FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=b.WorldId AND p2.AccountId=_OwnAccountId
 			)
-        )
+			AND
+			IF
+			(
+				(SELECT p2.MemberRole FROM relation_player p2
+				WHERE p2.WorldId=b.WorldId AND
+				p2.AccountId=_OwnAccountId)<=(SELECT ash.MemberRoleAccess FROM relation_alliance_share ash
+				JOIN relation_player p2 ON p2.WorldId=ash.WorldId AND p2.AllianceId=ash.AllianceIdGet
+				WHERE ash.WorldId=b.WorldId and p2.AccountId=_OwnAccountId),
+				true,
+				false
+			)
+		)
+		OR
+		(
+			p.AccountId=
+			(
+				SELECT psh.AccountIdSet FROM relation_player_share psh
+				WHERE psh.WorldId=b.WorldId
+				AND psh.AccountIdGet=_OwnAccountId
+			)
+		)
     )
 );
