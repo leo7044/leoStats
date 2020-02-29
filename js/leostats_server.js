@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.28';
+                var scriptVersionLocal = '2020.02.29.1';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -22,6 +22,7 @@
                         {
                             this.sendChatInfoStatus = true;
                             this.ObjectData = {};
+                            this.ObjectDataNotSend = {};
                             this.linkBase = '';
                             this.ObjectReportData = {};
                             this.timeoutArrayReportDataManager = [];
@@ -505,7 +506,7 @@
                                 TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PvE.toLocaleString()).set({rich: true}));
                                 TextKey.add(new qx.ui.basic.Label('<b>PvP</b>').set({rich: true}));
                                 TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PvP.toLocaleString()).set({rich: true}));
-                                TextKey.add(new qx.ui.basic.Label('<b>Gesamt</b>').set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
                                 TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.Shoot.toLocaleString()).set({rich: true}));
                             }
                             else
@@ -516,6 +517,96 @@
                             TablePlayer.add(TextValue);
                             HeadLinePlayer.add(TablePlayer);
                             HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
+                            HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
+                            if (this.ObjectDataNotSend.Endgames.length > 0 || this.ObjectDataNotSend.Challenges.length > 0)
+                            {
+                                var HeaderTableEndgames = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                                if (this.ObjectDataNotSend.Endgames.length > 0)
+                                {
+                                    var ObjectEndgamesRank = {};
+                                    for (var i = 0; i < this.ObjectDataNotSend.Endgames.length; i++)
+                                    {
+                                        if (ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r])
+                                        {
+                                            ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] += 1;
+                                        }
+                                        else
+                                        {
+                                            ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] = 1;
+                                        }
+                                    }
+                                    var HeadLineEndgames = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                    HeadLineEndgames.add(new qx.ui.basic.Label('<big><u><b>Endgames</b></u></big>').set({rich: true}));
+                                    HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
+                                    var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                    var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                    var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                    TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
+                                    TextValue.add(new qx.ui.basic.Label('<b>Count</b>'.toLocaleString()).set({rich: true, alignX: 'center'}));
+                                    for (var rank in ObjectEndgamesRank)
+                                    {
+                                        TextKey.add(new qx.ui.basic.Label(rank.toLocaleString()).set({rich: true}));
+                                        TextValue.add(new qx.ui.basic.Label(ObjectEndgamesRank[rank].toLocaleString()).set({rich: true}));
+                                    }
+                                    TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
+                                    TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Endgames.length.toLocaleString() + '</b>').set({rich: true}));
+                                    TableChallenges.add(TextKey);
+                                    TableChallenges.add(TextValue);
+                                    HeadLineEndgames.add(TableChallenges);
+                                    HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
+                                    HeaderTableEndgames.add(HeadLineEndgames);
+                                }
+                                if (this.ObjectDataNotSend.Challenges.length > 0)
+                                {
+                                    var ObjectChallengesRank = {Player: {1: 0, 10: 0, 100: 0}, Alliance: {1: 0, 2: 0, 3: 0}};
+                                    for (var i = 0; i < this.ObjectDataNotSend.Challenges.length; i++)
+                                    {
+                                        if (this.ObjectDataNotSend.Challenges[i].ia) // is alliance
+                                        {
+                                            ObjectChallengesRank['Alliance'][this.ObjectDataNotSend.Challenges[i].r] += 1;
+                                        }
+                                        else // is player
+                                        {
+                                            if (this.ObjectDataNotSend.Challenges[i].r == 1)
+                                            {
+                                                ObjectChallengesRank['Player'][1] += 1;
+                                            }
+                                            else if (this.ObjectDataNotSend.Challenges[i].r <= 10)
+                                            {
+                                                ObjectChallengesRank['Player'][10] += 1;
+                                            }
+                                            else if (this.ObjectDataNotSend.Challenges[i].r <= 100)
+                                            {
+                                                ObjectChallengesRank['Player'][100] += 1;
+                                            }
+                                        }
+                                    }
+                                    var HeadLineChallenges = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                    HeadLineChallenges.add(new qx.ui.basic.Label('<big><u><b>Challenges</b></u></big>').set({rich: true}));
+                                    HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
+                                    var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                    var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                                    var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                    TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
+                                    TextValue.add(new qx.ui.basic.Label('<b>Count</b>'.toLocaleString()).set({rich: true, alignX: 'center'}));
+                                    for (var type in ObjectChallengesRank)
+                                    {
+                                        for (var rank in ObjectChallengesRank[type])
+                                        {
+                                            TextKey.add(new qx.ui.basic.Label((type + ' Top ' + rank).toLocaleString()).set({rich: true}));
+                                            TextValue.add(new qx.ui.basic.Label(ObjectChallengesRank[type][rank].toLocaleString()).set({rich: true}));
+                                        }
+                                    }
+                                    TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
+                                    TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Challenges.length.toLocaleString() + '</b>').set({rich: true}));
+                                    TableChallenges.add(TextKey);
+                                    TableChallenges.add(TextValue);
+                                    HeadLineChallenges.add(TableChallenges);
+                                    HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
+                                    HeaderTableEndgames.add(HeadLineChallenges);
+                                }
+                                HeadLinePlayer.add(HeaderTableEndgames);
+                            }
                             HeaderTablePlayer.add(HeadLinePlayer);
                             this.GuiPlayerVBox.removeAll();
                             this.GuiPlayerVBox.add(HeaderTablePlayer);
@@ -1290,6 +1381,9 @@
                             this.ObjectData.player.Shoot = _data.bd;
                             this.ObjectData.player.PvP = _data.bd - _data.bde;
                             this.ObjectData.player.PvE = _data.bde;
+                            this.ObjectDataNotSend.Endgames = _data.ew;
+                            this.ObjectDataNotSend.Challenges = _data.cw;
+                            // this.ObjectDataNotSend.OtherAchievements = _data.mw;
                         },
                         getPublicAllianceInfo: function(_context, _data)
                         {
