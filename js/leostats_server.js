@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.29.2';
+                var scriptVersionLocal = '2020.03.01';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -713,22 +713,30 @@
                                             '<b>PNP</b>',
                                             '<b>PS</b>',
                                             '<b>NS</b>',
+                                            '<b>DPS</b>',
+                                            '<b>DNS</b>',
+                                            '<b>PP</b>',
+                                            '<b>NP</b>',
                                             '<b>Bonus</b>',
                                             '<b>Rank</b>'
                                         ],
                                         [
                                             'POI-Class',
-                                            'POI-Score',
-                                            'Previous POI-Score',
-                                            'Next POI-Score',
+                                            'own POI-Score',
+                                            'POI-Score of previous bonus tier',
+                                            'POI-Score of next bonus tier',
                                             'Difference between previos POI-Score and current POI-Score',
                                             'Difference between current POI-Score and next POI-Score',
-                                            'POI allowed to loose to preview POI-Score',
-                                            'POI allowed to loose to next POI-Score',
+                                            'POI-Level allowed to loose without loosing preview bonus tier',
+                                            'POI-Level needed to get next bonus tier',
                                             'POI-Score of subsequent alliance',
                                             'POI-Score of previous alliance',
-                                            'Bonus',
-                                            'Rank',
+                                            'Difference of own POI-Score and POI-Score of subsequent alliance',
+                                            'Difference of own POI-Score and POI-Score of previous alliance',
+                                            'POI-Level allowed to loose without loosing current ranking',
+                                            'POI-Level needed to get the next better ranking',
+                                            'own Bonus',
+                                            'own Rank',
                                         ]
                                     ];
                                 TextPoiClass.add(new qx.ui.basic.Label(ArrayAbbDesc[0][0]).set({rich: true, toolTipText: ArrayAbbDesc[1][0]}));
@@ -757,18 +765,26 @@
                                 TextDiffPrev.add(new qx.ui.basic.Label(ArrayAbbDesc[0][4]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][4]}));
                                 var TextDiffNext = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 TextDiffNext.add(new qx.ui.basic.Label(ArrayAbbDesc[0][5]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][5]}));
-                                var TextPOIDiffPrev = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                TextPOIDiffPrev.add(new qx.ui.basic.Label(ArrayAbbDesc[0][6]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][6]}));
-                                var TextPOIDiffNext = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                TextPOIDiffNext.add(new qx.ui.basic.Label(ArrayAbbDesc[0][7]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][7]}));
+                                var TextPoiLevelDiffPrev = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPoiLevelDiffPrev.add(new qx.ui.basic.Label(ArrayAbbDesc[0][6]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][6]}));
+                                var TextPoiLevelDiffNext = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPoiLevelDiffNext.add(new qx.ui.basic.Label(ArrayAbbDesc[0][7]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][7]}));
                                 var TextSubsequentAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 TextSubsequentAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][8]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][8]}));
                                 var TextPreviousAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 TextPreviousAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][9]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][9]}));
+                                var TextDiffSubsequentAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextDiffSubsequentAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][10]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][10]}));
+                                var TextDiffPreviousAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextDiffPreviousAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][11]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][11]}));
+                                var TextPoiLevelDiffSubsequentAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPoiLevelDiffSubsequentAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][12]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][12]}));
+                                var TextPoiLevelDiffPreviousAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPoiLevelDiffPreviousAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][13]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][13]}));
                                 var TextBonus = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                TextBonus.add(new qx.ui.basic.Label(ArrayAbbDesc[0][10]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][10]}));
+                                TextBonus.add(new qx.ui.basic.Label(ArrayAbbDesc[0][14]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][14]}));
                                 var TextRank = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                TextRank.add(new qx.ui.basic.Label(ArrayAbbDesc[0][11]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][11]}));
+                                TextRank.add(new qx.ui.basic.Label(ArrayAbbDesc[0][15]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][15]}));
                                 var maxPoiLevel = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxCenterLevel();
                                 var ArrayPOILevelPoints = [];
                                 for (var i = 12; i <= maxPoiLevel; i++)
@@ -794,53 +810,92 @@
                                     {
                                         indexArrayPOILevelPointsNext++;
                                     }
+                                    var indexArrayPOILevelPointsPrevRanking = 0;
+                                    while ((poiRankScore[i].s - poiRankScore[i].ps) > ArrayPOILevelPoints[indexArrayPOILevelPointsPrevRanking])
+                                    {
+                                        indexArrayPOILevelPointsPrevRanking++;
+                                    }
+                                    indexArrayPOILevelPointsPrevRanking--;
+                                    var indexArrayPOILevelPointsNextRanking = 0;
+                                    while ((poiRankScore[i].ns - poiRankScore[i].s) > ArrayPOILevelPoints[indexArrayPOILevelPointsNextRanking])
+                                    {
+                                        indexArrayPOILevelPointsNextRanking++;
+                                    }
                                     TextPrevScore.add(new qx.ui.basic.Label(ArrayScorePoints[indexArrayScorePoints - 1].toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     TextNextScore.add(new qx.ui.basic.Label(ArrayScorePoints[indexArrayScorePoints].toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     TextDiffPrev.add(new qx.ui.basic.Label((poiRankScore[i].s - ArrayScorePoints[indexArrayScorePoints - 1]).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     TextDiffNext.add(new qx.ui.basic.Label((ArrayScorePoints[indexArrayScorePoints] - poiRankScore[i].s).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     if (indexArrayPOILevelPointsPrev + 12 < maxPoiLevel && indexArrayPOILevelPointsPrev >= 12)
                                     {
-                                        TextPOIDiffPrev.add(new qx.ui.basic.Label((indexArrayPOILevelPointsPrev + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        TextPoiLevelDiffPrev.add(new qx.ui.basic.Label((indexArrayPOILevelPointsPrev + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     }
                                     else
                                     {
-                                        TextPOIDiffPrev.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                        TextPoiLevelDiffPrev.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
                                     }
                                     if (indexArrayPOILevelPointsNext + 12 < maxPoiLevel)
                                     {
-                                        TextPOIDiffNext.add(new qx.ui.basic.Label((indexArrayPOILevelPointsNext + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        TextPoiLevelDiffNext.add(new qx.ui.basic.Label((indexArrayPOILevelPointsNext + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     }
                                     else
                                     {
-                                        TextPOIDiffNext.add(new qx.ui.basic.Label('n.a.'.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        TextPoiLevelDiffNext.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
                                     }
                                     TextSubsequentAlliance.add(new qx.ui.basic.Label(poiRankScore[i].ps.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    TextDiffSubsequentAlliance.add(new qx.ui.basic.Label((poiRankScore[i].s - poiRankScore[i].ps).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    if (indexArrayPOILevelPointsPrevRanking + 12 < maxPoiLevel && indexArrayPOILevelPointsPrevRanking  + 12 >= 12)
+                                    {
+                                        TextPoiLevelDiffSubsequentAlliance.add(new qx.ui.basic.Label((indexArrayPOILevelPointsPrevRanking + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    else if (indexArrayPOILevelPointsPrevRanking + 12 < maxPoiLevel && indexArrayPOILevelPointsPrevRanking + 12 >= 11)
+                                    {
+                                        TextPoiLevelDiffSubsequentAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    else
+                                    {
+                                        TextPoiLevelDiffSubsequentAlliance.add(new qx.ui.basic.Label(maxPoiLevel.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
                                     if (poiRankScore[i].r > 1)
                                     {
                                         TextPreviousAlliance.add(new qx.ui.basic.Label(poiRankScore[i].ns.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        TextDiffPreviousAlliance.add(new qx.ui.basic.Label((poiRankScore[i].ns - poiRankScore[i].s).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        if (indexArrayPOILevelPointsNextRanking + 12 < maxPoiLevel)
+                                        {
+                                            TextPoiLevelDiffPreviousAlliance.add(new qx.ui.basic.Label((indexArrayPOILevelPointsNextRanking + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                        }
+                                        else
+                                        {
+                                            TextPoiLevelDiffPreviousAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                        }
                                     }
                                     else
                                     {
                                         TextPreviousAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                        TextDiffPreviousAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                        TextPoiLevelDiffPreviousAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
                                     }
                                     TextRank.add(new qx.ui.basic.Label(poiRankScore[i].r).set({rich: true, alignX: 'right', height: 18}));
                                 }
                                 TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POITiberiumBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                 TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POICrystalBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                 TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIPowerBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
-                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
-                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
-                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
-                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIDefenseBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus().toLocaleString() + ' %').set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus().toLocaleString() + ' %').set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus().toLocaleString() + ' %').set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIDefenseBonus().toLocaleString() + ' %').set({rich: true, alignX: 'right', height: 18}));
                                 TableBonus.add(TextScore);
                                 TableBonus.add(TextPrevScore);
                                 TableBonus.add(TextNextScore);
                                 TableBonus.add(TextDiffPrev);
                                 TableBonus.add(TextDiffNext);
-                                TableBonus.add(TextPOIDiffPrev);
-                                TableBonus.add(TextPOIDiffNext);
+                                TableBonus.add(TextPoiLevelDiffPrev);
+                                TableBonus.add(TextPoiLevelDiffNext);
                                 TableBonus.add(TextSubsequentAlliance);
                                 TableBonus.add(TextPreviousAlliance);
+                                TableBonus.add(TextDiffSubsequentAlliance);
+                                TableBonus.add(TextDiffPreviousAlliance);
+                                TableBonus.add(TextPoiLevelDiffSubsequentAlliance);
+                                TableBonus.add(TextPoiLevelDiffPreviousAlliance);
                                 TableBonus.add(TextBonus);
                                 TableBonus.add(TextRank);
                                 HeadLineAlliance.add(TableBonus);
