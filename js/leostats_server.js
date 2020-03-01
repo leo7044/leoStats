@@ -130,6 +130,16 @@
                             this.GuiPoiDataVBox.setThemedBackgroundColor("#eef");
                             this.GuiPoiDataPage.add(this.GuiPoiDataVBox);
 
+                            // Tab 7: Resources
+                            this.GuiResourcesPage = new qx.ui.tabview.Page("Resources");
+                            this.GuiResourcesPage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiResourcesPage);
+                            this.GuiResourcesVBox = new qx.ui.container.Composite();
+                            this.GuiResourcesVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiResourcesVBox.setThemedPadding(10);
+                            this.GuiResourcesVBox.setThemedBackgroundColor("#eef");
+                            this.GuiResourcesPage.add(this.GuiResourcesVBox);
+
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
@@ -140,6 +150,7 @@
                                 this.GuiAllianceVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
                                 this.GuiPoiDataVBox.removeAll();
+                                this.GuiResourcesVBox.removeAll();
                                 this.getCurrentStats();
                                 this.showGui();
                                 this.GuiFenster.show();
@@ -241,7 +252,7 @@
                             TextCredits.add(new qx.ui.basic.Label('<b>Credits</b>').set({rich: true}));
                             for (var i in this.ObjectData.bases)
                             {
-                                TextBaseName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName.toLocaleString()).set({rich: true, alignX: "left"}));
+                                TextBaseName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName).set({rich: true, alignX: "left"}));
                                 TextLvlCY.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLCY).toLocaleString()).set({rich: true, alignX: "right"}));
                                 TextLvlBase.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLBase).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
                                 TextLvlOff.add(new qx.ui.basic.Label((this.ObjectData.bases[i].LvLOffense).toFixed(2).toLocaleString()).set({rich: true, alignX: "right"}));
@@ -481,6 +492,73 @@
                                 HeaderTablePoiData.add(HeadLinePoiDataMultiplier);
                             }
                             this.GuiPoiDataVBox.add(HeaderTablePoiData);
+
+                            // Tab 7: Resources
+                            var HeaderTableResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLineOwnResources = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineOwnResources.add(new qx.ui.basic.Label('<big><u><b>Own Resources</b></u></big>').set({rich: true}));
+                            HeadLineOwnResources.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableOwnResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextBaseName.add(new qx.ui.basic.Label('<b>BaseName</b>').set({rich: true}));
+                            var TextOwnTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextOwnTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                            var TextOwnCrystal = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextOwnCrystal.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
+                            var TextOwnPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextOwnPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                            var valueOverallTiberium = 0;
+                            var valueOverallCrystal = 0;
+                            var valueOverallPower = 0;
+                            for (var i in this.ObjectData.bases)
+                            {
+                                TextBaseName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName).set({rich: true, alignX: "left"}));
+                                var valueTiberium = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[this.ObjectData.bases[i].BaseId].GetResourceCount(ClientLib.Base.EResourceType.Tiberium));
+                                var valueCrystal = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[this.ObjectData.bases[i].BaseId].GetResourceCount(ClientLib.Base.EResourceType.Crystal));
+                                var valuePower = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[this.ObjectData.bases[i].BaseId].GetResourceCount(ClientLib.Base.EResourceType.Power));
+                                valueOverallTiberium += valueTiberium;
+                                valueOverallCrystal += valueCrystal;
+                                valueOverallPower += valuePower;
+                                TextOwnTiberium.add(new qx.ui.basic.Label(valueTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextOwnCrystal.add(new qx.ui.basic.Label(valueCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextOwnPower.add(new qx.ui.basic.Label(valuePower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            }
+                            TextBaseName.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
+                            TextOwnTiberium.add(new qx.ui.basic.Label(valueOverallTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextOwnCrystal.add(new qx.ui.basic.Label(valueOverallCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextOwnPower.add(new qx.ui.basic.Label(valueOverallPower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TableOwnResources.add(TextBaseName);
+                            TableOwnResources.add(TextOwnTiberium);
+                            TableOwnResources.add(TextOwnCrystal);
+                            TableOwnResources.add(TextOwnPower);
+                            HeadLineOwnResources.add(TableOwnResources);
+                            HeaderTableResources.add(HeadLineOwnResources);
+                            var HeadLineSellResources = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineSellResources.add(new qx.ui.basic.Label('<big><u><b>Resources through sell</b></u></big>').set({rich: true}));
+                            HeadLineSellResources.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextSellTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                            var TextSellPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                            var valueOverallTiberium = 0;
+                            var valueOverallPower = 0;
+                            for (var i in this.ObjectData.bases)
+                            {
+                                var valueTiberium = this.calculateValueOfBase(this.ObjectData.bases[i].BaseId)[0];
+                                var valuePower = this.calculateValueOfBase(this.ObjectData.bases[i].BaseId)[1];
+                                valueOverallTiberium += valueTiberium;
+                                valueOverallPower += valuePower;
+                                TextSellTiberium.add(new qx.ui.basic.Label(valueTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextSellPower.add(new qx.ui.basic.Label(valuePower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            }
+                            TextSellTiberium.add(new qx.ui.basic.Label(valueOverallTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextSellPower.add(new qx.ui.basic.Label(valueOverallPower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TableSellResources.add(TextSellTiberium);
+                            TableSellResources.add(TextSellPower);
+                            HeadLineSellResources.add(TableSellResources);
+                            HeaderTableResources.add(HeadLineSellResources);
+                            this.GuiResourcesVBox.add(HeaderTableResources);
                         },
                         createTabPlayer: function()
                         {
@@ -1847,8 +1925,8 @@
                                 {
                                     for (var i = 0; i < _data.d.arr.length; i++)
                                     {
-                                        var typeOfRessources = _data.d.arr[i].t;
-                                        switch(typeOfRessources)
+                                        var typeOfResources = _data.d.arr[i].t;
+                                        switch(typeOfResources)
                                         {
                                             case 1:
                                             {
@@ -1881,8 +1959,8 @@
                                 {
                                     for (var i = 0; i < _data.d.arp.length; i++)
                                     {
-                                        var typeOfRessources = _data.d.arp[i].t;
-                                        switch(typeOfRessources)
+                                        var typeOfResources = _data.d.arp[i].t;
+                                        switch(typeOfResources)
                                         {
                                             case 1:
                                             {
@@ -1915,8 +1993,8 @@
                                 report.CostRep = 0;
                                 for (var i = 0; i < _data.d.arca.length; i++)
                                 {
-                                    var typeOfRessources = _data.d.arca[i].t;
-                                    switch(typeOfRessources)
+                                    var typeOfResources = _data.d.arca[i].t;
+                                    switch(typeOfResources)
                                     {
                                         case 2:
                                         {
@@ -1936,8 +2014,8 @@
                                 }
                                 for (var i = 0; i < _data.d.arci.length; i++)
                                 {
-                                    var typeOfRessources = _data.d.arci[i].t;
-                                    switch(typeOfRessources)
+                                    var typeOfResources = _data.d.arci[i].t;
+                                    switch(typeOfResources)
                                     {
                                         case 2:
                                         {
