@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.02.29.1';
+                var scriptVersionLocal = '2020.02.29.2';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -52,7 +52,7 @@
                             });
                             this.GuiFenster.setTextColor('black');
                             this.GuiFenster.setLayout(new qx.ui.layout.HBox());
-                            this.GuiFenster.moveTo(590, 48);
+                            this.GuiFenster.moveTo(200, 48);
 
                             // Tab-Reihe
                             this.GuiTab = new qx.ui.tabview.TabView().set({
@@ -100,7 +100,17 @@
                             this.GuiPlayerVBox.setThemedBackgroundColor("#eef");
                             this.GuiPlayerPage.add(this.GuiPlayerVBox);
 
-                            // Tab 4: POIs
+                            // Tab 4: Alliance
+                            this.GuiAlliancePage = new qx.ui.tabview.Page("Alliance");
+                            this.GuiAlliancePage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiAlliancePage);
+                            this.GuiAllianceVBox = new qx.ui.container.Composite();
+                            this.GuiAllianceVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiAllianceVBox.setThemedPadding(10);
+                            this.GuiAllianceVBox.setThemedBackgroundColor("#eef");
+                            this.GuiAlliancePage.add(this.GuiAllianceVBox);
+
+                            // Tab 5: POIs
                             this.GuiPoisPage = new qx.ui.tabview.Page("POIs");
                             this.GuiPoisPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoisPage);
@@ -110,7 +120,7 @@
                             this.GuiPoisVBox.setThemedBackgroundColor("#eef");
                             this.GuiPoisPage.add(this.GuiPoisVBox);
 
-                            // Tab 5: POI-Data
+                            // Tab 6: POI-Data
                             this.GuiPoiDataPage = new qx.ui.tabview.Page("POI-Data");
                             this.GuiPoiDataPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiPoiDataPage);
@@ -127,6 +137,7 @@
                                 this.GuiInfoVBox.removeAll();
                                 this.GuiBasesVBox.removeAll();
                                 this.GuiPlayerVBox.removeAll();
+                                this.GuiAllianceVBox.removeAll();
                                 this.GuiPoisVBox.removeAll();
                                 this.GuiPoiDataVBox.removeAll();
                                 this.getCurrentStats();
@@ -276,8 +287,9 @@
                             this.GuiBasesVBox.add(HeaderTableBases);
 
                             this.createTabPlayer();
+                            this.createTabAlliance();
 
-                            // Tab 4: POIs
+                            // Tab 5: POIs
                             var HeaderTablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLinePois = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePois.add(new qx.ui.basic.Label('<big><u><b>POIs</b></u></big>').set({rich: true}));
@@ -298,19 +310,19 @@
                             var IconVeh = null;
                             var IconAir = null;
                             var IconDef = null;
-                            TextTib.add(IconTib = new qx.ui.basic.Atom('<b>Tiberium</b>' + '', 'webfrontend/ui/common/icn_res_tiberium.png').set({rich: true}));
+                            TextTib.add(IconTib = new qx.ui.basic.Atom('<b>Tiberium</b>', 'webfrontend/ui/common/icn_res_tiberium.png').set({rich: true}));
                             IconTib.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextCry.add(IconCry = new qx.ui.basic.Atom('<b>Crystal</b>' + '', 'webfrontend/ui/common/icn_res_chrystal.png').set({rich: true}));
+                            TextCry.add(IconCry = new qx.ui.basic.Atom('<b>Crystal</b>', 'webfrontend/ui/common/icn_res_chrystal.png').set({rich: true}));
                             IconCry.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextPow.add(IconPow = new qx.ui.basic.Atom('<b>Power</b>' + '', 'webfrontend/ui/common/icn_res_power.png').set({rich: true}));
+                            TextPow.add(IconPow = new qx.ui.basic.Atom('<b>Power</b>', 'webfrontend/ui/common/icn_res_power.png').set({rich: true}));
                             IconPow.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextInf.add(IconInf = new qx.ui.basic.Atom('<b>Infantry</b>' + '', 'FactionUI/icons/icon_arsnl_off_squad.png').set({rich: true}));
+                            TextInf.add(IconInf = new qx.ui.basic.Atom('<b>Infantry</b>', 'FactionUI/icons/icon_arsnl_off_squad.png').set({rich: true}));
                             IconInf.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextVeh.add(IconVeh = new qx.ui.basic.Atom('<b>Vehicle</b>' + '', 'FactionUI/icons/icon_arsnl_off_vehicle.png').set({rich: true}));
+                            TextVeh.add(IconVeh = new qx.ui.basic.Atom('<b>Vehicle</b>', 'FactionUI/icons/icon_arsnl_off_vehicle.png').set({rich: true}));
                             IconVeh.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextAir.add(IconAir = new qx.ui.basic.Atom('<b>Aircraft</b>' + '', 'FactionUI/icons/icon_arsnl_off_plane.png').set({rich: true}));
+                            TextAir.add(IconAir = new qx.ui.basic.Atom('<b>Aircraft</b>', 'FactionUI/icons/icon_arsnl_off_plane.png').set({rich: true}));
                             IconAir.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
-                            TextDef.add(IconDef = new qx.ui.basic.Atom('<b>Defense</b>' + '', 'FactionUI/icons/icon_def_army_points.png').set({rich: true}));
+                            TextDef.add(IconDef = new qx.ui.basic.Atom('<b>Defense</b>', 'FactionUI/icons/icon_def_army_points.png').set({rich: true}));
                             IconDef.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
                             var ArrayPois = [];
                             if (this.ObjectData.alliance.AllianceId)
@@ -376,7 +388,7 @@
                             HeaderTablePois.add(HeadLinePois);
                             this.GuiPoisVBox.add(HeaderTablePois);
 
-                            // Tab 5: POI-Data
+                            // Tab 6: POI-Data
                             var HeaderTablePoiData = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             // Tabelle: Poi-Level:
                             var HeadLinePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -490,6 +502,8 @@
                             TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerScorePoints.toLocaleString()).set({rich: true}));
                             if (this.ObjectData.server.SeasonServer == true)
                             {
+                                TextKey.add(new qx.ui.basic.Label('<b>Event-Rank</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.PlayerEventRank.toLocaleString()).set({rich: true}));
                                 TextKey.add(new qx.ui.basic.Label('<b>LegacyPoints</b>').set({rich: true}));
                                 TextValue.add(new qx.ui.basic.Label(this.ObjectData.player.LegacyPoints.toLocaleString()).set({rich: true}));
                                 TextKey.add(new qx.ui.basic.Label('<b>VeteranPoints</b>').set({rich: true}));
@@ -518,98 +532,342 @@
                             HeadLinePlayer.add(TablePlayer);
                             HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
                             HeadLinePlayer.add(new qx.ui.basic.Label('').set({rich: true}));
-                            if (this.ObjectDataNotSend.Endgames.length > 0 || this.ObjectDataNotSend.Challenges.length > 0)
+                            if (this.ObjectDataNotSend.Endgames && this.ObjectDataNotSend.Challenges)
                             {
-                                var HeaderTableEndgames = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
-                                if (this.ObjectDataNotSend.Endgames.length > 0)
+                                if (this.ObjectDataNotSend.Endgames.length > 0 || this.ObjectDataNotSend.Challenges.length > 0)
                                 {
-                                    var ObjectEndgamesRank = {};
-                                    for (var i = 0; i < this.ObjectDataNotSend.Endgames.length; i++)
+                                    var HeaderTableEndgames = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                                    if (this.ObjectDataNotSend.Endgames.length > 0)
                                     {
-                                        if (ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r])
+                                        var ObjectEndgamesRank = {};
+                                        for (var i = 0; i < this.ObjectDataNotSend.Endgames.length; i++)
                                         {
-                                            ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] += 1;
+                                            if (ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r])
+                                            {
+                                                ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] += 1;
+                                            }
+                                            else
+                                            {
+                                                ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] = 1;
+                                            }
                                         }
-                                        else
+                                        var HeadLineEndgames = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                        HeadLineEndgames.add(new qx.ui.basic.Label('<big><u><b>Endgames</b></u></big>').set({rich: true}));
+                                        HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
+                                        var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                        var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                        var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                        TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
+                                        TextValue.add(new qx.ui.basic.Label('<b>Count</b>').set({rich: true, alignX: 'center'}));
+                                        for (var rank in ObjectEndgamesRank)
                                         {
-                                            ObjectEndgamesRank[this.ObjectDataNotSend.Endgames[i].r] = 1;
+                                            TextKey.add(new qx.ui.basic.Label(rank.toLocaleString()).set({rich: true}));
+                                            TextValue.add(new qx.ui.basic.Label(ObjectEndgamesRank[rank].toLocaleString()).set({rich: true}));
                                         }
+                                        TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
+                                        TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Endgames.length.toLocaleString() + '</b>').set({rich: true}));
+                                        TableChallenges.add(TextKey);
+                                        TableChallenges.add(TextValue);
+                                        HeadLineEndgames.add(TableChallenges);
+                                        HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
+                                        HeaderTableEndgames.add(HeadLineEndgames);
                                     }
-                                    var HeadLineEndgames = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                    HeadLineEndgames.add(new qx.ui.basic.Label('<big><u><b>Endgames</b></u></big>').set({rich: true}));
-                                    HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
-                                    var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
-                                    var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
-                                    var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
-                                    TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
-                                    TextValue.add(new qx.ui.basic.Label('<b>Count</b>'.toLocaleString()).set({rich: true, alignX: 'center'}));
-                                    for (var rank in ObjectEndgamesRank)
+                                    if (this.ObjectDataNotSend.Challenges.length > 0)
                                     {
-                                        TextKey.add(new qx.ui.basic.Label(rank.toLocaleString()).set({rich: true}));
-                                        TextValue.add(new qx.ui.basic.Label(ObjectEndgamesRank[rank].toLocaleString()).set({rich: true}));
+                                        var ObjectChallengesRank = {Player: {1: 0, 10: 0, 100: 0}, Alliance: {1: 0, 2: 0, 3: 0}};
+                                        for (var i = 0; i < this.ObjectDataNotSend.Challenges.length; i++)
+                                        {
+                                            if (this.ObjectDataNotSend.Challenges[i].ia) // is alliance
+                                            {
+                                                ObjectChallengesRank['Alliance'][this.ObjectDataNotSend.Challenges[i].r] += 1;
+                                            }
+                                            else // is player
+                                            {
+                                                if (this.ObjectDataNotSend.Challenges[i].r == 1)
+                                                {
+                                                    ObjectChallengesRank['Player'][1] += 1;
+                                                }
+                                                else if (this.ObjectDataNotSend.Challenges[i].r <= 10)
+                                                {
+                                                    ObjectChallengesRank['Player'][10] += 1;
+                                                }
+                                                else if (this.ObjectDataNotSend.Challenges[i].r <= 100)
+                                                {
+                                                    ObjectChallengesRank['Player'][100] += 1;
+                                                }
+                                            }
+                                        }
+                                        var HeadLineChallenges = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                        HeadLineChallenges.add(new qx.ui.basic.Label('<big><u><b>Challenges</b></u></big>').set({rich: true}));
+                                        HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
+                                        var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                        var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                                        var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                        TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
+                                        TextValue.add(new qx.ui.basic.Label('<b>Count</b>').set({rich: true, alignX: 'center'}));
+                                        for (var type in ObjectChallengesRank)
+                                        {
+                                            for (var rank in ObjectChallengesRank[type])
+                                            {
+                                                TextKey.add(new qx.ui.basic.Label((type + ' Top ' + rank).toLocaleString()).set({rich: true}));
+                                                TextValue.add(new qx.ui.basic.Label(ObjectChallengesRank[type][rank].toLocaleString()).set({rich: true}));
+                                            }
+                                        }
+                                        TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
+                                        TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Challenges.length.toLocaleString() + '</b>').set({rich: true}));
+                                        TableChallenges.add(TextKey);
+                                        TableChallenges.add(TextValue);
+                                        HeadLineChallenges.add(TableChallenges);
+                                        HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
+                                        HeaderTableEndgames.add(HeadLineChallenges);
                                     }
-                                    TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
-                                    TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Endgames.length.toLocaleString() + '</b>').set({rich: true}));
-                                    TableChallenges.add(TextKey);
-                                    TableChallenges.add(TextValue);
-                                    HeadLineEndgames.add(TableChallenges);
-                                    HeadLineEndgames.add(new qx.ui.basic.Label('').set({rich: true}));
-                                    HeaderTableEndgames.add(HeadLineEndgames);
+                                    HeadLinePlayer.add(HeaderTableEndgames);
                                 }
-                                if (this.ObjectDataNotSend.Challenges.length > 0)
-                                {
-                                    var ObjectChallengesRank = {Player: {1: 0, 10: 0, 100: 0}, Alliance: {1: 0, 2: 0, 3: 0}};
-                                    for (var i = 0; i < this.ObjectDataNotSend.Challenges.length; i++)
-                                    {
-                                        if (this.ObjectDataNotSend.Challenges[i].ia) // is alliance
-                                        {
-                                            ObjectChallengesRank['Alliance'][this.ObjectDataNotSend.Challenges[i].r] += 1;
-                                        }
-                                        else // is player
-                                        {
-                                            if (this.ObjectDataNotSend.Challenges[i].r == 1)
-                                            {
-                                                ObjectChallengesRank['Player'][1] += 1;
-                                            }
-                                            else if (this.ObjectDataNotSend.Challenges[i].r <= 10)
-                                            {
-                                                ObjectChallengesRank['Player'][10] += 1;
-                                            }
-                                            else if (this.ObjectDataNotSend.Challenges[i].r <= 100)
-                                            {
-                                                ObjectChallengesRank['Player'][100] += 1;
-                                            }
-                                        }
-                                    }
-                                    var HeadLineChallenges = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                                    HeadLineChallenges.add(new qx.ui.basic.Label('<big><u><b>Challenges</b></u></big>').set({rich: true}));
-                                    HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
-                                    var TableChallenges = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
-                                    var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
-                                    var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
-                                    TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true, alignX: 'center'}));
-                                    TextValue.add(new qx.ui.basic.Label('<b>Count</b>'.toLocaleString()).set({rich: true, alignX: 'center'}));
-                                    for (var type in ObjectChallengesRank)
-                                    {
-                                        for (var rank in ObjectChallengesRank[type])
-                                        {
-                                            TextKey.add(new qx.ui.basic.Label((type + ' Top ' + rank).toLocaleString()).set({rich: true}));
-                                            TextValue.add(new qx.ui.basic.Label(ObjectChallengesRank[type][rank].toLocaleString()).set({rich: true}));
-                                        }
-                                    }
-                                    TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true, alignX: 'center'}));
-                                    TextValue.add(new qx.ui.basic.Label('<b>' + this.ObjectDataNotSend.Challenges.length.toLocaleString() + '</b>').set({rich: true}));
-                                    TableChallenges.add(TextKey);
-                                    TableChallenges.add(TextValue);
-                                    HeadLineChallenges.add(TableChallenges);
-                                    HeadLineChallenges.add(new qx.ui.basic.Label('').set({rich: true}));
-                                    HeaderTableEndgames.add(HeadLineChallenges);
-                                }
-                                HeadLinePlayer.add(HeaderTableEndgames);
                             }
                             HeaderTablePlayer.add(HeadLinePlayer);
                             this.GuiPlayerVBox.removeAll();
                             this.GuiPlayerVBox.add(HeaderTablePlayer);
+                        },
+                        createTabAlliance: function()
+                        {
+                            // Tab 4: Alliance
+                            var HeaderTableAlliance = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLineAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineAlliance.add(new qx.ui.basic.Label('<big><u><b>Alliance</b></u></big>').set({rich: true}));
+                            HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
+                            if (this.ObjectData.alliance.AllianceId > 0)
+                            {
+                                var TableAlliance = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                var TextKey = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "right"}));
+                                var TextValue = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "left"}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Name</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceName).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceRank.toLocaleString()).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>ScorePoints</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceTotalScore.toLocaleString()).set({rich: true}));
+                                TextKey.add(new qx.ui.basic.Label('<b>AverageScore</b>').set({rich: true}));
+                                TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceAverageScore.toLocaleString()).set({rich: true}));
+                                if (this.ObjectData.server.SeasonServer == true)
+                                {
+                                    TextKey.add(new qx.ui.basic.Label('<b>VeteranPoints</b>').set({rich: true}));
+                                    TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceVeteranPoints.toLocaleString()).set({rich: true}));
+                                    TextKey.add(new qx.ui.basic.Label('<b>VP/h</b>').set({rich: true}));
+                                    TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.AllianceProdVetPoints.toLocaleString()).set({rich: true}));
+                                }
+                                if (this.ObjectData.alliance.Shoot != undefined)
+                                {
+                                    TextKey.add(new qx.ui.basic.Label('<b>PvE</b>').set({rich: true}));
+                                    TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.PvE.toLocaleString()).set({rich: true}));
+                                    TextKey.add(new qx.ui.basic.Label('<b>PvP</b>').set({rich: true}));
+                                    TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.PvP.toLocaleString()).set({rich: true}));
+                                    TextKey.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
+                                    TextValue.add(new qx.ui.basic.Label(this.ObjectData.alliance.Shoot.toLocaleString()).set({rich: true}));
+                                }
+                                else
+                                {
+                                    setTimeout(function(_self){_self.createTabAlliance();}, 1000, this);
+                                }
+                                TableAlliance.add(TextKey);
+                                TableAlliance.add(TextValue);
+                                HeadLineAlliance.add(TableAlliance);
+                                HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
+                                HeadLineAlliance.add(new qx.ui.basic.Label('<big><u><b>Bonus</b></u></big>').set({rich: true}));
+                                HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
+                                var TableBonus = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                var TextPoiClass = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                var IconTib = null;
+                                var IconCry = null;
+                                var IconPow = null;
+                                var IconInf = null;
+                                var IconVeh = null;
+                                var IconAir = null;
+                                var IconDef = null;
+                                var ArrayScorePoints = [0];
+                                var previousScorePoints = -1;
+                                var currentScorePoints = 0;
+                                while (previousScorePoints != currentScorePoints)
+                                {
+                                    previousScorePoints = currentScorePoints;
+                                    currentScorePoints = ClientLib.Base.PointOfInterestTypes.GetNextScore(previousScorePoints);
+                                    if (currentScorePoints != previousScorePoints)
+                                    {
+                                        ArrayScorePoints.push(currentScorePoints);
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
+                                }
+                                var poiRankScore = ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIRankScore();
+                                var ArrayAbbDesc =
+                                    [
+                                        [
+                                            '<b>POI-Class</b>',
+                                            '<b>Score</b>',
+                                            '<b>PrevScore</b>',
+                                            '<b>NextScore</b>',
+                                            '<b>DiffPrev</b>',
+                                            '<b>DiffNext</b>',
+                                            '<b>PDP</b>',
+                                            '<b>PNP</b>',
+                                            '<b>PS</b>',
+                                            '<b>NS</b>',
+                                            '<b>Bonus</b>',
+                                            '<b>Rank</b>'
+                                        ],
+                                        [
+                                            'POI-Class',
+                                            'POI-Score',
+                                            'Previous POI-Score',
+                                            'Next POI-Score',
+                                            'Difference between previos POI-Score and current POI-Score',
+                                            'Difference between current POI-Score and next POI-Score',
+                                            'POI allowed to loose to preview POI-Score',
+                                            'POI allowed to loose to next POI-Score',
+                                            'POI-Score of subsequent alliance',
+                                            'POI-Score of previous alliance',
+                                            'Bonus',
+                                            'Rank',
+                                        ]
+                                    ];
+                                TextPoiClass.add(new qx.ui.basic.Label(ArrayAbbDesc[0][0]).set({rich: true, toolTipText: ArrayAbbDesc[1][0]}));
+                                TextPoiClass.add(IconTib = new qx.ui.basic.Atom('Tiberium', 'webfrontend/ui/common/icn_res_tiberium.png').set({rich: true}));
+                                IconTib.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconCry = new qx.ui.basic.Atom('Crystal', 'webfrontend/ui/common/icn_res_chrystal.png').set({rich: true}));
+                                IconCry.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconPow = new qx.ui.basic.Atom('Power', 'webfrontend/ui/common/icn_res_power.png').set({rich: true}));
+                                IconPow.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconInf = new qx.ui.basic.Atom('Infantry', 'FactionUI/icons/icon_arsnl_off_squad.png').set({rich: true}));
+                                IconInf.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconVeh = new qx.ui.basic.Atom('Vehicle', 'FactionUI/icons/icon_arsnl_off_vehicle.png').set({rich: true}));
+                                IconVeh.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconAir = new qx.ui.basic.Atom('Aircraft', 'FactionUI/icons/icon_arsnl_off_plane.png').set({rich: true}));
+                                IconAir.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TextPoiClass.add(IconDef = new qx.ui.basic.Atom('Defense', 'FactionUI/icons/icon_def_army_points.png').set({rich: true}));
+                                IconDef.getChildControl('icon').set({ width: 18, height: 18, scale: true, alignY: "middle" });
+                                TableBonus.add(TextPoiClass);
+                                var TextScore = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextScore.add(new qx.ui.basic.Label(ArrayAbbDesc[0][1]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][1]}));
+                                var TextPrevScore = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPrevScore.add(new qx.ui.basic.Label(ArrayAbbDesc[0][2]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][2]}));
+                                var TextNextScore = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextNextScore.add(new qx.ui.basic.Label(ArrayAbbDesc[0][3]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][3]}));
+                                var TextDiffPrev = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextDiffPrev.add(new qx.ui.basic.Label(ArrayAbbDesc[0][4]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][4]}));
+                                var TextDiffNext = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextDiffNext.add(new qx.ui.basic.Label(ArrayAbbDesc[0][5]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][5]}));
+                                var TextPOIDiffPrev = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPOIDiffPrev.add(new qx.ui.basic.Label(ArrayAbbDesc[0][6]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][6]}));
+                                var TextPOIDiffNext = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPOIDiffNext.add(new qx.ui.basic.Label(ArrayAbbDesc[0][7]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][7]}));
+                                var TextSubsequentAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextSubsequentAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][8]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][8]}));
+                                var TextPreviousAlliance = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextPreviousAlliance.add(new qx.ui.basic.Label(ArrayAbbDesc[0][9]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][9]}));
+                                var TextBonus = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextBonus.add(new qx.ui.basic.Label(ArrayAbbDesc[0][10]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][10]}));
+                                var TextRank = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                TextRank.add(new qx.ui.basic.Label(ArrayAbbDesc[0][11]).set({rich: true, height: 17, toolTipText: ArrayAbbDesc[1][11]}));
+                                var maxPoiLevel = ClientLib.Data.MainData.GetInstance().get_Server().get_MaxCenterLevel();
+                                var ArrayPOILevelPoints = [];
+                                for (var i = 12; i <= maxPoiLevel; i++)
+                                {
+                                    ArrayPOILevelPoints.push(ClientLib.Base.PointOfInterestTypes.GetScoreByLevel(i));
+                                }
+                                for (var i = 0; i < poiRankScore.length; i++)
+                                {
+                                    TextScore.add(new qx.ui.basic.Label(poiRankScore[i].s.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    var indexArrayScorePoints = 1;
+                                    while (poiRankScore[i].s > ArrayScorePoints[indexArrayScorePoints])
+                                    {
+                                        indexArrayScorePoints++;
+                                    }
+                                    var indexArrayPOILevelPointsPrev = 0;
+                                    while ((poiRankScore[i].s - ArrayScorePoints[indexArrayScorePoints - 1]) > ArrayPOILevelPoints[indexArrayPOILevelPointsPrev])
+                                    {
+                                        indexArrayPOILevelPointsPrev++;
+                                    }
+                                    indexArrayPOILevelPointsPrev--;
+                                    var indexArrayPOILevelPointsNext = 0;
+                                    while ((ArrayScorePoints[indexArrayScorePoints] - poiRankScore[i].s) > ArrayPOILevelPoints[indexArrayPOILevelPointsNext])
+                                    {
+                                        indexArrayPOILevelPointsNext++;
+                                    }
+                                    TextPrevScore.add(new qx.ui.basic.Label(ArrayScorePoints[indexArrayScorePoints - 1].toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    TextNextScore.add(new qx.ui.basic.Label(ArrayScorePoints[indexArrayScorePoints].toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    TextDiffPrev.add(new qx.ui.basic.Label((poiRankScore[i].s - ArrayScorePoints[indexArrayScorePoints - 1]).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    TextDiffNext.add(new qx.ui.basic.Label((ArrayScorePoints[indexArrayScorePoints] - poiRankScore[i].s).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    if (indexArrayPOILevelPointsPrev + 12 < maxPoiLevel && indexArrayPOILevelPointsPrev >= 12)
+                                    {
+                                        TextPOIDiffPrev.add(new qx.ui.basic.Label((indexArrayPOILevelPointsPrev + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    else
+                                    {
+                                        TextPOIDiffPrev.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    if (indexArrayPOILevelPointsNext + 12 < maxPoiLevel)
+                                    {
+                                        TextPOIDiffNext.add(new qx.ui.basic.Label((indexArrayPOILevelPointsNext + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    else
+                                    {
+                                        TextPOIDiffNext.add(new qx.ui.basic.Label('n.a.'.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    TextSubsequentAlliance.add(new qx.ui.basic.Label(poiRankScore[i].ps.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    if (poiRankScore[i].r > 1)
+                                    {
+                                        TextPreviousAlliance.add(new qx.ui.basic.Label(poiRankScore[i].ns.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    else
+                                    {
+                                        TextPreviousAlliance.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
+                                    }
+                                    TextRank.add(new qx.ui.basic.Label(poiRankScore[i].r).set({rich: true, alignX: 'right', height: 18}));
+                                }
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POITiberiumBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POICrystalBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIPowerBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIInfantryBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIVehicleBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIAirBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TextBonus.add(new qx.ui.basic.Label(ClientLib.Data.MainData.GetInstance().get_Alliance().get_POIDefenseBonus().toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
+                                TableBonus.add(TextScore);
+                                TableBonus.add(TextPrevScore);
+                                TableBonus.add(TextNextScore);
+                                TableBonus.add(TextDiffPrev);
+                                TableBonus.add(TextDiffNext);
+                                TableBonus.add(TextPOIDiffPrev);
+                                TableBonus.add(TextPOIDiffNext);
+                                TableBonus.add(TextSubsequentAlliance);
+                                TableBonus.add(TextPreviousAlliance);
+                                TableBonus.add(TextBonus);
+                                TableBonus.add(TextRank);
+                                HeadLineAlliance.add(TableBonus);
+                                HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
+                                HeadLineAlliance.add(new qx.ui.basic.Label('<big><u><b>Description</b></u></big>').set({rich: true}));
+                                HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
+                                var HeadLineDescriptionScroll =  new qx.ui.container.Scroll().set({height: 146});
+                                var TableDescription = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                                var TextAbbreviation = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                var TextDescription = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                                for (var i = 0; i < ArrayAbbDesc[0].length; i++)
+                                {
+                                    TextAbbreviation.add(new qx.ui.basic.Label(ArrayAbbDesc[0][i]).set({rich: true, alignX: 'right'}));
+                                    TextDescription.add(new qx.ui.basic.Label(ArrayAbbDesc[1][i]).set({rich: true, alignX: 'left'}));
+                                }
+                                TableDescription.add(TextAbbreviation);
+                                TableDescription.add(TextDescription);
+                                HeadLineDescriptionScroll.add(TableDescription);
+                                HeadLineAlliance.add(HeadLineDescriptionScroll);
+                            }
+                            else
+                            {
+                                HeadLineAlliance.add(new qx.ui.basic.Label('You are in no alliance...').set({rich: true}));
+                            }
+                            HeaderTableAlliance.add(HeadLineAlliance);
+                            this.GuiAllianceVBox.removeAll();
+                            this.GuiAllianceVBox.add(HeaderTableAlliance);
                         },
                         setCncOptVars: function()
                         {
