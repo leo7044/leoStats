@@ -924,6 +924,77 @@
                             this.GuiAllianceVBox.removeAll();
                             this.GuiAllianceVBox.add(HeaderTableAlliance);
                         },
+                        calculateValueOfBase: function(_BaseId)
+                        {
+                            var valueTiberium = 0;
+                            var valuePower = 0;
+                            var ArrayBuildingIds = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d;
+                            for (var key in ArrayBuildingIds)
+                            {
+                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[key].get_TechGameData_Obj().dn != 'Construction Yard')
+                                {
+                                    var ArrayRes = this.calculateValueOfBuilding(_BaseId, key);
+                                    valueTiberium += ArrayRes[0];
+                                    valuePower += ArrayRes[1];
+                                }
+                            }
+                            return [valueTiberium, valuePower];
+                        },
+                        calculateValueOfBuilding: function(_BaseId, _BuildingId)
+                        {
+                            // PTE, 1. Basis
+                            /*_BaseId = 30938218;
+                            _BuildingId = 3;*/
+                            var minLevelBuilding = ClientLib.Data.MainData.GetInstance().get_Server().get_CityMinLevelBuilding();
+                            var upgradeFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_TechLevelUpgradeFactorResource();
+                            var levelBuilding = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_CurrentLevel();
+                            var valueTiberium = 0;
+                            var valuePower = 0;
+                            for (var i = 1; i <= levelBuilding; i++)
+                            {
+                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[0] != undefined)
+                                {
+                                    valueTiberium += ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[0].c;
+                                }
+                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[1] != undefined)
+                                {
+                                    valuePower += ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[1].c;
+                                }
+                                if (i == 12)
+                                {
+                                    break;
+                                }
+                            }
+                            for (var i = 13; i <= levelBuilding; i++)
+                            {
+                                valueTiberium += parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                valuePower += parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[1].c * Math.pow(upgradeFactor, i - 12));
+                            }
+                            if (minLevelBuilding > 0)
+                            {
+                                for (var i = 1; i <= minLevelBuilding; i++)
+                                {
+                                    if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[0] != undefined)
+                                    {
+                                        valueTiberium += ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[0].c;
+                                    }
+                                    if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[1] != undefined)
+                                    {
+                                        valuePower -= ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[i].rr[1].c;
+                                    }
+                                    if (i == 12)
+                                    {
+                                        break;
+                                    }
+                                }
+                                for (var i = 13; i <= minLevelBuilding; i++)
+                                {
+                                    valueTiberium -= parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                    valuePower -= parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[1].c * Math.pow(upgradeFactor, i - 12));
+                                }
+                            }
+                            return [parseInt(0.9 * valueTiberium), parseInt(0.9 * valuePower)];
+                        },
                         setCncOptVars: function()
                         {
                             this.Defense_unit_map = {
