@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.03.01';
+                var scriptVersionLocal = '2020.03.03';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -67,14 +67,7 @@
                             this.GuiInfoPage = new qx.ui.tabview.Page("Info");
                             this.GuiInfoPage.setLayout(new qx.ui.layout.Grow());
                             this.GuiTab.add(this.GuiInfoPage);
-                            this.GuiInfoVBox = new qx.ui.container.Composite()/*.set({
-                                decorator : new qx.ui.decoration.Decorator().set({
-                                    backgroundRepeat : 'no-repeat',
-                                    backgroundImage : linkToRoot + 'img/icon.png',
-                                    backgroundPositionX : 'center',
-                                    opacity: 0.5
-                                })
-                            })*/;
+                            this.GuiInfoVBox = new qx.ui.container.Composite();
                             this.GuiInfoVBox.setLayout(new qx.ui.layout.VBox(5));
                             this.GuiInfoVBox.setThemedPadding(10);
                             this.GuiInfoVBox.setThemedBackgroundColor("#eef");
@@ -550,11 +543,11 @@
                             var HeaderTableResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLineSellResources = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLineSellResources.add(new qx.ui.basic.Label('<big><u><b>Resources through sell</b></u></big>').set({rich: true}));
-                            var TableSellRow = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var TableSellRow = new qx.ui.container.Composite(new qx.ui.layout.HBox(15).set({alignX: "center"}));
                             // Column BaseName
                             var TableSellColBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TableSellColBaseName.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "center"}));
                             var TextSellBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextSellBaseName.add(new qx.ui.basic.Label('<b>BaseName</b>').set({rich: true}));
                             for (var i in this.ObjectData.bases)
@@ -567,8 +560,8 @@
                             TableSellRow.add(TableSellColBaseName);
                             // Column Buildings
                             var TableSellColBuildings = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            TableSellColBuildings.add(new qx.ui.basic.Label('<b>Buildings</b>').set({rich: true}));
-                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            TableSellColBuildings.add(new qx.ui.basic.Label('<b><u>Buildings</u></b>').set({rich: true}));
+                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "center"}));
                             var TextSellTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextSellTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
                             var TextSellPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -590,10 +583,43 @@
                             TableSellResources.add(TextSellPower);
                             TableSellColBuildings.add(TableSellResources);
                             TableSellRow.add(TableSellColBuildings);
+                            // Column Defense
+                            var TableSellColDefense = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TableSellColDefense.add(new qx.ui.basic.Label('<b><u>Defense</u></b>').set({rich: true}));
+                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "center"}));
+                            var TextSellTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                            var TextSellCrystal = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellCrystal.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
+                            var TextSellPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                            var valueOverallTiberium = 0;
+                            var valueOverallCrystal = 0;
+                            var valueOverallPower = 0;
+                            for (var i in this.ObjectData.bases)
+                            {
+                                var valueTiberium = this.calculateValueOfDefense(this.ObjectData.bases[i].BaseId)[0];
+                                var valueCrystal = this.calculateValueOfDefense(this.ObjectData.bases[i].BaseId)[1];
+                                var valuePower = this.calculateValueOfDefense(this.ObjectData.bases[i].BaseId)[2];
+                                valueOverallTiberium += valueTiberium;
+                                valueOverallCrystal += valueCrystal;
+                                valueOverallPower += valuePower;
+                                TextSellTiberium.add(new qx.ui.basic.Label(valueTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextSellCrystal.add(new qx.ui.basic.Label(valueCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextSellPower.add(new qx.ui.basic.Label(valuePower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            }
+                            TextSellTiberium.add(new qx.ui.basic.Label(valueOverallTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextSellCrystal.add(new qx.ui.basic.Label(valueOverallCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TextSellPower.add(new qx.ui.basic.Label(valueOverallPower.toLocaleString()).set({rich: true, alignX: "right"}));
+                            TableSellResources.add(TextSellTiberium);
+                            TableSellResources.add(TextSellCrystal);
+                            TableSellResources.add(TextSellPower);
+                            TableSellColDefense.add(TableSellResources);
+                            TableSellRow.add(TableSellColDefense);
                             // Column Offense
                             var TableSellColOffense = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            TableSellColOffense.add(new qx.ui.basic.Label('<b>Offense</b>').set({rich: true}));
-                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            TableSellColOffense.add(new qx.ui.basic.Label('<b><u>Offense</u></b>').set({rich: true}));
+                            var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "center"}));
                             var TextSellCrystal = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextSellCrystal.add(new qx.ui.basic.Label('<b>Crystal</b>').set({rich: true}));
                             var TextSellPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -602,11 +628,11 @@
                             var valueOverallPower = 0;
                             for (var i in this.ObjectData.bases)
                             {
-                                var valueTiberium = this.calculateValueOfOffense(this.ObjectData.bases[i].BaseId)[0];
+                                var valueCrystal = this.calculateValueOfOffense(this.ObjectData.bases[i].BaseId)[0];
                                 var valuePower = this.calculateValueOfOffense(this.ObjectData.bases[i].BaseId)[1];
-                                valueOverallCrystal += valueTiberium;
+                                valueOverallCrystal += valueCrystal;
                                 valueOverallPower += valuePower;
-                                TextSellCrystal.add(new qx.ui.basic.Label(valueTiberium.toLocaleString()).set({rich: true, alignX: "right"}));
+                                TextSellCrystal.add(new qx.ui.basic.Label(valueCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
                                 TextSellPower.add(new qx.ui.basic.Label(valuePower.toLocaleString()).set({rich: true, alignX: "right"}));
                             }
                             TextSellCrystal.add(new qx.ui.basic.Label(valueOverallCrystal.toLocaleString()).set({rich: true, alignX: "right"}));
@@ -1131,6 +1157,31 @@
                             var refundFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_BuildingRefundPercent();
                             return [parseInt(refundFactor * valueTiberium), parseInt(refundFactor * valuePower)];
                         },
+                        calculateValueOfDefense: function(_BaseId)
+                        {
+                            var valueTiberium = 0;
+                            var valueCrystal = 0;
+                            var valuePower = 0;
+                            var city = ClientLib.Data.MainData.GetInstance().get_Cities().GetCity(_BaseId);
+                            var defUnits = this.getDefenseUnits(city);
+                            for (var keyDefUnit in defUnits)
+                            {
+                                var defUnit = defUnits[keyDefUnit];
+                                var levelDefUnit = defUnit.get_CurrentLevel();
+                                for (var key in defUnit)
+                                {
+                                    if (typeof(defUnit[key]) == 'object' && defUnit[key] && 'i' in defUnit[key])
+                                    {
+                                        var ObjectUnit = defUnit[key];
+                                        var ArrayRes = this.calculateValueUnitDefense(ObjectUnit, levelDefUnit);
+                                        valueTiberium += ArrayRes[0];
+                                        valueCrystal += ArrayRes[1];
+                                        valuePower += ArrayRes[2];
+                                    }
+                                }
+                            }
+                            return [valueTiberium, valueCrystal, valuePower];
+                        },
                         calculateValueOfOffense: function(_BaseId)
                         {
                             var valueCrystal = 0;
@@ -1146,7 +1197,7 @@
                                     if (typeof(offUnit[key]) == 'object' && offUnit[key] && 'i' in offUnit[key])
                                     {
                                         var ObjectUnit = offUnit[key];
-                                        var ArrayRes = this.calculateValueOfUnit(ObjectUnit, levelOffUnit);
+                                        var ArrayRes = this.calculateValueUnitOffense(ObjectUnit, levelOffUnit);
                                         valueCrystal += ArrayRes[0];
                                         valuePower += ArrayRes[1];
                                     }
@@ -1154,7 +1205,106 @@
                             }
                             return [valueCrystal, valuePower];
                         },
-                        calculateValueOfUnit: function(_ObjectUnit, _levelUnit)
+                        calculateValueUnitDefense: function(_ObjectUnit, _levelUnit)
+                        {
+                            var minLevelUnit = ClientLib.Data.MainData.GetInstance().get_Server().get_CityMinLevelDefense();
+                            var upgradeFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_UnitLevelUpgradeFactorResource();
+                            var valueTiberium = 0;
+                            var valueCrystal = 0;
+                            var valuePower = 0;
+                            for (var i = 1; i <= _levelUnit; i++)
+                            {
+                                if (_ObjectUnit.r[i].rr[0] != undefined)
+                                {
+                                    switch(_ObjectUnit.r[i].rr[0].t)
+                                    {
+                                        case 1:
+                                        {
+                                            valueTiberium += _ObjectUnit.r[i].rr[0].c;
+                                            break;
+                                        }
+                                        case 2:
+                                        {
+                                            valueCrystal += _ObjectUnit.r[i].rr[0].c;
+                                            break;
+                                        }
+                                        default:
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (_ObjectUnit.r[i].rr[1] != undefined)
+                                {
+                                    valuePower += _ObjectUnit.r[i].rr[1].c;
+                                }
+                                if (i == 12)
+                                {
+                                    break;
+                                }
+                            }
+                            for (var i = 13; i <= _levelUnit; i++)
+                            {
+                                if (valueTiberium)
+                                {
+                                    valueTiberium += parseInt(_ObjectUnit.r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                }
+                                else if (valueCrystal)
+                                {
+                                    valueCrystal += parseInt(_ObjectUnit.r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                }
+                                valuePower += parseInt(_ObjectUnit.r[12].rr[1].c * Math.pow(upgradeFactor, i - 12));
+                            }
+                            if (minLevelUnit > 0)
+                            {
+                                for (var i = 1; i <= minLevelUnit; i++)
+                                {
+                                    if (_ObjectUnit.r[i].rr[0] != undefined)
+                                    {
+                                        switch(_ObjectUnit.r[i].rr[0].t)
+                                        {
+                                            case 1:
+                                            {
+                                                valueTiberium += _ObjectUnit.r[i].rr[0].c;
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                valueCrystal += _ObjectUnit.r[i].rr[0].c;
+                                                break;
+                                            }
+                                            default:
+                                            {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (_ObjectUnit.r[i].rr[1] != undefined)
+                                    {
+                                        valuePower -= _ObjectUnit.r[i].rr[1].c;
+                                    }
+                                    if (i == 12)
+                                    {
+                                        break;
+                                    }
+                                }
+                                for (var i = 13; i <= minLevelUnit; i++)
+                                {
+                                    if (valueTiberium)
+                                    {
+                                        valueTiberium -= parseInt(_ObjectUnit.r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                    }
+                                    else if (valueCrystal)
+                                    {
+                                        valueCrystal -= parseInt(_ObjectUnit.r[12].rr[0].c * Math.pow(upgradeFactor, i - 12));
+                                    }
+                                    valuePower -= parseInt(_ObjectUnit.r[12].rr[1].c * Math.pow(upgradeFactor, i - 12));
+                                }
+                            }
+                            var refundFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_UnitRefundPercent();
+                            return [parseInt(refundFactor * valueTiberium), parseInt(refundFactor * valueCrystal), parseInt(refundFactor * valuePower)];
+                        },
+                        calculateValueUnitOffense: function(_ObjectUnit, _levelUnit)
                         {
                             var minLevelUnit = ClientLib.Data.MainData.GetInstance().get_Server().get_CityMinLevelOffense();
                             var upgradeFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_UnitLevelUpgradeFactorResource();
