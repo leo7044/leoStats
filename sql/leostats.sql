@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 28. Feb 2020 um 16:42
+-- Erstellungszeit: 03. Mrz 2020 um 08:39
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -1224,6 +1224,9 @@ FROM player pl
 GROUP BY pl.Zeit
 ORDER BY pl.Zeit ASC$$
 
+CREATE PROCEDURE `resetPwByUserName` (IN `_UserName` TEXT)  NO SQL
+UPDATE login l SET l.Password=sha2(CONCAT(l.UserName, '_', l.AccountId), 512) WHERE l.UserName=_UserName$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -1504,8 +1507,8 @@ CREATE TABLE `reports` (
   `GainCry` bigint(12) UNSIGNED NOT NULL,
   `GainCre` bigint(11) UNSIGNED NOT NULL,
   `GainRp` bigint(11) UNSIGNED NOT NULL,
-  `CostCry` bigint(11) UNSIGNED NOT NULL,
-  `CostRep` mediumint(6) UNSIGNED NOT NULL
+  `CostCry` bigint(12) UNSIGNED NOT NULL,
+  `CostRep` mediumint(7) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
