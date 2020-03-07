@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 03. Mrz 2020 um 08:39
+-- Erstellungszeit: 07. Mrz 2020 um 22:39
 -- Server-Version: 10.2.30-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -1033,7 +1033,7 @@ IF
 )
 ORDER BY b.BaseId$$
 
-CREATE PROCEDURE `getPlayerData` (IN `_WorldId` INT, IN `_AccountId` INT, IN `_OwnAccountId` INT)  NO SQL
+CREATE PROCEDURE `getPlayerDataHistory` (IN `_WorldId` INT, IN `_AccountId` INT, IN `_OwnAccountId` INT)  NO SQL
 SELECT pl.Zeit, pl.ScorePoints, IFNULL(al.AverageScore, 0) AS AverageScore, pl.OverallRank, pl.EventRank, pl.GesamtTiberium, pl.GesamtCrystal, pl.GesamtPower, pl.GesamtCredits, pl.ResearchPoints, pl.Credits, pl.Shoot, pl.PvP, pl.PvE, pl.LvLOff, pl.LvLDef, pl.BaseD, pl.OffD, pl.DefD, pl.DFD, pl.SupD, pl.VP, pl.LP, pl.RepMax, pl.CPMax, pl.CPCur, pl.Funds FROM player pl
 JOIN relation_player p ON p.WorldId=pl.WorldId AND p.AccountId=pl.AccountId
 JOIN relation_alliance a ON a.WorldId=p.WorldId AND a.AllianceId=p.AllianceId
