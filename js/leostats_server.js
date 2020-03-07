@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.03.03';
+                var scriptVersionLocal = '2020.03.07';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -309,7 +309,7 @@
                             var HeadLinePois = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePois.add(new qx.ui.basic.Label('<big><u><b>POIs</b></u></big>').set({rich: true}));
                             HeadLinePois.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var HeadLinePoisScroll =  new qx.ui.container.Scroll().set({width: 627, height: 560});
+                            var HeadLinePoisScroll = new qx.ui.container.Scroll().set({width: 627, height: 560});
                             var TablePois = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextTib = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             var TextCry = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
@@ -409,7 +409,7 @@
                             var HeadLinePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('<big><u><b>POI-Level</b></u></big>').set({rich: true}));
                             HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var HeadLinePoiDataPoiLevelScroll =  new qx.ui.container.Scroll().set({width: 137, height: 560});
+                            var HeadLinePoiDataPoiLevelScroll = new qx.ui.container.Scroll().set({width: 137, height: 560});
                             var TablePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextPoiLevel.add(new qx.ui.basic.Label('<b>Level</b>').set({rich: true}));
@@ -432,7 +432,7 @@
                             var HeadLinePoiDataTier = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePoiDataTier.add(new qx.ui.basic.Label('<big><u><b>POI-Tiers</b></u></big>').set({rich: true}));
                             HeadLinePoiDataTier.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var HeadLinePoiDataTierScroll =  new qx.ui.container.Scroll().set({width: 237, height: 560});
+                            var HeadLinePoiDataTierScroll = new qx.ui.container.Scroll().set({width: 237, height: 560});
                             var TablePoiDataTier = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextScorePoints = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextScorePoints.add(new qx.ui.basic.Label('<b>Points</b>').set({rich: true}));
@@ -477,7 +477,7 @@
                                 var HeadLinePoiDataMultiplier = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 HeadLinePoiDataMultiplier.add(new qx.ui.basic.Label('<big><u><b>Multiplier</b></u></big>').set({rich: true}));
                                 HeadLinePoiDataMultiplier.add(new qx.ui.basic.Label('').set({rich: true}));
-                                var HeadLinePoiDataMultiplierScroll =  new qx.ui.container.Scroll().set({width: 113, height: 560});
+                                var HeadLinePoiDataMultiplierScroll = new qx.ui.container.Scroll().set({width: 113, height: 560});
                                 var TablePoiDataMultiplier = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                                 var TextRank = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 TextRank.add(new qx.ui.basic.Label('<b>Rank</b>').set({rich: true}));
@@ -1066,7 +1066,11 @@
                                 HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
                                 HeadLineAlliance.add(new qx.ui.basic.Label('<big><u><b>Description</b></u></big>').set({rich: true}));
                                 HeadLineAlliance.add(new qx.ui.basic.Label('').set({rich: true}));
-                                var HeadLineDescriptionScroll =  new qx.ui.container.Scroll().set({height: 146});
+                                var HeadLineDescriptionScroll = new qx.ui.container.Scroll().set({height: 180});
+                                if (this.ObjectData.server.SeasonServer)
+                                {
+                                    HeadLineDescriptionScroll = new qx.ui.container.Scroll().set({height: 146});
+                                }
                                 var TableDescription = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                                 var TextAbbreviation = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                                 var TextDescription = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
