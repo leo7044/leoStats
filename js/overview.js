@@ -911,7 +911,7 @@ function manageContentPlayer()
     {
         var data =
         {
-            action: "getPlayerData",
+            action: "getPlayerDataHistory",
             WorldId: WorldId,
             AccountId: AccountId
         }

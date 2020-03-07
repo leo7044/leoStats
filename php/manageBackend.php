@@ -555,14 +555,14 @@ if (!$conn->connect_error)
             }
             break;
         }
-        case 'getPlayerData':
+        case 'getPlayerDataHistory':
         {
             if (isset($_SESSION['leoStats_AccountId']))
             {
                 $WorldId = $_post['WorldId'];
                 $AccountId = $_post['AccountId'];
                 $OwnAccountId = $_SESSION['leoStats_AccountId'];
-                $strQuery = "CALL getPlayerData('$WorldId', '$AccountId', '$OwnAccountId');";
+                $strQuery = "CALL getPlayerDataHistory('$WorldId', '$AccountId', '$OwnAccountId');";
                 $result = $conn->query($strQuery);
                 while ($zeile = $result->fetch_assoc())
                 {
