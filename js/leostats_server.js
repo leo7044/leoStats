@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.03.07';
+                var scriptVersionLocal = '2020.03.10';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -133,15 +133,25 @@
                             this.GuiResourcesVBox.setThemedBackgroundColor("#eef");
                             this.GuiResourcesPage.add(this.GuiResourcesVBox);
 
-                            // Tab 8: Sell Base
-                            this.GuiSellBasePage = new qx.ui.tabview.Page("Sell Base");
-                            this.GuiSellBasePage.setLayout(new qx.ui.layout.Grow());
-                            this.GuiTab.add(this.GuiSellBasePage);
-                            this.GuiSellBaseVBox = new qx.ui.container.Composite();
-                            this.GuiSellBaseVBox.setLayout(new qx.ui.layout.VBox(5));
-                            this.GuiSellBaseVBox.setThemedPadding(10);
-                            this.GuiSellBaseVBox.setThemedBackgroundColor("#eef");
-                            this.GuiSellBasePage.add(this.GuiSellBaseVBox);
+                            // Tab 8: Sell Bases
+                            this.GuiSellBasesPage = new qx.ui.tabview.Page("Sell bases");
+                            this.GuiSellBasesPage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiSellBasesPage);
+                            this.GuiSellBasesVBox = new qx.ui.container.Composite();
+                            this.GuiSellBasesVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiSellBasesVBox.setThemedPadding(10);
+                            this.GuiSellBasesVBox.setThemedBackgroundColor("#eef");
+                            this.GuiSellBasesPage.add(this.GuiSellBasesVBox);
+
+                            // Tab 9: Sell special Base
+                            this.GuiSellSpecialBasePage = new qx.ui.tabview.Page("Sell special base");
+                            this.GuiSellSpecialBasePage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiSellSpecialBasePage);
+                            this.GuiSellSpecialBaseVBox = new qx.ui.container.Composite();
+                            this.GuiSellSpecialBaseVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiSellSpecialBaseVBox.setThemedPadding(10);
+                            this.GuiSellSpecialBaseVBox.setThemedBackgroundColor("#eef");
+                            this.GuiSellSpecialBasePage.add(this.GuiSellSpecialBaseVBox);
 
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
@@ -154,7 +164,8 @@
                                 this.GuiPoisVBox.removeAll();
                                 this.GuiPoiDataVBox.removeAll();
                                 this.GuiResourcesVBox.removeAll();
-                                this.GuiSellBaseVBox.removeAll();
+                                this.GuiSellBasesVBox.removeAll();
+                                this.GuiSellSpecialBaseVBox.removeAll();
                                 this.getCurrentStats();
                                 this.showGui();
                                 this.GuiFenster.show();
@@ -539,7 +550,7 @@
                             HeaderTableResources.add(HeadLineOwnResources);
                             this.GuiResourcesVBox.add(HeaderTableResources);
 
-                            // Tab 8: Sell Base
+                            // Tab 8: Sell Bases
                             var HeaderTableResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
                             var HeadLineSellResources = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLineSellResources.add(new qx.ui.basic.Label('<big><u><b>Resources through sell</b></u></big>').set({rich: true}));
@@ -548,14 +559,14 @@
                             var TableSellColBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TableSellColBaseName.add(new qx.ui.basic.Label('').set({rich: true}));
                             var TableSellResources = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "center"}));
-                            var TextSellBaseName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            TextSellBaseName.add(new qx.ui.basic.Label('<b>BaseName</b>').set({rich: true}));
+                            var TextSellBasesName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            TextSellBasesName.add(new qx.ui.basic.Label('<b>BaseName</b>').set({rich: true}));
                             for (var i in this.ObjectData.bases)
                             {
-                                TextSellBaseName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName).set({rich: true, alignX: "right"}));
+                                TextSellBasesName.add(new qx.ui.basic.Label(this.ObjectData.bases[i].BaseName).set({rich: true, alignX: "right"}));
                             }
-                            TextSellBaseName.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
-                            TableSellResources.add(TextSellBaseName);
+                            TextSellBasesName.add(new qx.ui.basic.Label('<b>Overall</b>').set({rich: true}));
+                            TableSellResources.add(TextSellBasesName);
                             TableSellColBaseName.add(TableSellResources);
                             TableSellRow.add(TableSellColBaseName);
                             // Column Buildings
@@ -644,7 +655,24 @@
                             // End Columns
                             HeadLineSellResources.add(TableSellRow);
                             HeaderTableResources.add(HeadLineSellResources);
-                            this.GuiSellBaseVBox.add(HeaderTableResources);
+                            this.GuiSellBasesVBox.add(HeaderTableResources);
+
+                            // Tab 9: Sell special bases
+                            var HeaderTableSellSpecialBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));                            
+                            var HeadLineSellSpecialBase = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineSellSpecialBase.add(new qx.ui.basic.Label('<big><u><b>Sell special base</b></u></big>').set({rich: true}));
+                            HeadLineSellSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var selectBoxBases = new qx.ui.form.SelectBox();
+                            selectBoxBases.addListener("changeSelection", function(e) {
+                                console.log(e.getData()[0].getModel(), e.getData()[0].getLabel());
+                            });
+                            for (var i in this.ObjectData.bases)
+                            {
+                                selectBoxBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
+                            }
+                            HeadLineSellSpecialBase.add(selectBoxBases);
+                            HeaderTableSellSpecialBase.add(HeadLineSellSpecialBase);
+                            this.GuiSellSpecialBaseVBox.add(HeaderTableSellSpecialBase);
                         },
                         createTabPlayer: function()
                         {
