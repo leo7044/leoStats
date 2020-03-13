@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.03.10';
+                var scriptVersionLocal = '2020.03.13';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -662,15 +662,38 @@
                             var HeadLineSellSpecialBase = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLineSellSpecialBase.add(new qx.ui.basic.Label('<big><u><b>Sell special base</b></u></big>').set({rich: true}));
                             HeadLineSellSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableSellBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             var selectBoxBases = new qx.ui.form.SelectBox();
-                            selectBoxBases.addListener("changeSelection", function(e) {
-                                console.log(e.getData()[0].getModel(), e.getData()[0].getLabel());
-                            });
+                            var self = this;
+                            selectBoxBases.addListener("changeSelection", function(e)
+                            {
+                                TextBuildingName.removeAll();
+                                TextBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
+                                TextBuildingTiberium.removeAll();
+                                TextBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                                TextBuildingPower.removeAll();
+                                TextBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                                var ObjectBuildings = self.selectSpecialBaseForSell(e.getData()[0].getModel());
+                                for (var key in ObjectBuildings)
+                                {
+                                    TextBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
+                                    TextBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                }
+                            }, this);
                             for (var i in this.ObjectData.bases)
                             {
                                 selectBoxBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
                             }
+                            TableSellBase.add(TextBuildingName);
+                            TableSellBase.add(TextBuildingTiberium);
+                            TableSellBase.add(TextBuildingPower);
                             HeadLineSellSpecialBase.add(selectBoxBases);
+                            HeadLineSellSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
+                            HeadLineSellSpecialBase.add(TableSellBase);
                             HeaderTableSellSpecialBase.add(HeadLineSellSpecialBase);
                             this.GuiSellSpecialBaseVBox.add(HeaderTableSellSpecialBase);
                         },
@@ -1120,6 +1143,26 @@
                             this.GuiAllianceVBox.removeAll();
                             this.GuiAllianceVBox.add(HeaderTableAlliance);
                         },
+                        selectSpecialBaseForSell: function(_BaseId)
+                        {
+                            var ArrayBuildingIds = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d;
+                            var ObjectBuildings = {};
+                            for (var key in ArrayBuildingIds)
+                            {
+                                var buildingName = ArrayBuildingIds[key].get_TechGameData_Obj().dn;
+                                if (buildingName != 'Construction Yard')
+                                {
+                                    var ArrayRes = this.calculateValueOfBuilding(_BaseId, key);
+                                    if (!ObjectBuildings[buildingName])
+                                    {
+                                        ObjectBuildings[buildingName] = [0, 0];
+                                    }
+                                    ObjectBuildings[buildingName][0] += ArrayRes[0];
+                                    ObjectBuildings[buildingName][1] += ArrayRes[1];
+                                }
+                            }
+                            return ObjectBuildings;
+                        },
                         calculateValueOfBase: function(_BaseId)
                         {
                             var valueTiberium = 0;
@@ -1127,7 +1170,7 @@
                             var ArrayBuildingIds = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d;
                             for (var key in ArrayBuildingIds)
                             {
-                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[key].get_TechGameData_Obj().dn != 'Construction Yard')
+                                if (ArrayBuildingIds[key].get_TechGameData_Obj().dn != 'Construction Yard')
                                 {
                                     var ArrayRes = this.calculateValueOfBuilding(_BaseId, key);
                                     valueTiberium += ArrayRes[0];
