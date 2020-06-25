@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.03.13';
+                var scriptVersionLocal = '2020.06.25';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1010,7 +1010,7 @@
                                 {
                                     TextScore.add(new qx.ui.basic.Label(poiRankScore[i].s.toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     var indexArrayScorePoints = 1;
-                                    while (poiRankScore[i].s > ArrayScorePoints[indexArrayScorePoints])
+                                    while (poiRankScore[i].s >= ArrayScorePoints[indexArrayScorePoints])
                                     {
                                         indexArrayScorePoints++;
                                     }
