@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.06.25';
+                var scriptVersionLocal = '2020.07.01';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -2569,14 +2569,14 @@
                         getArrayPrototypeGameObject: function()
                         {
                             var bases = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d;
+                            var goalXType2 = 0;
+                            var goalYType2 = 0;
+                            var goalXType3 = 0;
+                            var goalYType3 = 0;
                             for (var key in bases)
                             {
                                 var baseX = bases[key].get_X();
                                 var baseY = bases[key].get_Y();
-                                var goalXType2 = 0;
-                                var goalYType2 = 0;
-                                var goalXType3 = 0;
-                                var goalYType3 = 0;
                                 for (var x = baseX - 10; x < baseX + 10; x++)
                                 {
                                     for (var y = baseY - 10; y < baseY + 10; y++)
