@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.07.01';
+                var scriptVersionLocal = '2020.07.16';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1962,7 +1962,7 @@
                                     var PlayerEventRank = ClientLib.Data.MainData.GetInstance().get_Player().get_EventRank();
                                     var PlayerVeteranPoints = ClientLib.Data.MainData.GetInstance().get_Player().get_EventScore();
                                     var ResearchPoints = ClientLib.Data.MainData.GetInstance().get_Player().get_ResearchPoints();
-                                    var Credits = ClientLib.Data.MainData.GetInstance().get_Player().get_Credits().Base;
+                                    var Credits = ClientLib.Data.MainData.GetInstance().get_Player().GetCreditsCount();
                                     var Funds = ClientLib.Data.MainData.GetInstance().get_Inventory().get_PlayerFunds();
                                     var LegacyPoints = ClientLib.Data.MainData.GetInstance().get_Player().get_LegacyPoints();
                                     var CommandPointsMaxStorage = ClientLib.Data.MainData.GetInstance().get_Player().GetCommandPointMaxStorage();
