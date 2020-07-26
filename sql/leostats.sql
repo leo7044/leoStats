@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.9.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 07. Mrz 2020 um 22:39
--- Server-Version: 10.2.30-MariaDB
+-- Erstellungszeit: 25. Jul 2020 um 06:14
+-- Server-Version: 10.3.23-MariaDB
 -- PHP-Version: 7.3.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -1215,15 +1215,6 @@ SELECT r.WorldId, COUNT(*), SUM(r.GainTib), SUM(r.GainCry), SUM(r.GainCre), SUM(
 GROUP BY r.WorldId
 ORDER BY COUNT(*) DESC$$
 
-CREATE PROCEDURE `getTransmissionsPerDay` ()  NO SQL
-SELECT pl.Zeit, count(*) FROM player pl GROUP BY pl.Zeit$$
-
-CREATE PROCEDURE `getTransmissionsPerDayUnique` ()  NO SQL
-SELECT pl.Zeit, COUNT(DISTINCT pl.AccountId)
-FROM player pl
-GROUP BY pl.Zeit
-ORDER BY pl.Zeit ASC$$
-
 CREATE PROCEDURE `resetPwByUserName` (IN `_UserName` TEXT)  NO SQL
 UPDATE login l SET l.Password=sha2(CONCAT(l.UserName, '_', l.AccountId), 512) WHERE l.UserName=_UserName$$
 
@@ -1535,6 +1526,98 @@ CREATE TABLE `tmp_logs` (
   `StringValueOld` text COLLATE utf8_bin NOT NULL,
   `StringValueNew` text COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `view_reports_358_leo7044`
+-- (Siehe unten für die tatsächliche Ansicht)
+--
+CREATE TABLE `view_reports_358_leo7044` (
+`DATE(r.AttackTime)` date
+,`COUNT(*)` bigint(21)
+,`SUM(r.GainTib)` decimal(42,0)
+,`SUM(r.GainCry)` decimal(42,0)
+,`SUM(r.GainCre)` decimal(42,0)
+,`SUM(r.GainRp)` decimal(42,0)
+,`SUM(CostCry)` decimal(42,0)
+,`SUM(CostRep)` decimal(30,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `view_reports_415_leo7044`
+-- (Siehe unten für die tatsächliche Ansicht)
+--
+CREATE TABLE `view_reports_415_leo7044` (
+`DATE(r.AttackTime)` date
+,`COUNT(*)` bigint(21)
+,`SUM(r.GainTib)` decimal(42,0)
+,`SUM(r.GainCry)` decimal(42,0)
+,`SUM(r.GainCre)` decimal(42,0)
+,`SUM(r.GainRp)` decimal(42,0)
+,`SUM(CostCry)` decimal(42,0)
+,`SUM(CostRep)` decimal(30,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `view_transmissions_per_day`
+-- (Siehe unten für die tatsächliche Ansicht)
+--
+CREATE TABLE `view_transmissions_per_day` (
+`Zeit` date
+,`count(*)` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `view_transmissions_per_day_unique`
+-- (Siehe unten für die tatsächliche Ansicht)
+--
+CREATE TABLE `view_transmissions_per_day_unique` (
+`Zeit` date
+,`COUNT(DISTINCT pl.AccountId)` bigint(21)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `view_reports_358_leo7044`
+--
+DROP TABLE IF EXISTS `view_reports_358_leo7044`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_358_leo7044`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 358 and `r`.`AccountId` = 2906176 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `view_reports_415_leo7044`
+--
+DROP TABLE IF EXISTS `view_reports_415_leo7044`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_415_leo7044`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 415 and `r`.`AccountId` = 2906176 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `view_transmissions_per_day`
+--
+DROP TABLE IF EXISTS `view_transmissions_per_day`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_transmissions_per_day`  AS  select `pl`.`Zeit` AS `Zeit`,count(0) AS `count(*)` from `player` `pl` group by `pl`.`Zeit` ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `view_transmissions_per_day_unique`
+--
+DROP TABLE IF EXISTS `view_transmissions_per_day_unique`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_transmissions_per_day_unique`  AS  select `pl`.`Zeit` AS `Zeit`,count(distinct `pl`.`AccountId`) AS `COUNT(DISTINCT pl.AccountId)` from `player` `pl` group by `pl`.`Zeit` order by `pl`.`Zeit` ;
 
 --
 -- Indizes der exportierten Tabellen
