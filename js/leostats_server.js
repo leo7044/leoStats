@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2020.07.16';
+                var scriptVersionLocal = '2020.09.03';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1048,7 +1048,7 @@
                                     {
                                         TextPoiLevelDiffPrev.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right', height: 18}));
                                     }
-                                    if (indexArrayPOILevelPointsNext + 12 < maxPoiLevel)
+                                    if (indexArrayPOILevelPointsNext + 12 <= maxPoiLevel)
                                     {
                                         TextPoiLevelDiffNext.add(new qx.ui.basic.Label((indexArrayPOILevelPointsNext + 12).toLocaleString()).set({rich: true, alignX: 'right', height: 18}));
                                     }
