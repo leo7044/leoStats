@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Erstellungszeit: 25. Jul 2020 um 06:14
+-- Erstellungszeit: 11. Sep 2020 um 08:43
 -- Server-Version: 10.3.23-MariaDB
 -- PHP-Version: 7.3.6
 
@@ -1399,7 +1399,7 @@ CREATE TABLE `player` (
   `RepMax` int(7) UNSIGNED NOT NULL,
   `CPMax` mediumint(5) UNSIGNED NOT NULL,
   `CPCur` mediumint(5) UNSIGNED NOT NULL,
-  `Funds` mediumint(6) UNSIGNED NOT NULL
+  `Funds` int(8) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -1530,10 +1530,10 @@ CREATE TABLE `tmp_logs` (
 -- --------------------------------------------------------
 
 --
--- Stellvertreter-Struktur des Views `view_reports_358_leo7044`
+-- Stellvertreter-Struktur des Views `view_reports_415_Bukmop999`
 -- (Siehe unten für die tatsächliche Ansicht)
 --
-CREATE TABLE `view_reports_358_leo7044` (
+CREATE TABLE `view_reports_415_Bukmop999` (
 `DATE(r.AttackTime)` date
 ,`COUNT(*)` bigint(21)
 ,`SUM(r.GainTib)` decimal(42,0)
@@ -1551,6 +1551,23 @@ CREATE TABLE `view_reports_358_leo7044` (
 -- (Siehe unten für die tatsächliche Ansicht)
 --
 CREATE TABLE `view_reports_415_leo7044` (
+`DATE(r.AttackTime)` date
+,`COUNT(*)` bigint(21)
+,`SUM(r.GainTib)` decimal(42,0)
+,`SUM(r.GainCry)` decimal(42,0)
+,`SUM(r.GainCre)` decimal(42,0)
+,`SUM(r.GainRp)` decimal(42,0)
+,`SUM(CostCry)` decimal(42,0)
+,`SUM(CostRep)` decimal(30,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stellvertreter-Struktur des Views `view_reports_415_mariogamer1961`
+-- (Siehe unten für die tatsächliche Ansicht)
+--
+CREATE TABLE `view_reports_415_mariogamer1961` (
 `DATE(r.AttackTime)` date
 ,`COUNT(*)` bigint(21)
 ,`SUM(r.GainTib)` decimal(42,0)
@@ -1586,11 +1603,11 @@ CREATE TABLE `view_transmissions_per_day_unique` (
 -- --------------------------------------------------------
 
 --
--- Struktur des Views `view_reports_358_leo7044`
+-- Struktur des Views `view_reports_415_Bukmop999`
 --
-DROP TABLE IF EXISTS `view_reports_358_leo7044`;
+DROP TABLE IF EXISTS `view_reports_415_Bukmop999`;
 
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_358_leo7044`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 358 and `r`.`AccountId` = 2906176 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_415_Bukmop999`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 415 and `r`.`AccountId` = 8132295 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
 
 -- --------------------------------------------------------
 
@@ -1600,6 +1617,15 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_358_leo7044` 
 DROP TABLE IF EXISTS `view_reports_415_leo7044`;
 
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_415_leo7044`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 415 and `r`.`AccountId` = 2906176 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur des Views `view_reports_415_mariogamer1961`
+--
+DROP TABLE IF EXISTS `view_reports_415_mariogamer1961`;
+
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `view_reports_415_mariogamer1961`  AS  select cast(`r`.`AttackTime` as date) AS `DATE(r.AttackTime)`,count(0) AS `COUNT(*)`,sum(`r`.`GainTib`) AS `SUM(r.GainTib)`,sum(`r`.`GainCry`) AS `SUM(r.GainCry)`,sum(`r`.`GainCre`) AS `SUM(r.GainCre)`,sum(`r`.`GainRp`) AS `SUM(r.GainRp)`,sum(`r`.`CostCry`) AS `SUM(CostCry)`,sum(`r`.`CostRep`) AS `SUM(CostRep)` from `reports` `r` where `r`.`WorldId` = 415 and `r`.`AccountId` = 2453051 group by cast(`r`.`AttackTime` as date) order by cast(`r`.`AttackTime` as date) ;
 
 -- --------------------------------------------------------
 
