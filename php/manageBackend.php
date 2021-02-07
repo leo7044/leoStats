@@ -318,7 +318,7 @@ if (!$conn->connect_error)
                 $Power3 = $EvaluatedFields[23];
                 $Power2 = $EvaluatedFields[24];
                 $strLayout = $Layout;
-                $strCncOpt = 'http://cncopt.com/?map=2|N|N|' . $PosX . '_' . $PosY . '|';
+                $strCncOpt = 'https://cnctaopt.com/?ver=3~N~N~' . $PosX . '_' . $PosY . '~';
                 $strLayout = str_replace('[[', '', $strLayout);
                 $strLayout = str_replace(']]', '', $strLayout);
                 $tmpArrayLayout = explode('],[', $strLayout);
@@ -360,14 +360,7 @@ if (!$conn->connect_error)
                         $strCncOpt .= $letterForCncOpt;
                     }
                 }
-                if (strlen($strLayout) == 431) // new
-                {
-                    $strCncOpt .= '....................................|newEconomy';
-                }
-                else // old
-                {
-                    $strCncOpt .= '............................................................................................................|newEconomy';
-                }
+                $strCncOpt .= '....................................~E=new~X=' . $PosX . '~Y=' . $PosY . '~WID=' . $WorldId . '~WN=.~ML=80';
                 if ($key != count($ObjectData) - 1)
                 {
                     $strQueryLayouts .= "('$WorldId', '$Zeit', '$AccountId', '$PosX', '$PosY', '$FieldsTib', '$FieldsCry', '$Layout', '$strCncOpt', '$Tiberium6', '$Tiberium5', '$Tiberium4', '$Tiberium3', '$Tiberium2', '$Tiberium1', '$Crystal6', '$Crystal5', '$Crystal4', '$Crystal3', '$Crystal2', '$Crystal1', '$Mixed6', '$Mixed5', '$Mixed4', '$Mixed3', '$Mixed2', '$Mixed1', '$Power8', '$Power7', '$Power6', '$Power5', '$Power4', '$Power3', '$Power2'),";
