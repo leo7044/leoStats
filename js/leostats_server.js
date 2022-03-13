@@ -7,7 +7,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2021.05.13';
+                var scriptVersionLocal = '2022.03.13';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -153,6 +153,16 @@
                             this.GuiSellSpecialBaseVBox.setThemedBackgroundColor("#eef");
                             this.GuiSellSpecialBasePage.add(this.GuiSellSpecialBaseVBox);
 
+                            // Tab 10: Upgrade special Base
+                            this.GuiUpgradeSpecialBasePage = new qx.ui.tabview.Page("Upgrade special base");
+                            this.GuiUpgradeSpecialBasePage.setLayout(new qx.ui.layout.Grow());
+                            this.GuiTab.add(this.GuiUpgradeSpecialBasePage);
+                            this.GuiUpgradeSpecialBaseVBox = new qx.ui.container.Composite();
+                            this.GuiUpgradeSpecialBaseVBox.setLayout(new qx.ui.layout.VBox(5));
+                            this.GuiUpgradeSpecialBaseVBox.setThemedPadding(10);
+                            this.GuiUpgradeSpecialBaseVBox.setThemedBackgroundColor("#eef");
+                            this.GuiUpgradeSpecialBasePage.add(this.GuiUpgradeSpecialBaseVBox);
+
                             // Button
                             this.GuiButtonLeoStats.addListener('click', function()
                             {
@@ -166,6 +176,7 @@
                                 this.GuiResourcesVBox.removeAll();
                                 this.GuiSellBasesVBox.removeAll();
                                 this.GuiSellSpecialBaseVBox.removeAll();
+                                this.GuiUpgradeSpecialBaseVBox.removeAll();
                                 this.getCurrentStats();
                                 this.showGui();
                                 this.GuiFenster.show();
@@ -696,6 +707,46 @@
                             HeadLineSellSpecialBase.add(TableSellBase);
                             HeaderTableSellSpecialBase.add(HeadLineSellSpecialBase);
                             this.GuiSellSpecialBaseVBox.add(HeaderTableSellSpecialBase);
+
+                            // Tab 10: Upgrade special bases
+                            var HeaderTableUpgradeSpecialBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(50).set({alignX: "center"}));
+                            var HeadLineUpgradeSpecialBase = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('<big><u><b>Upgrade special base</b></u></big>').set({rich: true}));
+                            HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
+                            var TableUpgradeBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
+                            var TextBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var selectBoxBases = new qx.ui.form.SelectBox();
+                            var self = this;
+                            selectBoxBases.addListener("changeSelection", function(e)
+                            {
+                                TextBuildingName.removeAll();
+                                TextBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
+                                TextBuildingTiberium.removeAll();
+                                TextBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                                TextBuildingPower.removeAll();
+                                TextBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                                var ObjectBuildings = self.selectSpecialBaseForUpgrade(e.getData()[0].getModel());
+                                for (var key in ObjectBuildings)
+                                {
+                                    TextBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
+                                    TextBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                }
+                            }, this);
+                            for (var i in this.ObjectData.bases)
+                            {
+                                selectBoxBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
+                            }
+                            TableUpgradeBase.add(TextBuildingName);
+                            TableUpgradeBase.add(TextBuildingTiberium);
+                            TableUpgradeBase.add(TextBuildingPower);
+                            HeadLineUpgradeSpecialBase.add(selectBoxBases);
+                            HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
+                            HeadLineUpgradeSpecialBase.add(TableUpgradeBase);
+                            HeaderTableUpgradeSpecialBase.add(HeadLineUpgradeSpecialBase);
+                            this.GuiUpgradeSpecialBaseVBox.add(HeaderTableUpgradeSpecialBase);
                         },
                         createTabPlayer: function()
                         {
@@ -1170,7 +1221,7 @@
                                 var buildingName = ArrayBuildingIds[key].get_TechGameData_Obj().dn;
                                 if (buildingName != 'Construction Yard')
                                 {
-                                    var ArrayRes = this.calculateValueOfBuilding(_BaseId, key);
+                                    var ArrayRes = this.calculateSellValueOfBuilding(_BaseId, key);
                                     if (!ObjectBuildings[buildingName])
                                     {
                                         ObjectBuildings[buildingName] = [0, 0];
@@ -1178,6 +1229,23 @@
                                     ObjectBuildings[buildingName][0] += ArrayRes[0];
                                     ObjectBuildings[buildingName][1] += ArrayRes[1];
                                 }
+                            }
+                            return ObjectBuildings;
+                        },
+                        selectSpecialBaseForUpgrade: function(_BaseId)
+                        {
+                            var ArrayBuildingIds = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d;
+                            var ObjectBuildings = {};
+                            for (var key in ArrayBuildingIds)
+                            {
+                                var buildingName = ArrayBuildingIds[key].get_TechGameData_Obj().dn;
+                                var ArrayRes = this.calculateUpgradeValueOfBuilding(_BaseId, key);
+                                if (!ObjectBuildings[buildingName])
+                                {
+                                    ObjectBuildings[buildingName] = [0, 0];
+                                }
+                                ObjectBuildings[buildingName][0] += ArrayRes[0];
+                                ObjectBuildings[buildingName][1] += ArrayRes[1];
                             }
                             return ObjectBuildings;
                         },
@@ -1190,14 +1258,14 @@
                             {
                                 if (ArrayBuildingIds[key].get_TechGameData_Obj().dn != 'Construction Yard')
                                 {
-                                    var ArrayRes = this.calculateValueOfBuilding(_BaseId, key);
+                                    var ArrayRes = this.calculateSellValueOfBuilding(_BaseId, key);
                                     valueTiberium += ArrayRes[0];
                                     valuePower += ArrayRes[1];
                                 }
                             }
                             return [valueTiberium, valuePower];
                         },
-                        calculateValueOfBuilding: function(_BaseId, _BuildingId)
+                        calculateSellValueOfBuilding: function(_BaseId, _BuildingId)
                         {
                             var minLevelBuilding = ClientLib.Data.MainData.GetInstance().get_Server().get_CityMinLevelBuilding();
                             var upgradeFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_TechLevelUpgradeFactorResource();
@@ -1249,6 +1317,24 @@
                             }
                             var refundFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_BuildingRefundPercent();
                             return [parseInt(refundFactor * valueTiberium), parseInt(refundFactor * valuePower)];
+                        },
+                        calculateUpgradeValueOfBuilding: function(_BaseId, _BuildingId)
+                        {
+                            var upgradeFactor = ClientLib.Data.MainData.GetInstance().get_Server().get_TechLevelUpgradeFactorResource();
+                            var levelBuilding = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_CurrentLevel();
+                            var valueTiberium = 0;
+                            var valuePower = 0;
+                            if (levelBuilding <= 11)
+                            {
+                                valueTiberium = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[0].c;
+                                valuePower = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[1].c;
+                            }
+                            else
+                            {
+                                valueTiberium = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[0].c * Math.pow(upgradeFactor, levelBuilding + 1 - 12));
+                                valuePower = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[1].c * Math.pow(upgradeFactor, levelBuilding + 1 - 12));
+                            }
+                            return [valueTiberium, valuePower];
                         },
                         calculateValueOfDefense: function(_BaseId)
                         {
