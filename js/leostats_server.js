@@ -1,4 +1,6 @@
 ﻿/* Developer: leo7044 (https://github.com/leo7044) */
+// https://jscompress.com/
+// https://javascriptcompressor.com/
 (function () {
     var leoStatsMain = function ()
     {
@@ -674,35 +676,35 @@
                             HeadLineSellSpecialBase.add(new qx.ui.basic.Label('<big><u><b>Sell special base</b></u></big>').set({rich: true}));
                             HeadLineSellSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
                             var TableSellBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
-                            var TextBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var TextBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var TextBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var selectBoxBases = new qx.ui.form.SelectBox();
+                            var TextSellBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextSellBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextSellBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var selectBoxSellBases = new qx.ui.form.SelectBox();
                             var self = this;
-                            selectBoxBases.addListener("changeSelection", function(e)
+                            selectBoxSellBases.addListener("changeSelection", function(e)
                             {
-                                TextBuildingName.removeAll();
-                                TextBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
-                                TextBuildingTiberium.removeAll();
-                                TextBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
-                                TextBuildingPower.removeAll();
-                                TextBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                                TextSellBuildingName.removeAll();
+                                TextSellBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
+                                TextSellBuildingTiberium.removeAll();
+                                TextSellBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                                TextSellBuildingPower.removeAll();
+                                TextSellBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
                                 var ObjectBuildings = self.selectSpecialBaseForSell(e.getData()[0].getModel());
                                 for (var key in ObjectBuildings)
                                 {
-                                    TextBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
-                                    TextBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
-                                    TextBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextSellBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
+                                    TextSellBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextSellBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
                                 }
                             }, this);
                             for (var i in this.ObjectData.bases)
                             {
-                                selectBoxBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
+                                selectBoxSellBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
                             }
-                            TableSellBase.add(TextBuildingName);
-                            TableSellBase.add(TextBuildingTiberium);
-                            TableSellBase.add(TextBuildingPower);
-                            HeadLineSellSpecialBase.add(selectBoxBases);
+                            TableSellBase.add(TextSellBuildingName);
+                            TableSellBase.add(TextSellBuildingTiberium);
+                            TableSellBase.add(TextSellBuildingPower);
+                            HeadLineSellSpecialBase.add(selectBoxSellBases);
                             HeadLineSellSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
                             HeadLineSellSpecialBase.add(TableSellBase);
                             HeaderTableSellSpecialBase.add(HeadLineSellSpecialBase);
@@ -714,35 +716,35 @@
                             HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('<big><u><b>Upgrade special base</b></u></big>').set({rich: true}));
                             HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
                             var TableUpgradeBase = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
-                            var TextBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var TextBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var TextBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
-                            var selectBoxBases = new qx.ui.form.SelectBox();
+                            var TextUpgradeBuildingName = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextUpgradeBuildingTiberium = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var TextUpgradeBuildingPower = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
+                            var selectBoxUpgradeBases = new qx.ui.form.SelectBox();
                             var self = this;
-                            selectBoxBases.addListener("changeSelection", function(e)
+                            selectBoxUpgradeBases.addListener("changeSelection", function(e)
                             {
-                                TextBuildingName.removeAll();
-                                TextBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
-                                TextBuildingTiberium.removeAll();
-                                TextBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
-                                TextBuildingPower.removeAll();
-                                TextBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
+                                TextUpgradeBuildingName.removeAll();
+                                TextUpgradeBuildingName.add(new qx.ui.basic.Label('<b>BuildingName</b>').set({rich: true}));
+                                TextUpgradeBuildingTiberium.removeAll();
+                                TextUpgradeBuildingTiberium.add(new qx.ui.basic.Label('<b>Tiberium</b>').set({rich: true}));
+                                TextUpgradeBuildingPower.removeAll();
+                                TextUpgradeBuildingPower.add(new qx.ui.basic.Label('<b>Power</b>').set({rich: true}));
                                 var ObjectBuildings = self.selectSpecialBaseForUpgrade(e.getData()[0].getModel());
                                 for (var key in ObjectBuildings)
                                 {
-                                    TextBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
-                                    TextBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
-                                    TextBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextUpgradeBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
+                                    TextUpgradeBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    TextUpgradeBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
                                 }
                             }, this);
                             for (var i in this.ObjectData.bases)
                             {
-                                selectBoxBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
+                                selectBoxUpgradeBases.add(new qx.ui.form.ListItem(this.ObjectData.bases[i].BaseName.toLocaleString(), null, this.ObjectData.bases[i].BaseId));
                             }
-                            TableUpgradeBase.add(TextBuildingName);
-                            TableUpgradeBase.add(TextBuildingTiberium);
-                            TableUpgradeBase.add(TextBuildingPower);
-                            HeadLineUpgradeSpecialBase.add(selectBoxBases);
+                            TableUpgradeBase.add(TextUpgradeBuildingName);
+                            TableUpgradeBase.add(TextUpgradeBuildingTiberium);
+                            TableUpgradeBase.add(TextUpgradeBuildingPower);
+                            HeadLineUpgradeSpecialBase.add(selectBoxUpgradeBases);
                             HeadLineUpgradeSpecialBase.add(new qx.ui.basic.Label('').set({rich: true}));
                             HeadLineUpgradeSpecialBase.add(TableUpgradeBase);
                             HeaderTableUpgradeSpecialBase.add(HeadLineUpgradeSpecialBase);
