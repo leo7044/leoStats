@@ -8,6 +8,10 @@
         {
             function setButtons()
             {
+                if(typeof(phe) == 'undefined')
+                {
+                    phe = webfrontend.phe;
+                }
                 var linkToRoot = "https://cnc.indyserver.info/";
                 var scriptVersionLocal = '2022.03.13';
                 qx.Class.define('leoStats',
