@@ -1,4 +1,4 @@
-﻿/* Developer: leo7044 (https://github.com/leo7044) */
+/* Developer: leo7044 (https://github.com/leo7044) */
 // https://jscompress.com/
 // https://javascriptcompressor.com/
 (function () {
@@ -8,12 +8,8 @@
         {
             function setButtons()
             {
-                if(typeof(phe) == 'undefined')
-                {
-                    phe = webfrontend.phe;
-                }
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2022.03.13';
+                var scriptVersionLocal = '2022.11.26';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -1333,7 +1329,14 @@
                             if (levelBuilding <= 11)
                             {
                                 valueTiberium = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[0].c;
-                                valuePower = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[1].c;
+                                if (ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[1] != undefined)
+                                {
+                                    valuePower = ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[levelBuilding + 1].rr[1].c;
+                                }
+                                else
+                                {
+                                    valuePower = 0;
+                                }
                             }
                             else
                             {
@@ -2261,12 +2264,12 @@
                                     }
                                     ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicPlayerInfo", {
                                         id : PlayerId
-                                    }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfo), null);
+                                    }, webfrontend.phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicPlayerInfo), null);
                                     if (AllianceId > 0)
                                     {
                                         ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetPublicAllianceInfo", {
                                             id : AllianceId
-                                        }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicAllianceInfo), null);
+                                        }, webfrontend.phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getPublicAllianceInfo), null);
                                     }
                                     // Anfrage absenden
                                     this.sendDataFromInGame();
@@ -2342,7 +2345,7 @@
                                 take: 1000, // ersetzen durch ReportCount nicht erforderlich, da bei weniger Berichten auch nur weniger abgeholt werden
                                 sort: 1,
                                 ascending: false
-                            }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportHeaderAll), null);
+                            }, webfrontend.phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, this, this.getReportHeaderAll), null);
                         },
                         getReportHeaderAll: function(_context, _data)
                         {
@@ -2369,7 +2372,7 @@
                             {
                                 ClientLib.Net.CommunicationManager.GetInstance().SendSimpleCommand("GetReportData", {
                                     playerReportId: _curReportId
-                                }, phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportData), null);
+                                }, webfrontend.phe.cnc.Util.createEventDelegate(ClientLib.Net.CommandResult, _self, _self.getReportData), null);
                             }, _curReportCount * 1000, this));
                         },
                         getReportData: function(_context, _data)
@@ -2615,7 +2618,7 @@
                         {
                             this.initializeDefaultValues();
                             var _self = this;
-                            phe.cnc.Util.attachNetEvent(ClientLib.Data.MainData.GetInstance().get_Cities(), "CurrentChange", ClientLib.Data.CurrentCityChange, this, _self.scanClickedBase);
+                            webfrontend.phe.cnc.Util.attachNetEvent(ClientLib.Data.MainData.GetInstance().get_Cities(), "CurrentChange", ClientLib.Data.CurrentCityChange, this, _self.scanClickedBase);
                         },
                         scanClickedBase: function(_oldId, _newId)
                         {
