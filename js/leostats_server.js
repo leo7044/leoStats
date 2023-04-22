@@ -9,7 +9,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2022.11.26';
+                var scriptVersionLocal = '2023.04.22';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -23,6 +23,7 @@
                         initialize: function()
                         {
                             this.sendChatInfoStatus = true;
+                            this.maxPlayerLvl = ClientLib.Data.MainData.GetInstance().get_Server().get_PlayerUpgradeCap();
                             this.ObjectData = {};
                             this.ObjectDataNotSend = {};
                             this.linkBase = '';
@@ -733,8 +734,22 @@
                                 for (var key in ObjectBuildings)
                                 {
                                     TextUpgradeBuildingName.add(new qx.ui.basic.Label(key).set({rich: true, alignX: 'left'}));
-                                    TextUpgradeBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
-                                    TextUpgradeBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    if (ObjectBuildings[key][0] > 0)
+                                    {
+                                        TextUpgradeBuildingTiberium.add(new qx.ui.basic.Label(ObjectBuildings[key][0].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    }
+                                    else
+                                    {
+                                        TextUpgradeBuildingTiberium.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right'}));
+                                    }
+                                    if (ObjectBuildings[key][1] > 0)
+                                    {
+                                        TextUpgradeBuildingPower.add(new qx.ui.basic.Label(ObjectBuildings[key][1].toLocaleString()).set({rich: true, alignX: 'right'}));
+                                    }
+                                    else
+                                    {
+                                        TextUpgradeBuildingPower.add(new qx.ui.basic.Label('n.a.').set({rich: true, alignX: 'right'}));
+                                    }
                                 }
                             }, this);
                             for (var i in this.ObjectData.bases)
@@ -1338,10 +1353,15 @@
                                     valuePower = 0;
                                 }
                             }
-                            else
+                            else if (levelBuilding < this.maxPlayerLvl)
                             {
                                 valueTiberium = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[0].c * Math.pow(upgradeFactor, levelBuilding + 1 - 12));
                                 valuePower = parseInt(ClientLib.Data.MainData.GetInstance().get_Cities().get_AllCities().d[_BaseId].get_Buildings().d[_BuildingId].get_TechGameData_Obj().r[12].rr[1].c * Math.pow(upgradeFactor, levelBuilding + 1 - 12));
+                            }
+                            else
+                            {
+                                valueTiberium = 0;
+                                valuePower = 0;
                             }
                             return [valueTiberium, valuePower];
                         },
