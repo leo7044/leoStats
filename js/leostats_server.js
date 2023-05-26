@@ -434,7 +434,7 @@
                             var HeadLinePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('<big><u><b>POI-Level</b></u></big>').set({rich: true}));
                             HeadLinePoiDataPoiLevel.add(new qx.ui.basic.Label('').set({rich: true}));
-                            var HeadLinePoiDataPoiLevelScroll = new qx.ui.container.Scroll().set({width: 165, height: 560});
+                            var HeadLinePoiDataPoiLevelScroll = new qx.ui.container.Scroll().set({width: 175, height: 560});
                             var TablePoiDataPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.HBox(10).set({alignX: "center"}));
                             var TextPoiLevel = new qx.ui.container.Composite(new qx.ui.layout.VBox(1).set({alignX: "center"}));
                             TextPoiLevel.add(new qx.ui.basic.Label('<b>Level</b>').set({rich: true}));
