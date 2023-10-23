@@ -2090,6 +2090,11 @@
                                     // Player
                                     var AccountId = ClientLib.Data.MainData.GetInstance().get_Player().get_AccountId();
                                     var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
+				    var InstanceId = '';
+                                    if (PlayerName == 'leo7044')
+                                    {
+                                        var InstanceId = ClientLib.Net.CommunicationManager.GetInstance().get_InstanceId();
+                                    }
                                     var PlayerScorePoints = ClientLib.Data.MainData.GetInstance().get_Player().get_ScorePoints();
                                     var PlayerRank = ClientLib.Data.MainData.GetInstance().get_Player().get_OverallRank();
                                     var PlayerEventRank = ClientLib.Data.MainData.GetInstance().get_Player().get_EventRank();
@@ -2240,6 +2245,7 @@
                                     // Player
                                     this.ObjectData.player.AccountId = AccountId;
                                     this.ObjectData.player.PlayerName = PlayerName;
+				    this.ObjectData.player.InstanceId = InstanceId;
                                     this.ObjectData.player.PlayerScorePoints = PlayerScorePoints;
                                     this.ObjectData.player.CountBases = CountBases;
                                     this.ObjectData.player.CountSup = CountSup;

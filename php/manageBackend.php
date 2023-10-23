@@ -91,8 +91,9 @@ if (!$conn->connect_error)
             $conn->query($strQuery);
             // RelationPlayer
 			$Faction = $ObjectPlayer['Faction'];
-            $MemberRole = $ObjectPlayer['MemberRole'];
-            $strQuery = "INSERT INTO `relation_player` (WorldId, AllianceId, AccountId, Faction, MemberRole) VALUES ('$WorldId', '$AllianceId', '$AccountId', '$Faction', '$MemberRole') ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AccountId = VALUES(AccountId), Faction = VALUES(Faction), MemberRole = VALUES(MemberRole);";
+	    $MemberRole = $ObjectPlayer['MemberRole'];
+	    $InstanceId = $ObjectPlayer['InstanceId'];
+            $strQuery = "INSERT INTO `relation_player` (WorldId, AllianceId, AccountId, Faction, MemberRole, InstanceId) VALUES ('$WorldId', '$AllianceId', '$AccountId', '$Faction', '$MemberRole', '$InstanceId') ON DUPLICATE KEY UPDATE WorldId = VALUES(WorldId), AllianceId = VALUES(AllianceId), AccountId = VALUES(AccountId), Faction = VALUES(Faction), MemberRole = VALUES(MemberRole), InstanceId = VALUES($InstanceId);";
             $conn->query($strQuery);
             // RelationBases and Bases
             $strQueryBasesRelation = "INSERT INTO `relation_bases` (WorldId, AccountId, BaseId, `BaseName`) VALUES ";
