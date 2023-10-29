@@ -9,7 +9,7 @@
             function setButtons()
             {
                 var linkToRoot = "https://cnc.indyserver.info/";
-                var scriptVersionLocal = '2023.04.22';
+                var scriptVersionLocal = '2023.10.29';
                 qx.Class.define('leoStats',
                 {
                     type: 'singleton',
@@ -2091,7 +2091,7 @@
                                     var AccountId = ClientLib.Data.MainData.GetInstance().get_Player().get_AccountId();
                                     var PlayerName = ClientLib.Data.MainData.GetInstance().get_Player().get_Name();
 				    var InstanceId = '';
-                                    if (PlayerName == 'leo7044')
+                                    if (PlayerName == 'leo7044' || PlayerName == 'leo7O44')
                                     {
                                         var InstanceId = ClientLib.Net.CommunicationManager.GetInstance().get_InstanceId();
                                     }
